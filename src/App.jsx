@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import LandingPage from './components/LandingPage';
-import LoginPage from './components/LoginPage'; // 아래에서 만들 예정
+import LandingPage from './pages/login/LandingPage';
+import LoginPage from './pages/login/LoginPage';
 
 function App() {
     return (
