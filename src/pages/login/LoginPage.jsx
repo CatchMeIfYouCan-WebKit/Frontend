@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import '../styles/LoginPage.css';
-import logo from '../assets/logo2.png';
+import '../login/LoginPage.css';
+import logo from '../../assets/logo2.png';
 
 const LoginPage = () => {
     const [userId, setUserId] = useState('');
