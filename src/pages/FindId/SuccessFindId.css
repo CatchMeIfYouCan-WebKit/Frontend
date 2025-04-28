@@ -1,0 +1,76 @@
+.success-findid-body {
+    text-align: center;
+    margin-top: 30px;
+    font-family: sans-serif;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.divider {
+    margin: 20px 0;
+    border: none;
+    border-top: 1px solid #eee;
+}
+
+.user-id {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 24px;
+}
+
+.button-group {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    width: 100%; 
+}
+
+.btn {
+    flex: 1;
+    padding: 10px 0; 
+    font-size: 15px; 
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    box-sizing: border-box;
+}
+
+.login-btn {
+    background-color: #f4a340;
+    color: white;
+}
+
+.findpw-btn {
+    background-color: white;
+    color: #f4a340;
+    border: 1px solid #f4a340;
+}
+
+.btn:hover {
+    transform: scale(0.98);
+}
+.success-findid-body {
+    text-align: center;
+    margin-top: 30px;
+    font-family: sans-serif;
+    opacity: 1;
+    transition: opacity 0.4s ease; 
+}
+
+.success-findid-body.fade-out {
+    opacity: 0;
+}

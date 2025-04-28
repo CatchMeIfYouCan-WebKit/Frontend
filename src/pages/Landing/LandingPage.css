@@ -1,0 +1,57 @@
+.landing-container {
+    background-color: #f57c1f;
+    min-height: 100vh;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: sans-serif;
+    opacity: 0;
+    transition: opacity 0.6s ease; 
+}
+
+.landing-container.fade-in {
+    opacity: 1; 
+}
+
+.landing-container.fade-out {
+    opacity: 0; 
+}
+
+.landing-logo {
+    width: 150px;
+    height: auto;
+    margin-bottom: 20px;
+    animation: pop 0.8s ease forwards; 
+}
+
+.landing-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+    animation: fadeUp 1s ease forwards;
+}
+
+@keyframes pop {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeUp {
+    0% {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

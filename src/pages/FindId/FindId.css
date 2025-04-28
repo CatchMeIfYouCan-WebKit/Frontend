@@ -1,0 +1,111 @@
+.find-id {
+  min-height: 100vh;
+  font-family: sans-serif;
+  width: 360px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  opacity: 1;
+  transition: opacity 0.1s ease; 
+}
+
+.find-id.fade-out {
+  opacity: 0; /* 페이드 아웃 될 때 */
+}
+
+.find-id-header {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-top: 10px;
+  width: 100%;
+  box-sizing: border-box; 
+  padding-bottom: 5px;
+}
+
+.find-id-header h1 {
+  margin: auto;
+  font-size: 18px;
+  font-weight: bold;
+  padding-right: 30px;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  font-size: 30px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.find-id-body {
+  padding: 16px;
+}
+
+.find-id-body h2 {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.phone-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.phone-row input {
+  width: 65%; /* 휴대폰 입력창 65% */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  height: 42px;
+  box-sizing: border-box;
+}
+
+.btn.gray {
+  width: 34%; /* 인증번호 받기 버튼 34% */
+  height: 42px;
+  border: 1px solid gray;
+  color: gray;
+  background-color: white;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  height: 42px;
+  box-sizing: border-box;
+}
+
+.info-text {
+  font-size: 10px;
+  color: #555;
+  margin-bottom: 16px;
+}
+
+.btn.orange {
+  width: 100%;
+  padding: 12px;
+  background-color: #f4a340;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  box-sizing: border-box;
+}

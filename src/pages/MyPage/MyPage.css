@@ -1,0 +1,4 @@
+.my-page {
+    background-color: rgb(230, 97, 97); /* 👈 배경 흰색 지정 */
+    min-width: 360px;
+  }
