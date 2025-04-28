@@ -1,0 +1,61 @@
+.success-signup-container {
+    text-align: center;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    margin-top: 12px;
+}
+
+.divider {
+    width: 100%;
+    margin: 0;
+    border: none;
+    border-top: 1px solid #eee;
+}
+
+.subtitle {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    margin-top: 24px;
+}
+
+.description {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.dog-logo {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 40px;
+}
+
+.login-button {
+    background-color: #f4a340;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 0;
+    width: 200px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.login-button:hover {
+    background-color: #e29630;
+    transform: scale(0.98);
+}
