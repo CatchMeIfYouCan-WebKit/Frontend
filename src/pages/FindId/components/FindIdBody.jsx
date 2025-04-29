@@ -8,7 +8,7 @@ export default function FindIdBody({ onSendCode, onCheckCode }) {
     <div className="find-id-body">
       <h2>휴대전화 번호 입력</h2>
 
-      <div className="phone-row full">
+      <div className="phone-row">
         <input
           type="text"
           placeholder="휴대전화 번호('-'제외)"

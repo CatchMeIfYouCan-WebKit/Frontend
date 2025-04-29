@@ -1,111 +1,78 @@
 .login-container {
+    min-height: 90vh;
     background-color: #fff;
-    padding: 48px 24px;
-    box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    justify-content: center; 
-    opacity: 1;
     transition: opacity 0.4s ease;
+    padding: 24px;
+}
+
+.login-container.fade-out {
+    opacity: 0;
 }
 
 .login-wrapper {
-    width: 100%;
-    max-width: 360px;
-    flex: 1;
+    width: 360px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    margin-top: 40px;
-}
-
-.login-title {
-    font-size: 38px;
-    font-weight: bold;
-    color: #222;
-    margin-top: 0;
 }
 
 .login-logo {
-    width: 240px;
-    height: 240px;
+    width: 250px;
+    height: 250px;
+    object-fit: contain;
     margin-bottom: 20px;
+}
+
+.form-container {
+    width: 100%;
+}
+
+.form-group-custom {
+    width: 100%;
 }
 
 .login-input {
     width: 100%;
-    max-width: 340px;
-    padding: 16px 20px;
-    margin-bottom: 10px;
+    background-color: #f7d6ae;
+    padding: 14px 18px;
     border: 2px solid transparent;
     border-radius: 8px;
-    background-color: #f7d6ae;
-    font-size: 18px;
+    margin-top: 16px;
+    font-size: 16px;
     outline: none;
-    height: 48px;
-    transition: border-color 0.3s, box-shadow 0.3s;
     box-sizing: border-box;
+    height: 46px;
 }
 
 .login-input:focus {
     border-color: #f4a261;
-    box-shadow: 0 0 0 3px rgba(244, 162, 97, 0.3);
+    box-shadow: 0 0 0 2px rgba(244, 162, 97, 0.3);
 }
 
-.login-input::placeholder {
-    color: #999;
-    opacity: 0.7;
-}
-
-.no-margin {
-    margin-bottom: 0;
-}
-
-.login-links {
-    font-size: 16px;
-    color: #555;
-    margin-bottom: 16px;
-    text-align: center;
-}
-
-.link-button {
-    color: #555;
-    text-decoration: none;
-    margin: 0 6px;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-    transition: color 0.2s;
-}
-
-.link-button:hover,
-.link-button:active {
-    color: #e07a3f;
-    text-decoration: underline;
+.button-wrapper {
+    margin-top: 20px;
+    width: 100%;
 }
 
 .login-button {
+    width: 100%;
+    height: 43px;
     background-color: #e07a3f;
     color: white;
-    font-weight: bold;
     border: none;
-    padding: 20px 0;
-    border-radius: 25px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-    width: 100%;
-    max-width: 340px;
-    font-size: 20px;
-    margin-top: 24px;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
+    transition: background-color 0.2s, transform 0.2s;
 }
 
 .login-button:disabled {
     background-color: #ccc;
-    cursor: not-allowed;
 }
 
 .login-button:hover:not(:disabled) {
@@ -117,14 +84,45 @@
     transform: scale(0.98);
 }
 
-.login-button:focus,
-.login-button:focus-visible {
-    outline: none;
+.spinner-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
-
-.login-container.fade-out {
-    opacity: 0;
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid white;
+    border-top: 3px solid #f4a261;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
 }
 
-/* 나머지 기존 CSS 유지 */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.login-links {
+    margin-top: 24px;
+    font-size: 14px;
+    color: #555;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.link-button {
+    cursor: pointer;
+    margin: 0 6px;
+    color: #000000;
+    text-decoration: none;
+    transition: color 0.2s;
+    margin: 30px;
+
+}
+
+.link-button:hover {
+    color: #e07a3f;
+    text-decoration: underline;
+}

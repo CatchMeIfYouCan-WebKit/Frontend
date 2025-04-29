@@ -2,47 +2,47 @@
     background-color: #f57c1f;
     min-height: 100vh;
     display: flex;
-    width: 100%;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     font-family: sans-serif;
-    opacity: 0;
-    transition: opacity 0.6s ease; 
-}
-
-.landing-container.fade-in {
-    opacity: 1; 
+    transition: opacity 0.6s ease;
+    opacity: 1;
 }
 
 .landing-container.fade-out {
-    opacity: 0; 
+    opacity: 0;
+}
+
+.logo-wrapper {
+    margin-top: 190px; 
+    text-align: center;
 }
 
 .landing-logo {
-    width: 150px;
+    width: 280px;
     height: auto;
-    margin-bottom: 20px;
-    animation: pop 0.8s ease forwards; 
+    animation: popUp 1s ease forwards; /* ✅ 새 애니메이션 적용 */
 }
 
 .landing-title {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: bold;
-    text-align: center;
     color: white;
     animation: fadeUp 1s ease forwards;
 }
 
-@keyframes pop {
-    0% {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
+.title-wrapper {
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    text-align: center;
+    margin-top: 74px;
+}
+
+.landing-title {
+    font-size: 35px;
+    font-weight: bold;
+    color: white;
+    animation: fadeUp 1s ease forwards;
 }
 
 @keyframes fadeUp {
@@ -53,5 +53,19 @@
     100% {
         transform: translateY(0);
         opacity: 1;
+    }
+}
+
+@keyframes popUp {
+    0% {
+        transform: scale(0.6);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
     }
 }

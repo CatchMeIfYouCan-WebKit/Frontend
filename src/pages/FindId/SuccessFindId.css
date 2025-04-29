@@ -2,45 +2,52 @@
     text-align: center;
     margin-top: 30px;
     font-family: sans-serif;
+    opacity: 1;
+    transition: opacity 0.4s ease; 
 }
 
-.title {
-    font-size: 20px;
+.success-findid-body.fade-out {
+    opacity: 0;
+}
+
+.success-findid-body .title {
+    font-size: 25px;
     font-weight: bold;
-    margin-bottom: 12px;
 }
 
-.subtitle {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 20px;
+.success-findid-body .subtitle {
+    font-size: 16px;
+    color: #010101;
     line-height: 1.5;
 }
 
-.divider {
+.success-findid-body .divider {
     margin: 20px 0;
     border: none;
     border-top: 1px solid #eee;
 }
 
-.user-id {
+.success-findid-body .user-id {
     font-size: 22px;
     font-weight: bold;
     margin-bottom: 24px;
+    margin-top: 24px;
 }
 
-.button-group {
+.success-findid-body .button-group {
     margin-top: 50px;
     display: flex;
-    justify-content: center;
+    justify-content: center; 
+    align-items: center; 
     gap: 12px;
-    width: 100%; 
+    width: 100%;
 }
 
-.btn {
-    flex: 1;
-    padding: 10px 0; 
-    font-size: 15px; 
+.success-findid-body .btn {
+    flex-shrink: 0;;
+    width: 40%; 
+    padding: 12px 0;
+    font-size: 15px;
     font-weight: bold;
     border-radius: 8px;
     cursor: pointer;
@@ -49,28 +56,18 @@
     box-sizing: border-box;
 }
 
-.login-btn {
+.success-findid-body .login-btn {
     background-color: #f4a340;
     color: white;
 }
 
-.findpw-btn {
+.success-findid-body .findpw-btn {
     background-color: white;
     color: #f4a340;
     border: 1px solid #f4a340;
 }
 
-.btn:hover {
+.success-findid-body .btn:hover {
     transform: scale(0.98);
 }
-.success-findid-body {
-    text-align: center;
-    margin-top: 30px;
-    font-family: sans-serif;
-    opacity: 1;
-    transition: opacity 0.4s ease; 
-}
 
-.success-findid-body.fade-out {
-    opacity: 0;
-}

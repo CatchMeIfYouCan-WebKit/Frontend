@@ -4,7 +4,7 @@ import LandingPage from '../pages/Landing/components/LandingPage';
 import MyPage from '../pages/MyPage/MyPage';
 import FindId from '../pages/FindId/components/FindId';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import LoginPage from '../pages/login/components/LoginPage';
+import LoginPage from '../pages/Login/components/LoginPage';
 import SuccessFindId from '../pages/FindId/components/SuccessFindId';
 import FailFindId from '../pages/FindId/components/FailFindId';
 import Signup from '../pages/Signup/components/Signup';
