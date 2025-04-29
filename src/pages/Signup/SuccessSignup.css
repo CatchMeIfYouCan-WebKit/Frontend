@@ -1,3 +1,5 @@
+/* src/pages/SuccessSignup.css (또는 해당하는 파일) */
+
 .success-signup-container {
     margin-top: 20px;
     text-align: center;
@@ -43,6 +45,7 @@
     margin-bottom: 40px;
 }
 
+/* 수정된 로그인 버튼 */
 .login-button {
     background-color: #f4a340;
     color: white;
@@ -51,8 +54,10 @@
     border: none;
     border-radius: 8px;
     padding: 14px 0;
-    width:55%;
+    width: 80%; /* 50% → 80%로 넓혔어요 */
+    max-width: 300px; /* 최대 너비 설정 */
     height: 60px;
+    margin: 0 auto; /* 중앙 정렬 */
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
 }

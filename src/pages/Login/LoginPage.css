@@ -1,3 +1,13 @@
+/* 1. 전역 box-sizing 리셋 */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* 2. 최상위 컨테이너 */
 .login-container {
     min-height: 90vh;
     background-color: #fff;
@@ -8,44 +18,48 @@
     transition: opacity 0.4s ease;
     padding: 24px;
 }
-
 .login-container.fade-out {
     opacity: 0;
 }
 
+/* 3. 중앙 래퍼 */
 .login-wrapper {
-    width: 360px;
+    width: 360px; /* 고정 너비 360px */
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 0 auto;
 }
 
+/* 4. 로고 */
 .login-logo {
-    width: 250px;
-    height: 250px;
+    width: 300px;
+    height: 300px;
     object-fit: contain;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
 }
 
+/* 5. 폼 */
 .form-container {
     width: 100%;
 }
-
 .form-group-custom {
     width: 100%;
+    margin-bottom: 10px;
 }
 
+/* 6. 입력창 */
 .login-input {
-    width: 100%;
-    background-color: #f7d6ae;
+    width: 100% !important;
+    height: 60px !important;
     padding: 14px 18px;
     border: 2px solid transparent;
     border-radius: 8px;
-    margin-top: 16px;
-    font-size: 16px;
+    background-color: #f7d6ae;
+    font-size: 20px;
     outline: none;
-    box-sizing: border-box;
-    height: 46px;
+    margin-bottom: 10px;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .login-input:focus {
@@ -53,37 +67,45 @@
     box-shadow: 0 0 0 2px rgba(244, 162, 97, 0.3);
 }
 
+/* 7. 버튼 래퍼 */
 .button-wrapper {
-    margin-top: 20px;
     width: 100%;
+    margin-top: 20px;
 }
 
+/* 8. 로그인 버튼 */
 .login-button {
-    width: 100%;
-    height: 43px;
+    display: inline-block; /* 변경: block → inline-block */
+    width: 100% !important; /* 폼 너비 꽉 채우기 */
+    max-width: 100% !important; /* 혹시 있을 max-width 제한 제거 */
+    height: 60px !important;
     background-color: #e07a3f;
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.2s, transform 0.2s;
+    box-sizing: border-box;
 }
 
 .login-button:disabled {
     background-color: #ccc;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 .login-button:hover:not(:disabled) {
-    background-color: #e07a3f;
+    background-color: #d96b2e;
 }
 
 .login-button:active:not(:disabled) {
-    background-color: #d96b2e;
+    background-color: #c55a1e;
     transform: scale(0.98);
 }
 
+/* 9. 스피너 */
 .spinner-wrapper {
     display: inline-flex;
     align-items: center;
@@ -100,13 +122,18 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
+/* 10. 링크 */
 .login-links {
     margin-top: 24px;
-    font-size: 14px;
+    font-size: 20px;
     color: #555;
     white-space: nowrap;
     text-align: center;
@@ -115,11 +142,9 @@
 .link-button {
     cursor: pointer;
     margin: 0 6px;
-    color: #000000;
+    color: #000;
     text-decoration: none;
     transition: color 0.2s;
-    margin: 30px;
-
 }
 
 .link-button:hover {
