@@ -22,7 +22,10 @@ function App() {
                 <Route path="/failfindid" element={<FailFindId />} />
                 <Route path="/signup" element={<Signup/>} />
                 <Route path="/successsignup" element={<SuccessSignup/>} />
+<<<<<<< HEAD
                 
+=======
+>>>>>>> 8a29a5b (main)
             </Routes>
         </BrowserRouter>
     );
