@@ -1,9 +1,11 @@
+/* MapMain.css */
+
 /* 전체 페이지 컨테이너 */
 .mappage-container {
     position: relative;
     width: 100%;
     height: 100vh;
-    overflow: hidden;
+    overflow: visible;
 }
 
 /* 지도 영역 */
@@ -28,19 +30,26 @@
 .search-input-wrapper {
     position: relative;
     width: 100%;
-    margin-bottom: 6px;
+    height: 60px;
+    display: flex;
+    align-items: center;
 }
 
 /* 검색 입력창 */
 .search-input {
     width: 100%;
-    height: 44px;
-    padding: 0 44px 0 14px;
+    height: 55px;
+    padding: 0 44px 0 35px;
     border: 1px solid #ccc;
     border-radius: 12px;
     font-size: 15px;
     outline: none;
     box-sizing: border-box;
+}
+
+/* 입력창에 지우기 버튼 공간 확보 */
+.search-input.with-clear {
+    padding-right: 72px;
 }
 
 /* 검색창 오른쪽 버튼 (아이콘) */
@@ -55,6 +64,22 @@
     cursor: pointer;
 }
 
+/* 지우기(X) 버튼 스타일 */
+.clear-button {
+    position: absolute;
+    top: 50%;
+    right: 40px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
 /* 태그 아이콘 */
 .tag-icon {
     width: 20px;
@@ -67,25 +92,37 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 6px 0;
-    gap: 8px;
+    padding: 2px 0;
+    gap: 1px;
+    margin-top: 0px;
 }
 
-.tag-wrap {
+.tag-wrap1,
+.tag-wrap2,
+.tag-wrap3 {
     display: flex;
     align-items: center;
     border: 1px solid #d9d9d9;
     border-radius: 10px;
     background: linear-gradient(106deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.8));
     padding: 6px 10px;
-    font-size: 12px;
+    font-size: 16px;
     cursor: pointer;
-    height: 33px;
+    height: 40px;
+}
+.tag-wrap1 {
+    width: 90px;
+}
+.tag-wrap2 {
+    width: 110px;
+}
+.tag-wrap3 {
+    width: 60px;
 }
 
 .tag-img {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     margin-right: 6px;
     border-radius: 4px;
     object-fit: contain;
@@ -94,7 +131,7 @@
 /* 현재 위치 버튼 */
 .location-wrap {
     position: absolute;
-    top: 100px;
+    top: 105px;
     right: 0px;
 }
 
@@ -104,67 +141,9 @@
     cursor: pointer;
 }
 
-/* 자동완성 목록 박스 */
-.suggestions-box {
-    position: absolute;
-    top: 68px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: px;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    z-index: 11;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    max-height: 250px;
-    overflow-y: auto;
-
-    list-style: none;
-    padding-left: 0;
-    margin: 0;
-}
-
-/* 자동완성 항목 */
-.suggestion-item {
-    padding: 10px 14px;
-    cursor: pointer;
-    font-size: 14px;
-    border-bottom: 1px solid #eee;
-}
-
-.suggestion-item:last-child {
-    border-bottom: none;
-}
-
-/* 활성화된 자동완성 항목 */
-.suggestion-item.active {
-    background-color: #f4f4f4;
-    font-weight: bold;
-}
-
-/* 상세 검색 결과 정보 (이전 응답에서 추가된 부분) */
-.place-title {
-    font-weight: bold;
-    font-size: 15px;
-    color: #333;
-}
-
-.place-address {
-    font-size: 13px;
-    color: #666;
-    margin-top: 4px;
-}
-
-.place-info {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    color: #999;
-    margin-top: 4px;
-}
+/* 검색 오버레이 */
 .search-overlay {
-    position: absolute; /* ✅ fixed → absolute로 바꿔야 지도 기준으로 붙음 */
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -173,8 +152,9 @@
     display: flex;
     justify-content: center;
     align-items: start;
-    pointer-events: none; /* 클릭 막기 방지 */
+    pointer-events: none;
 }
+
 .search-overlay-content {
     width: 90%;
     min-width: 480px;
@@ -183,33 +163,67 @@
     padding: 16px;
     border-radius: 4px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-    pointer-events: auto; /* 입력 가능하게 */
+    pointer-events: auto;
 }
 
-.search-input-wrapper {
+/* 오버레이 검색창 + 버튼 */
+.search-overlay-content .search-input-wrapper {
     display: flex;
     margin-bottom: 12px;
     align-items: center;
 }
 
-.search-input-wrapper button {
-    font-size: 20px;
+.back-button {
+    position: absolute;
+    left: 0px;
     background: none;
     border: none;
-    margin-right: 8px;
+    padding: 0;
+    margin-right: 12px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
 }
 
+.search-overlay-content .search-input.with-clear {
+    padding-right: 72px;
+}
+
+.search-overlay-content .clear-button {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+/* 오버레이 자동완성 리스트 */
 .search-result-list {
+    text-align: left;
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
 .search-result-list li {
+    display: flex;
     padding: 12px 0;
     border-bottom: 1px solid #eee;
     cursor: pointer;
+}
+
+.search-result-list li.active,
+.search-result-list li:hover {
+    background: #fafafa;
 }
 
 .search-result-title {
@@ -221,3 +235,109 @@
     font-size: 13px;
     color: #666;
 }
+
+.search-result-distance {
+    width: 56px;
+    flex-shrink: 0;
+    font-size: 9px;
+    color: #999;
+    text-align: center;
+    margin-right: 8px;
+}
+
+.search-result-details {
+    flex: 1;
+}
+
+/* === Bottom Sheet === */
+.bottom-sheet {
+    position: absolute;
+    bottom: -820px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+    transition: bottom 0.3s ease;
+    z-index: 100;
+}
+.bottom-sheet.open {
+    bottom: 0;
+}
+.sheet-header {
+    width: 100%;
+    padding: 10px 0;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+}
+.sheet-handle {
+    width: 40px;
+    height: 4px;
+    background: #ccc;
+    border-radius: 2px;
+}
+.sheet-content {
+    padding: 16px;
+    overflow: auto;
+}
+.list-wrap {
+    display: flex;
+    align-items: center;
+    padding: 5px 11px;       /* 위아래·좌우 여백 조정 */
+    position: relative;       /* hr 절대 위치 기준 */
+    border-bottom: 1px solid #eee;
+  }
+  
+  .state {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: red;
+    border-radius: 8px;
+    width: 60px;
+    margin-bottom: 12px;
+    color: white;
+    font-weight: 600;
+    padding: 4px 0;           /* 높이 조절용 */
+  }
+  
+  /* 아이콘 약간 아래 정렬 보정 */
+  .sheet-img {
+    width: 18px;
+    margin-right: 4px;
+    /* margin-bottom 제거 */
+  }
+  
+  /* 3) 가운데 텍스트 영역이 남은 공간 채우도록 */
+  .list-location {
+    flex: 1;
+    text-align: left;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+  .list-location p {
+    margin: 4px 0 0;
+    color: #666;
+    font-size: 13px;
+  }
+  
+  /* 4) 오른쪽 썸네일은 크기 고정, flex-shrink 방지 */
+  .list-img {
+    flex-shrink: 0;
+  }
+  .sheet-nailimg {
+    width: 90px;
+    height: 90px;             /* 정사각으로 쓰려면 */
+    border-radius: 2px;
+    object-fit: cover;
+    /* margin-bottom 제거 */
+  }
+  .list-left{
+    text-align: left;
+    margin-right: 150px;
+  }
