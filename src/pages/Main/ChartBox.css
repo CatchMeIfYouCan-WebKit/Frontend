@@ -1,0 +1,46 @@
+.stat-box-container {
+    background-color: white;
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+}
+
+.stat-title {
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.stat-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stat-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+}
+
+.progress-bar {
+    background-color: #f3f3f3;
+    border-radius: 8px;
+    height: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 8px;
+}

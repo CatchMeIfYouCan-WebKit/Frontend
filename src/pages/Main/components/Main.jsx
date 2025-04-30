@@ -4,15 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import '../Main.css';
 import Footer from '../../../shared/Footer/Footer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell } from '@fortawesome/free-regular-svg-icons';
-import { faUser } from '@fortawesome/free-regular-svg-icons';
+import { faBell, faUser } from '@fortawesome/free-regular-svg-icons';
 import { library } from '@fortawesome/fontawesome-svg-core';
+import logo from '../../../assets/logo2.png';
+import petImage from '../../../assets/수완강아지.jpeg';
+import ChartBox from '../components/ChartBox'; // ✅ 분리된 컴포넌트 가져오기
 
 library.add(faBell, faUser);
-
-function StatBox() {
-    return <div className="action-box tall stat-box">통계자료 {/* 또는 <ChartComponent /> */}</div>;
-}
 
 export default function Main() {
     const navigate = useNavigate();
@@ -21,7 +19,7 @@ export default function Main() {
         <div className="main-page">
             <header className="main-header">
                 <div className="logo-section">
-                    <img src="/logo.png" alt="CatchMe Logo" className="logo" />
+                    <img src={logo} alt="logo" className="logo" />
                     <span className="brand">CatchMe</span>
                 </div>
                 <div className="icons">
@@ -36,15 +34,20 @@ export default function Main() {
 
             <main className="main-content">
                 <section className="pet-card">
-                    <h2>나비</h2>
-                    <p>3살 / 남아</p>
-                    <p>비숑</p>
-                    <p>태어난지 920일</p>
+                    <div className="pet-info-wrapper">
+                        <img src={petImage} alt="프로필" className="pet-image" />
+                        <div className="pet-text">
+                            <h2>나비</h2>
+                            <p>3살 / 남아</p>
+                            <p>비숑</p>
+                            <p>태어난지 920일</p>
+                        </div>
+                    </div>
                     <button className="register-button">등록번호 조회 안함</button>
                 </section>
 
                 <section className="stat-section">
-                    <StatBox />
+                    <ChartBox />
                 </section>
 
                 <section className="action-grid">

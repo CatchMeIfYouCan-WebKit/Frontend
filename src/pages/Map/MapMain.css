@@ -286,12 +286,12 @@
 .list-wrap {
     display: flex;
     align-items: center;
-    padding: 5px 11px;       /* 위아래·좌우 여백 조정 */
-    position: relative;       /* hr 절대 위치 기준 */
+    padding: 5px 11px; /* 위아래·좌우 여백 조정 */
+    position: relative; /* hr 절대 위치 기준 */
     border-bottom: 1px solid #eee;
-  }
-  
-  .state {
+}
+
+.state {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -301,43 +301,52 @@
     margin-bottom: 12px;
     color: white;
     font-weight: 600;
-    padding: 4px 0;           /* 높이 조절용 */
-  }
-  
-  /* 아이콘 약간 아래 정렬 보정 */
-  .sheet-img {
+    padding: 4px 0; /* 높이 조절용 */
+}
+
+/* 아이콘 약간 아래 정렬 보정 */
+.sheet-img {
     width: 18px;
     margin-right: 4px;
     /* margin-bottom 제거 */
-  }
-  
-  /* 3) 가운데 텍스트 영역이 남은 공간 채우도록 */
-  .list-location {
+}
+
+/* 3) 가운데 텍스트 영역이 남은 공간 채우도록 */
+.list-location {
     flex: 1;
     text-align: left;
     font-size: 16px;
     line-height: 24px;
     font-weight: 400;
     line-height: 1.4;
-  }
-  .list-location p {
+}
+.list-location p {
     margin: 4px 0 0;
     color: #666;
     font-size: 13px;
-  }
-  
-  /* 4) 오른쪽 썸네일은 크기 고정, flex-shrink 방지 */
-  .list-img {
+}
+
+/* 4) 오른쪽 썸네일은 크기 고정, flex-shrink 방지 */
+.list-img {
     flex-shrink: 0;
-  }
-  .sheet-nailimg {
+}
+.sheet-nailimg {
     width: 90px;
-    height: 90px;             /* 정사각으로 쓰려면 */
+    height: 90px; /* 정사각으로 쓰려면 */
     border-radius: 2px;
     object-fit: cover;
     /* margin-bottom 제거 */
-  }
-  .list-left{
+}
+.list-left {
     text-align: left;
     margin-right: 150px;
-  }
+}
+
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid #eee;
+    background-color: white; /* ✅ 추가 */
+}

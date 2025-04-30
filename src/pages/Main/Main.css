@@ -1,8 +1,9 @@
+/* CSS */
 .main-page {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    padding-bottom: 60px; /* 푸터가 가리지 않도록 아래 여백 확보 */
+    padding-bottom: 60px;
     font-family: sans-serif;
     background-color: #fdfaf7;
     margin: 0;
@@ -24,8 +25,9 @@
 }
 
 .logo {
-    width: 32px;
-    height: 32px;
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
 }
 
 .brand {
@@ -36,6 +38,8 @@
 
 .icons {
     display: flex;
+    gap: 16px; /* ← 아이콘 사이 간격 증가 */
+    margin-right: 10px;
 }
 
 .icon-button {
@@ -43,20 +47,48 @@
     border: none;
     font-size: 24px;
     cursor: pointer;
+    padding: 0;
 }
 
 .icon-button:not(:last-child) {
-    margin-right: 12px; /* 버튼 간 마진 */
+    margin-right: 12px;
 }
 
 .pet-card {
     background-color: white;
     margin: 20px auto;
-    padding: 20px;
+    padding: 16px;
     width: 90%;
     border-radius: 16px;
-    text-align: center;
+    text-align: left;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pet-info-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pet-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 100%;
+    object-fit: cover;
+    background-color: #f0f0f0;
+}
+
+.pet-text h2 {
+    font-size: 18px; /* ✅ 이름 크기만 키움 */
+    margin: 2px 0;
+    line-height: 1.2;
+    font-weight: bold;
+}
+
+.pet-text p {
+    font-size: 14px;
+    margin: 2px 0;
+    line-height: 1.2;
 }
 
 .register-button {
@@ -67,6 +99,7 @@
     border-radius: 8px;
     width: 100%;
     font-weight: bold;
+    margin: 10px auto 0;
 }
 
 .stat-visualization {
@@ -93,7 +126,7 @@
 }
 
 .action-box.tall {
-    height: 160px !important;
+    height: 150px !important;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -139,9 +172,11 @@
     color: #f4a340;
     font-weight: bold;
 }
+
 .main-content {
     flex: 1;
 }
+
 .stat-section {
     display: flex;
     justify-content: center;
@@ -150,5 +185,7 @@
 
 .stat-box {
     width: 100%;
-    max-width: 500px; /* 기존 버튼과 비슷한 폭으로 제한 */
+    max-width: 500px;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
