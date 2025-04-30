@@ -1,0 +1,40 @@
+.Footer-container {
+    width: 480px;
+    height: 8%;
+    position: fixed;
+    bottom: 0;
+    background-color: #fff;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    padding: 8px 0;
+    z-index: 999;
+  }
+  
+  .Footer-wrapper {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  
+  .Footer-item {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+    color: #333;
+    text-decoration: none;
+  }
+  
+  .Footer-item .icon {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 4px;
+  }
+  
+  .Footer-item p.active {
+    color: #f4a340;
+    font-weight: bold;
+  }
+  

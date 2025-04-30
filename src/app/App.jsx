@@ -9,6 +9,7 @@ import SuccessFindId from '../pages/FindId/components/SuccessFindId';
 import FailFindId from '../pages/FindId/components/FailFindId';
 import Signup from '../pages/Signup/components/Signup';
 import SuccessSignup from '../pages/Signup/components/SuccessSignup';
+import MapMain from '../pages/Map/components/MapMain';
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
                 <Route path="/failfindid" element={<FailFindId />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/successsignup" element={<SuccessSignup />} />
+                <Route path="/mapmain" element={<MapMain/>}/>
             </Routes>
         </BrowserRouter>
     );
