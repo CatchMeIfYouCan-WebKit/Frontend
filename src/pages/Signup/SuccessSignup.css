@@ -12,7 +12,7 @@
 }
 
 .title {
-    font-size: 30px;
+    font-size: 30px !important;
     font-weight: bold;
     margin-bottom: 18px;
     margin-top: 6px;
@@ -26,14 +26,14 @@
 }
 
 .subtitle {
-    font-size: 24px;
+    font-size: 36px !important;
     font-weight: bold;
     margin-bottom: 12px;
-    margin-top: 36px;
+    margin-top: 24px;
 }
 
 .description {
-    font-size: 18px;
+    font-size: 28px;
     color: #555;
     margin-bottom: 24px;
     line-height: 1.5;
@@ -45,7 +45,12 @@
     margin-bottom: 40px;
 }
 
-/* 수정된 로그인 버튼 */
+.login-button-wrapper {
+    width: 60%;
+    display: flex;
+    justify-content: center; /* 버튼 가운데 정렬 */
+}
+
 .login-button {
     background-color: #f4a340;
     color: white;
@@ -53,11 +58,9 @@
     font-weight: bold;
     border: none;
     border-radius: 8px;
-    padding: 14px 0;
-    width: 80%; /* 50% → 80%로 넓혔어요 */
-    max-width: 300px; /* 최대 너비 설정 */
+    padding: 14px 40px; /* 좌우 여백 */
+    width: 80%; /* 버튼은 내용에 맞게 */
     height: 60px;
-    margin: 0 auto; /* 중앙 정렬 */
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
 }

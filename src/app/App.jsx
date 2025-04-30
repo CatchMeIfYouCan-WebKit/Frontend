@@ -1,15 +1,22 @@
 import './App.css';
 import React from 'react';
-import LandingPage from '../pages/Landing/components/LandingPage';
-import MyPage from '../pages/MyPage/MyPage';
-import FindId from '../pages/FindId/components/FindId';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+// 페이지 임포트
+import LandingPage from '../pages/Landing/components/LandingPage';
 import LoginPage from '../pages/Login/components/LoginPage';
-import SuccessFindId from '../pages/FindId/components/SuccessFindId';
-import FailFindId from '../pages/FindId/components/FailFindId';
+import MyPage from '../pages/MyPage/MyPage';
 import Signup from '../pages/Signup/components/Signup';
 import SuccessSignup from '../pages/Signup/components/SuccessSignup';
 import MapMain from '../pages/Map/components/MapMain';
+
+import FindId from '../pages/FindId/components/FindId';
+import SuccessFindId from '../pages/FindId/components/SuccessFindId';
+import FailFindId from '../pages/FindId/components/FailFindId';
+
+import FindPassword from '../pages/FindPassword/FindPassword'; // ✅ 비밀번호 찾기
+import SuccessFindPassword from '../pages/FindPassword/components/SuccessFindPassword'; // ✅ 비밀번호 찾기 성공
+import FailFindPassword from '../pages/FindPassword/components/FailFindPassword'; // ✅ 비밀번호 찾기 실패
 
 function App() {
     return (
@@ -18,12 +25,19 @@ function App() {
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/mypage" element={<MyPage />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/successsignup" element={<SuccessSignup />} />
+                <Route path="/mapmain" element={<MapMain />} />
+
+                {/* 아이디 찾기 */}
                 <Route path="/findid" element={<FindId />} />
                 <Route path="/successfindid" element={<SuccessFindId />} />
                 <Route path="/failfindid" element={<FailFindId />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/successsignup" element={<SuccessSignup />} />
-                <Route path="/mapmain" element={<MapMain/>}/>
+
+                {/* 비밀번호 찾기 */}
+                <Route path="/findpw" element={<FindPassword />} />
+                <Route path="/successfindpw" element={<SuccessFindPassword />} />
+                <Route path="/failfindpw" element={<FailFindPassword />} />
             </Routes>
         </BrowserRouter>
     );

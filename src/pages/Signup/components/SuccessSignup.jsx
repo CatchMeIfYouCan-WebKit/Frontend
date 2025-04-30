@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import dogLogo from '../../../assets/logo2.png'; 
+import dogLogo from '../../../assets/logo2.png';
 import '../SuccessSignup.css';
 
 export default function SuccessSignup() {
@@ -17,9 +17,11 @@ export default function SuccessSignup() {
 
             <img src={dogLogo} alt="완료 로고" className="dog-logo" />
 
-            <button className="login-button" onClick={() => navigate('/login')}>
-                로그인
-            </button>
+            <div className="login-button-wrapper">
+                <button className="login-button" onClick={() => navigate('/login')}>
+                    로그인
+                </button>
+            </div>
         </div>
     );
 }
