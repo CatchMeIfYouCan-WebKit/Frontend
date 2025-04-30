@@ -8,7 +8,11 @@ import { faBell, faUser } from '@fortawesome/free-regular-svg-icons';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import logo from '../../../assets/logo2.png';
 import petImage from '../../../assets/수완강아지.jpeg';
-import ChartBox from '../components/ChartBox'; // ✅ 분리된 컴포넌트 가져오기
+import ChartBox from '../components/ChartBox';
+import reportFoundIcon from '../../../assets/목격신고.svg';
+import medicalReservationImage from '../../../assets/진료예약.svg';
+import reportMissingImage from '../../../assets/실종신고.svg';
+import shelterBoardImage from '../../../assets/보호소게시판.svg';
 
 library.add(faBell, faUser);
 
@@ -51,25 +55,59 @@ export default function Main() {
                 </section>
 
                 <section className="action-grid">
-                    <div className="action-box red tall" onClick={() => navigate('/report-missing')}>
-                        실종 신고
-                        <br />
-                        강아지를 잃었다면 바로 신고!
+                    <div className="action-box tall">
+                        <div className="action-content">
+                            <div className="action-text red">
+                                <div className="action-title">실종 신고</div>
+                                <div className="action-desc">
+                                    강아지를
+                                    <br /> 잃었다면
+                                    <br />
+                                    바로 신고!
+                                </div>
+                            </div>
+                            <img src={reportMissingImage} alt="실종신고" className="action-img" />
+                        </div>
                     </div>
-                    <div className="action-box blue tall" onClick={() => navigate('/report-found')}>
-                        목격 신고
-                        <br />
-                        강아지를 발견하면 찰칵!
+                    <div className="action-box tall">
+                        <div className="action-content">
+                            <div className="action-text blue">
+                                <div className="action-title">목격 신고</div>
+                                <div className="action-desc">
+                                    강아지를 <br />
+                                    발견하면
+                                    <br />
+                                    찰칵!
+                                </div>
+                            </div>
+                            <img src={reportFoundIcon} alt="목격신고" className="action-img" />
+                        </div>
                     </div>
-                    <div className="action-box yellow tall" onClick={() => navigate('/medical')}>
-                        진료 예약
-                        <br />
-                        강아지가 아프다면 바로 예약!
+                    <div className="action-box tall">
+                        <div className="action-content">
+                            <div className="action-text yellow">
+                                <div className="action-title">진료 예약</div>
+                                <div className="action-desc">
+                                    강아지가 아프다면
+                                    <br />
+                                    바로 예약!
+                                </div>
+                            </div>
+                            <img src={medicalReservationImage} alt="진료예약" className="action-img" />
+                        </div>
                     </div>
-                    <div className="action-box green tall" onClick={() => navigate('/shelter-board')}>
-                        보호소 게시판
-                        <br />
-                        잃어버렸다면 확인!
+                    <div className="action-box tall">
+                        <div className="action-content">
+                            <div className="action-text green">
+                                <div className="action-title">보호소 게시판</div>
+                                <div className="action-desc">
+                                    잃어버렸다면
+                                    <br />
+                                    확인!
+                                </div>
+                            </div>
+                            <img src={shelterBoardImage} alt="보호소게시판" className="action-img" />
+                        </div>
                     </div>
                 </section>
             </main>
