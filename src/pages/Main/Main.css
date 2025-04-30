@@ -1,0 +1,154 @@
+.main-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding-bottom: 60px; /* 푸터가 가리지 않도록 아래 여백 확보 */
+    font-family: sans-serif;
+    background-color: #fdfaf7;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo {
+    width: 32px;
+    height: 32px;
+}
+
+.brand {
+    font-size: 20px;
+    font-weight: bold;
+    color: #f4a340;
+}
+
+.icons {
+    display: flex;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.icon-button:not(:last-child) {
+    margin-right: 12px; /* 버튼 간 마진 */
+}
+
+.pet-card {
+    background-color: white;
+    margin: 20px auto;
+    padding: 20px;
+    width: 90%;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.register-button {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #eee;
+    border: none;
+    border-radius: 8px;
+    width: 100%;
+    font-weight: bold;
+}
+
+.stat-visualization {
+    height: 120px;
+}
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 20px;
+    align-items: stretch;
+}
+
+.action-box {
+    background-color: white;
+    border-radius: 16px;
+    padding: 16px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    line-height: 1.4;
+}
+
+.action-box.tall {
+    height: 160px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+}
+
+.red {
+    color: red;
+}
+.blue {
+    color: #3456db;
+}
+.yellow {
+    color: #ffb800;
+}
+.green {
+    color: #0b9c3c;
+}
+
+.main-footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: white;
+    border-top: 1px solid #ddd;
+    z-index: 100;
+}
+
+.main-footer button {
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: #888;
+    cursor: pointer;
+}
+
+.main-footer .active {
+    color: #f4a340;
+    font-weight: bold;
+}
+.main-content {
+    flex: 1;
+}
+.stat-section {
+    display: flex;
+    justify-content: center;
+    padding: 0 20px;
+}
+
+.stat-box {
+    width: 100%;
+    max-width: 500px; /* 기존 버튼과 비슷한 폭으로 제한 */
+}

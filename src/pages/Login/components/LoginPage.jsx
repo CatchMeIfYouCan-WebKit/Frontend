@@ -24,7 +24,7 @@ const LoginPage = () => {
         setIsLoading(true);
         setTimeout(() => {
             setIsLoading(false);
-            navigate('/home');
+            navigate('/main');
         }, 500);
     };
 
@@ -73,7 +73,9 @@ const LoginPage = () => {
                     </div>
                 </form>
 
-                <button className='btn' onClick={()=>navigate('/mapmain')}>지도로</button>
+                <button className="btn" onClick={() => navigate('/mapmain')}>
+                    지도로
+                </button>
 
                 <div className="login-links">
                     <span className="link-button" onClick={() => handleNavigate('/signup')}>

@@ -17,6 +17,9 @@ import FailFindId from '../pages/FindId/components/FailFindId';
 import FindPassword from '../pages/FindPassword/FindPassword'; // ✅ 비밀번호 찾기
 import SuccessFindPassword from '../pages/FindPassword/components/SuccessFindPassword'; // ✅ 비밀번호 찾기 성공
 import FailFindPassword from '../pages/FindPassword/components/FailFindPassword'; // ✅ 비밀번호 찾기 실패
+import Main from '../pages/Main/components/Main';
+
+<Route path="/main" element={<Main />} />;
 
 function App() {
     return (
@@ -38,6 +41,7 @@ function App() {
                 <Route path="/findpw" element={<FindPassword />} />
                 <Route path="/successfindpw" element={<SuccessFindPassword />} />
                 <Route path="/failfindpw" element={<FailFindPassword />} />
+                <Route path="/main" element={<Main />} />
             </Routes>
         </BrowserRouter>
     );
