@@ -29,12 +29,13 @@ import ChangePassword from '../pages/MyPage/components/ChangePassword';
 import ChangeNickname from '../pages/MyPage/components/ChangeNickname';
 import VerifyPhone from '../pages/MyPage/components/VerifyPhone';
 import AppVersion from '../pages/MyPage/components/AppVersion';
-import CatchMeInfo from '../pages/MyPage/components/CatchMeInfo';
+import PrivacyInfo from '../pages/MyPage/components/PrivacyInfo';
 import CommunityRules from '../pages/MyPage/components/CommunityRules';
 import TermsOfService from '../pages/MyPage/components/TermsOfService';
 import PrivacySettings from '../pages/MyPage/components/PrivacySettings';
 import DeleteAccount from '../pages/MyPage/components/DeleteAccount';
 import Logout from '../pages/MyPage/components/Logout';
+import Contact from '../pages/MyPage/components/Contact';
 
 function App() {
     return (
@@ -71,12 +72,13 @@ function App() {
                 <Route path="/change-nickname" element={<ChangeNickname />} />
                 <Route path="/verify-phone" element={<VerifyPhone />} />
                 <Route path="/app-version" element={<AppVersion />} />
-                <Route path="/catchme-info" element={<CatchMeInfo />} />
+                <Route path="/privacy-info" element={<PrivacyInfo />} />
                 <Route path="/community-rules" element={<CommunityRules />} />
                 <Route path="/terms-of-service" element={<TermsOfService />} />
                 <Route path="/privacy-settings" element={<PrivacySettings />} />
                 <Route path="/delete-account" element={<DeleteAccount />} />
                 <Route path="/logout" element={<Logout />} />
+                <Route path="/contact" element={<Contact />} />
             </Routes>
         </BrowserRouter>
     );

@@ -4,6 +4,7 @@ import { IoIosArrowBack } from 'react-icons/io';
 import { FaCog, FaCamera } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import '../MyPage.css';
+import user from '../../../assets/users.svg';
 
 export default function MyPage() {
     const navigate = useNavigate();
@@ -19,17 +20,22 @@ export default function MyPage() {
 
             <section className="profile-section">
                 <div className="avatar-wrapper">
-                    <div className="avatar" />
+                    <div className="avatar">
+                        <img src={user} alt="사용자 이미지" className="avatar-image" />
+                    </div>
                     <button className="avatar-edit" aria-label="프로필 사진 변경">
-                        <FaCamera size={16} color="#888" />
+                        <FaCamera size={32} color="#F0F0F0" />
                     </button>
                 </div>
+
                 <div className="user-info">
                     <div className="user-greeting">안녕하세요!</div>
                     <div className="user-name">금오공대님</div>
                 </div>
                 <button className="settings-button" aria-label="설정">
-                    <FaCog size={20} color="#888" />
+                    <div className="icon-circle">
+                        <FaCog size={16} color="#888" />
+                    </div>
                 </button>
             </section>
 
@@ -51,8 +57,8 @@ export default function MyPage() {
                 <div className="menu-item" onClick={() => navigate('/app-version')}>
                     앱 버전
                 </div>
-                <div className="menu-item" onClick={() => navigate('/catchme-info')}>
-                    캐치미 안내
+                <div className="menu-item" onClick={() => navigate('/privacy-info')}>
+                    개인정보 처리방침
                 </div>
                 <div className="menu-item" onClick={() => navigate('/community-rules')}>
                     커뮤니티 규칙
@@ -60,14 +66,16 @@ export default function MyPage() {
                 <div className="menu-item" onClick={() => navigate('/terms-of-service')}>
                     서비스 이용약관
                 </div>
-                <div className="menu-item" onClick={() => navigate('/privacy-settings')}>
-                    정보동의 설정
+                <div className="menu-item" onClick={() => navigate('/contact')}>
+                    문의하기
                 </div>
             </div>
 
             <div className="menu-group3">
                 <div className="group-title">기타</div>
-
+                <div className="menu-item" onClick={() => navigate('/privacy-settings')}>
+                    정보동의 설정
+                </div>
                 <div className="menu-item" onClick={() => navigate('/delete-account')}>
                     회원 탈퇴
                 </div>
