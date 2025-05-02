@@ -260,19 +260,65 @@ export default function Filtering() {
                 <div className="report-info">신고정보</div>
                 <label>
                     실종신고
-                    <input type="checkbox" checked={miss} onChange={() => setMiss((m) => !m)} />
+                    <input
+                        type="checkbox"
+                        checked={miss}
+                        onChange={() => {
+                            const next = !miss;
+                            setMiss(next);
+                            if (next) {
+                                setShelter(false);
+                                setHospital(false);
+                            }
+                        }}
+                    />
                 </label>
                 <label>
                     목격신고
-                    <input type="checkbox" checked={see} onChange={() => setSee((s) => !s)} />
+                    <input
+                        type="checkbox"
+                        checked={see}
+                        onChange={() => {
+                            const next = !see;
+                            setSee(next);
+                            if (next) {
+                                setShelter(false);
+                                setHospital(false);
+                            }
+                        }}
+                    />
                 </label>
                 <label>
                     보호소
-                    <input type="checkbox" checked={shelter} onChange={() => setShelter((s) => !s)} />
+                    <input
+                        type="checkbox"
+                        checked={shelter}
+                        onChange={() => {
+                            const next = !shelter;
+                            setShelter(next);
+                            if (next) {
+                                setMiss(false);
+                                setSee(false);
+                                setHospital(false);
+                            }
+                        }}
+                    />
                 </label>
                 <label>
                     병원
-                    <input type="checkbox" checked={hospital} onChange={() => setHospital((h) => !h)} />
+                    <input
+                        type="checkbox"
+                        checked={hospital}
+                        onChange={() => {
+                            const next = !hospital;
+                            setHospital(next);
+                            if (next) {
+                                setMiss(false);
+                                setSee(false);
+                                setShelter(false);
+                            }
+                        }}
+                    />
                 </label>
             </section>
 

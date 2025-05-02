@@ -19,6 +19,7 @@ import SuccessFindPassword from '../pages/FindPassword/components/SuccessFindPas
 import FailFindPassword from '../pages/FindPassword/components/FailFindPassword'; // ✅ 비밀번호 찾기 실패
 import Main from '../pages/Main/components/Main';
 import Filtering from '../pages/Map/components/Filtering';
+import MarkerPick from '../pages/board/components/MarkerPick';
 
 <Route path="/main" element={<Main />} />;
 
@@ -45,7 +46,10 @@ function App() {
                 <Route path="/main" element={<Main />} />
 
                 {/* 지도 필터링 */}
-                <Route path="/filters" element={<Filtering/>} />
+                <Route path="/filters" element={<Filtering />} />
+
+                {/* 게시글  */}
+                <Route path="/board/markerpick" element={<MarkerPick />} />
             </Routes>
         </BrowserRouter>
     );

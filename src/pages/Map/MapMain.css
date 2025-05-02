@@ -179,7 +179,7 @@
     background: none;
     border: none;
     padding: 0;
-    margin-right: 12px;
+    margin-right: 2px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -289,6 +289,7 @@
     padding: 5px 11px; /* 위아래·좌우 여백 조정 */
     position: relative; /* hr 절대 위치 기준 */
     border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
 }
 
 .state {
@@ -296,6 +297,18 @@
     align-items: center;
     justify-content: center;
     background-color: red;
+    border-radius: 8px;
+    width: 60px;
+    margin-bottom: 12px;
+    color: white;
+    font-weight: 600;
+    padding: 4px 0; /* 높이 조절용 */
+}
+.state-find {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #4b75ff;
     border-radius: 8px;
     width: 60px;
     margin-bottom: 12px;
@@ -432,3 +445,76 @@
     height: 40px;
     width: 60px;
 }
+
+/* 보호소 마커 */
+.custom-marker-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .custom-marker-div.shelter  { background-color: #1eb32f; }
+  .custom-marker-div.hospital { background-color: #F29B30; }
+  
+  .custom-marker-img {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .custom-marker-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .marker-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .marker-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  
+  .custom-marker-container.sighting .marker-circle { background-color: #4b75ff; }
+  .custom-marker-container.missing  .marker-circle { background-color: #d92b2b; }
+  
+  .custom-marker-container.sighting .marker-label{
+    background-color: inherit;
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+    border-radius: 4px;
+    white-space: nowrap;
+    background-color: #4B75FF;
+    width: 45px;
+    height: 21px;
+    padding: 0px 8px;
+    text-align: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .custom-marker-container.missing  .marker-label {
+    background-color: inherit;
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+    border-radius: 4px;
+    white-space: nowrap;
+    background-color: #D92B2B;
+    width: 45px;
+    height: 21px;
+    padding: 0px 8px;
+    text-align: center;
+    justify-content: center;
+    gap: 10px;
+
+  }
