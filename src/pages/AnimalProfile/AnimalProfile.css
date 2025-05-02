@@ -1,51 +1,70 @@
+/* src/pages/AnimalProfile/animalProfile.css */
+
 /* 전체 box-sizing 리셋 */
 *,
 *::before,
 *::after {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-/* 레이아웃 컨테이너 */
+/* 전체 레이아웃 */
 .animal-profile {
     display: flex;
     flex-direction: column;
+    width: 100%;
     min-height: 100vh;
-    background: #fff;
+    background-color: #fff;
+    font-family: sans-serif;
 }
 
 /* Header */
 .animal-profile-header {
     display: flex;
     align-items: center;
-    padding: 12px 20px;
+    justify-content: center;
+    padding: 16px 24px;
     border-bottom: 1px solid #eee;
+    background-color: white;
+    position: relative;
 }
 .back-button {
+    position: absolute;
+    left: 24px;
     background: none;
     border: none;
     font-size: 24px;
-    margin-right: 12px;
     cursor: pointer;
 }
 .animal-profile-header h1 {
     font-size: 18px;
-    font-weight: 500;
+    font-weight: 600;
+    text-align: center;
+    margin: 0 auto;
 }
 
-/* Content 영역: 좌우 패딩만 주고 폭은 100% */
+/* Content */
 .animal-profile-content {
     flex: 1;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 24px;
     overflow-y: auto;
-    padding: 16px 20px;
 }
 
 /* Form 그룹 공통 */
 .form-group {
     margin-bottom: 20px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 16px;
 }
 .form-group label {
     display: block;
     font-size: 14px;
+    font-weight: 500;
     margin-bottom: 6px;
 }
 .required {
@@ -53,14 +72,48 @@
 }
 .form-group input,
 .form-group select {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
-    padding: 10px 12px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
+    height: 50px;
+    padding: 0 16px;
+    margin: 0 auto 20px;
+    background-color: #fff;
+    border: 1px solid rgba(17, 17, 17, 0.3);
+    border-radius: 8px;
+    box-sizing: border-box;
 }
 
-/* 프로필 사진 업로드 */
+/* ▼ 강아지 품종 선택 영역 */
+.bread-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 50px;
+    padding: 0 16px;
+    margin: 0 auto 20px;
+    background-color: #fff;
+    border: 1px solid rgba(17, 17, 17, 0.3);
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+.bread-bodycomment {
+    font-size: 14px;
+    color: #111;
+    flex-grow: 1;
+    text-align: left;
+}
+.bread-bodybtn {
+    font-size: 18px;
+    color: #333;
+}
+
+/* 프로필 사진 */
+.photo-group {
+    text-align: left;
+}
 .photo-group .photo-upload {
     width: 100px;
     height: 100px;
@@ -69,90 +122,269 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 8px;
 }
 .camera-icon {
     font-size: 28px;
     color: #aaa;
 }
 
-/* 털색 옵션 */
+/* 털색 선택 */
+.color-group {
+    margin-bottom: 20px;
+}
 .color-group .color-options {
     display: flex;
-    gap: 8px;
     flex-wrap: wrap;
-    justify-content: space-between;
+    gap: 10px;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 0 0;
+    box-sizing: border-box;
 }
 .color-option {
     display: flex;
     flex-direction: column;
     align-items: center;
     font-size: 12px;
+    flex: 1;
+    min-width: 60px;
 }
 .color-circle {
-    width: 24px;
-    height: 24px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     margin-bottom: 4px;
-    border: 1px solid #ddd;
-}
-.color-circle.black {
-    background: #000;
-}
-.color-circle.white {
-    background: #fff;
     border: 1px solid #ccc;
 }
-.color-circle.gray {
-    background: #888;
+
+.selected-colors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
 }
-.color-circle.brown {
-    background: #c55;
-}
-.color-circle.red {
-    background: #e74c3c;
-}
-.color-circle.gold {
-    background: #f5c642;
+.selected-color {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
 }
 
-/* 성별 옵션 */
+/* 성별 */
 .gender-group .gender-options {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     margin-bottom: 8px;
 }
 .gender-button {
     flex: 1;
     padding: 10px 0;
     font-size: 14px;
-    border: 1px solid #ccc;
+    border: 2px solid #ccc;
     border-radius: 6px;
-    background: #fafafa;
+    background: #fff;
     cursor: pointer;
+    color: #111;
+    transition: border-color 0.3s ease;
 }
+.gender-button.selected {
+    border-color: #f5a623;
+    background-color: #fff;
+    color: #111;
+}
+
 .neuter {
     display: flex;
     align-items: center;
-    font-size: 12px;
+    font-size: 14px;
     margin-top: 4px;
+    gap: 6px;
+    height: 24px;
+    justify-content: flex-start;
 }
-.neuter input {
-    margin-right: 6px;
+.neuter label {
+    transform: translateY(5px);
+}
+
+/* 생일 date picker 버튼 스타일링 */
+.react-datepicker__header {
+    background-color: #f5a623 !important;
+    color: white;
+}
+
+.react-datepicker__current-month,
+.react-datepicker-time__header,
+.react-datepicker-year-header {
+    color: white !important;
+    font-weight: bold;
+}
+
+.react-datepicker-wrapper {
+    width: 100%;
+}
+.react-datepicker__input-container {
+    position: relative;
+    width: 100%;
+}
+.react-datepicker__input-container input {
+    width: 100%;
+    height: 50px;
+    padding: 0 40px 0 16px;
+    border: 1px solid rgba(17, 17, 17, 0.3);
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+.date-picker-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-100%);
+    pointer-events: none;
+    font-size: 18px;
+    color: #aaa;
 }
 
 /* 하단 등록 버튼 고정 */
 .submit-button {
     position: fixed;
     bottom: 16px;
-    left: 20px;
-    right: 20px;
+    left: 16px;
+    right: 16px;
     padding: 14px 0;
     background: #f5a623;
     color: #fff;
     font-size: 16px;
+    font-weight: bold;
     border: none;
     border-radius: 8px;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     cursor: pointer;
+}
+
+.weight-wrapper {
+    position: relative;
+}
+
+.weight-wrapper input {
+    width: 100%;
+    height: 50px;
+    padding: 0 40px 0 16px;
+    border: 1px solid rgba(17, 17, 17, 0.3);
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.weight-unit {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #888;
+    pointer-events: none;
+}
+
+/* 동물등록번호 인증 버튼 */
+.reg-button {
+    width: 100%;
+    height: 50px;
+    background-color: #fff;
+    border: 2px solid #f5a623;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #111;
+    cursor: pointer;
+}
+
+.reg-button:hover {
+    background-color: #fdf3e0;
+}
+
+/* 하단 힌트 텍스트 */
+.reg-hint {
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+}
+
+/* 인증 BottomSheet 내부 스타일 */
+.bread-search {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+    color: #111;
+}
+
+.bread-sheet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px 8px;
+    font-size: 20px !important;
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+}
+
+.bread-sheet-body {
+    padding: 20px;
+}
+
+.bread-search label {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 8px 0 4px;
+    display: block;
+}
+
+.bread-search {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 12px;
+}
+.bread-input {
+    background: rgba(219, 219, 219);
+    color: #111;
+    width: 170px;
+    text-align: left;
+    -webkit-text-stroke-width: 0.5px;
+    -webkit-text-stroke-color: #111;
+    font-family: Pretendard;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px; /* 150% */
+    letter-spacing: -0.4px;
+    height: 32px; /* 입력박스 전체 높이 */
+    padding-top: 6px;
+}
+.reg-submit {
+    width: 100%;
+    height: 44px;
+    background-color: #f5a623;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    border: none;
+    border-radius: 8px;
+    margin-top: 8px;
+    cursor: pointer;
+}
+
+.reg-submit:hover {
+    background-color: #e89e19;
+}
+.reg-button.completed {
+    background-color: #f5a623;
+    color: #fff;
+    border: 2px solid #f5a623;
 }
