@@ -118,6 +118,9 @@ export default function Main() {
                             <button className="register-button" onClick={() => navigate('/animal-profile')}>
                                 등록번호 조회 안함
                             </button>
+                            {/* 등록 번호 완료시 버튼 (예시)
+                            <button className="register-button complete">등록번호 조회 완료</button>
+main.css 파일에 .register-button.complete 스타일 만들어 두었음 그대로 써도 되고 맘에 안들면 수정해서 쓰면 될듯*/}
                         </section>
                     ))}
 
