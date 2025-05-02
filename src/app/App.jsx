@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 // 페이지 임포트
 import LandingPage from '../pages/Landing/components/LandingPage';
 import LoginPage from '../pages/Login/components/LoginPage';
-import MyPage from '../pages/MyPage/MyPage';
+import MyPage from '../pages/MyPage/components/MyPage';
 import Signup from '../pages/Signup/components/Signup';
 import SuccessSignup from '../pages/Signup/components/SuccessSignup';
 import MapMain from '../pages/Map/components/MapMain';
@@ -23,7 +23,6 @@ import MarkerPick from '../pages/board/components/MarkerPick';
 
 import FindPassword from '../pages/FindPassword/components/FindPassword';
 import AnimalProfile from '../pages/AnimalProfile/components/AnimalProfile';
-
 
 <Route path="/main" element={<Main />} />;
 
@@ -52,13 +51,11 @@ function App() {
                 {/* 지도 필터링 */}
                 <Route path="/filters" element={<Filtering />} />
 
-
                 {/* 게시글  */}
                 <Route path="/board/markerpick" element={<MarkerPick />} />
 
                 {/* 반려동물 프로필 등록 */}
                 <Route path="/animal-profile" element={<AnimalProfile />} />
-
             </Routes>
         </BrowserRouter>
     );

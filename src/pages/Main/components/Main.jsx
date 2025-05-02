@@ -30,7 +30,7 @@ export default function Main() {
                     <button className="icon-button">
                         <FontAwesomeIcon icon={faBell} style={{ color: '#f29b30' }} />
                     </button>
-                    <button className="icon-button">
+                    <button className="icon-button" onClick={() => navigate('/mypage')}>
                         <FontAwesomeIcon icon={faUser} style={{ color: '#f29b30' }} />
                     </button>
                 </div>
