@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../FindId.css';
 import { IoIosArrowBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +10,8 @@ import useFindIdStore from '../../../store/findIdStore';
 export default function FindId() {
     const [fadeOut, setFadeOut] = useState(false);
     const [status, setStatus] = useState('input'); // 'input' | 'success' | 'fail'
-    const { phone, code } = useFindIdStore();
+    const { phone, code, setPhone, setCode } = useFindIdStore();
+    const [foundId, setFoundId] = useState('');
     const navigate = useNavigate();
 
     const sendAuthCode = async () => {
@@ -24,18 +25,35 @@ export default function FindId() {
         }
     };
 
-    const checkAuthCode = () => {
-        const serverCode = '1234'; // 예시 서버 인증코드
-        const userExists = true; // 예시로 아이디가 있다고 가정
-
-        if (code === serverCode) {
-            if (userExists) {
-                setStatus('success'); // 성공 시 SuccessFindId로 교체
-            } else {
-                setStatus('fail'); // 실패 시 FailFindId로 교체
-            }
-        } else {
+    const checkAuthCode = async () => {
+        if (code !== '1234') {
             alert('인증번호가 일치하지 않습니다.');
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/member/findId', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone }),
+            });
+
+            const result = await res.json();
+            console.log(result);
+
+            const { rsltCode, rsltMsg, loginId } = result.body;
+
+            if (rsltCode === '0000') {
+                setFoundId(loginId); // 아이디 저장
+                setStatus('success');
+            } else if (rsltCode === '2003') {
+                setStatus('fail');
+            } else {
+                alert(rsltMsg || '아이디 찾기 실패');
+            }
+        } catch (error) {
+            console.error('아이디 찾기 에러:', error);
+            alert('서버 오류');
         }
     };
 
@@ -45,6 +63,11 @@ export default function FindId() {
             navigate(-1);
         }, 400);
     };
+
+    useEffect(() => {
+        setPhone('');
+        setCode('');
+    }, []);
 
     return (
         <div className={`find-id ${fadeOut ? 'fade-out' : ''}`}>
@@ -56,7 +79,7 @@ export default function FindId() {
             </header>
 
             {status === 'input' && <FindIdBody onSendCode={sendAuthCode} onCheckCode={checkAuthCode} />}
-            {status === 'success' && <SuccessFindId />}
+            {status === 'success' && <SuccessFindId loginId={foundId} />}
             {status === 'fail' && <FailFindId />}
         </div>
     );

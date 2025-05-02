@@ -19,13 +19,42 @@ const LoginPage = () => {
         }, 200);
     };
 
-    const handleLogin = () => {
+    // 로그인 api 호출
+    const handleLogin = async () => {
         if (!isValid) return;
+
         setIsLoading(true);
-        setTimeout(() => {
+
+        try {
+            const res = await fetch('/api/member/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    loginId: userId,
+                    password: userPw,
+                }),
+            });
+
+            const result = await res.json();
+            const { rsltCode, rsltMsg, accessToken } = result.body;
+            console.log(result);
+
+            if (rsltCode === '0000') {
+                localStorage.setItem('accessToken', accessToken); // 토큰 저장
+                navigate('/main');
+            } else if (rsltCode === '1001') {
+                alert('아이디 또는 비밀번호를 입력해주세요.');
+            } else if (rsltCode === '2001') {
+                alert('아이디 혹은 비밀번호가 맞지 않습니다.');
+            } else {
+                alert(rsltMsg || '로그인 실패');
+            }
+        } catch (error) {
+            console.error('로그인 에러:', error);
+            alert('서버 오류');
+        } finally {
             setIsLoading(false);
-            navigate('/main');
-        }, 500);
+        }
     };
 
     return (
