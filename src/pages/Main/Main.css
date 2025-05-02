@@ -1,6 +1,10 @@
+/* ────────────────────────────────────────────────────────────────────────── */
+/* MAIN LAYOUT */
+/* ────────────────────────────────────────────────────────────────────────── */
 .main-page {
     display: flex;
     flex-direction: column;
+    width: 100%;
     min-height: 100vh;
     padding-bottom: 60px;
     font-family: sans-serif;
@@ -55,10 +59,28 @@
     margin-right: 12px;
 }
 
+/* ────────────────────────────────────────────────────────────────────────── */
+/* PET CARD SWIPE CONTAINER */
+/* ────────────────────────────────────────────────────────────────────────── */
+.pet-card-wrapper {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch; /* iOS 부드러운 스크롤 */
+    margin: 10px 0 10px;
+}
+
+.pet-card-wrapper::-webkit-scrollbar {
+    display: none; /* 스크롤바 감춤 */
+}
+
+/* 각 .pet-card 를 스냅 포인트로 지정 */
 .pet-card {
+    flex: none; /* 가로로 늘어나지 않도록 */
+    scroll-snap-align: center;
     background-color: white;
-    margin: 20px auto;
-    padding: 16px;
+    margin: 0 10px; /* 좌우 간격 */
+    padding: 20px;
     width: 92%;
     border-radius: 16px;
     text-align: left;
@@ -66,6 +88,24 @@
     position: relative;
 }
 
+/* 가운데 정렬 필요 시 */
+.pet-card-wrapper .center {
+    justify-content: center;
+    align-items: center;
+}
+
+/* “추가하기” 아이콘 사이즈 */
+.pet-add-icon {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
+/* ────────────────────────────────────────────────────────────────────────── */
+/* EDIT BUTTON ON PET CARD */
+/* ────────────────────────────────────────────────────────────────────────── */
 .edit-button {
     position: absolute;
     top: 12px;
@@ -74,14 +114,16 @@
     border: none;
     padding: 0;
     cursor: pointer;
-    margin-right: 10px;
-    margin-top: 10px;
 }
+
 .edit-button img {
     width: 35px;
     height: 35px;
 }
 
+/* ────────────────────────────────────────────────────────────────────────── */
+/* PET INFO */
+/* ────────────────────────────────────────────────────────────────────────── */
 .pet-info-wrapper {
     display: flex;
     align-items: center;
@@ -91,48 +133,75 @@
 .pet-image {
     width: 120px;
     height: 120px;
-    border-radius: 100%;
+    border-radius: 20%;
     object-fit: cover;
     background-color: #f0f0f0;
 }
 
 .pet-text h2 {
-    font-size: 18px;
-    margin: 2px 0;
+    font-size: 24px;
+    margin: 0 0 8px 10px;
     line-height: 1.2;
     font-weight: bold;
 }
 
 .pet-text p {
-    font-size: 14px;
-    margin: 2px 0;
+    font-size: 18px;
+    margin: 2px 0 0 10px;
     line-height: 1.2;
+    color: #888;
 }
 
+/* ────────────────────────────────────────────────────────────────────────── */
+/* REGISTER / ADD BUTTON */
+/* ────────────────────────────────────────────────────────────────────────── */
 .register-button {
-    margin-top: 10px;
+    display: block;
+    margin: 16px auto 0;
     padding: 10px;
     background-color: #eee;
     border: none;
     border-radius: 8px;
     width: 100%;
     font-weight: bold;
-    margin: 10px auto 0;
+    cursor: pointer;
 }
 
+/* ────────────────────────────────────────────────────────────────────────── */
+/* PAGINATION DOTS */
+/* ────────────────────────────────────────────────────────────────────────── */
+.pet-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin: 8px 0;
+}
+
+.pet-pagination-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.pet-pagination-dot.active {
+    background-color: #f29b30;
+}
+
+/* ────────────────────────────────────────────────────────────────────────── */
+/* STAT SECTION */
+/* ────────────────────────────────────────────────────────────────────────── */
 .stat-section {
     display: flex;
     justify-content: center;
     padding: 0 20px;
 }
 
-.stat-box {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-    box-sizing: border-box;
-}
-
+/* ────────────────────────────────────────────────────────────────────────── */
+/* ACTION GRID */
+/* ────────────────────────────────────────────────────────────────────────── */
 .action-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -159,9 +228,8 @@
     justify-content: center;
     align-items: center;
     font-size: 16px;
-    width: 220px;
+    width: 215px;
 }
-
 .action-content {
     display: flex;
     justify-content: space-between;
@@ -175,31 +243,35 @@
     flex-direction: column;
     justify-content: flex-start;
     text-align: left;
+    margin-left: 10px;
     flex: 1;
 }
 
 .action-title {
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 20px;
+    font-weight: 900;
     margin-bottom: 6px;
     white-space: nowrap;
     align-self: flex-start;
 }
 
 .action-desc {
-    font-size: 14px;
-    line-height: 1.2;
+    font-size: 16px;
+    line-height: 1.5;
     color: #000;
+    font-weight: 800;
 }
 
 .action-img {
     width: 100px;
     height: 100px;
     object-fit: contain;
-    margin-left: 10px;
-    margin-top: 30px;
+    margin-left: -20px;
+    margin-right: -20px;
+    margin-top: 50px;
 }
 
+/* 각 텍스트 컬러 */
 .red {
     color: red;
 }
@@ -213,6 +285,9 @@
     color: #0b9c3c;
 }
 
+/* ────────────────────────────────────────────────────────────────────────── */
+/* FOOTER */
+/* ────────────────────────────────────────────────────────────────────────── */
 .main-footer {
     position: fixed;
     bottom: 0;
