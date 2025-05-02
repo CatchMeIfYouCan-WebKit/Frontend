@@ -13,11 +13,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 20px;
+    padding: 5px 20px;
     border-bottom: 1px solid #eee;
 }
 
 .logo-section {
+    margin-top: 10px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -42,6 +43,7 @@
 }
 
 .icon-button {
+    margin-top: 10px;
     background: none;
     border: none;
     font-size: 24px;
@@ -61,6 +63,23 @@
     border-radius: 16px;
     text-align: left;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.edit-button {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+.edit-button img {
+    width: 35px;
+    height: 35px;
 }
 
 .pet-info-wrapper {
@@ -101,10 +120,6 @@
     margin: 10px auto 0;
 }
 
-.stat-visualization {
-    height: 120px;
-}
-
 .stat-section {
     display: flex;
     justify-content: center;
@@ -138,7 +153,7 @@
 }
 
 .action-box.tall {
-    height: 150px !important;
+    height: 150px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -158,17 +173,17 @@
 .action-text {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* ✅ 위로 정렬 */
+    justify-content: flex-start;
     text-align: left;
     flex: 1;
 }
 
 .action-title {
-    font-size: 18px; /* ✅ 글자 크기 키움 */
+    font-size: 18px;
     font-weight: bold;
-    margin-bottom: 6px; /* ✅ 제목 아래 여백 추가 */
-    white-space: nowrap; /* ✅ 줄바꿈 방지 */
-    align-self: flex-start; /* ✅ 텍스트 영역 내에서 위 정렬 */
+    margin-bottom: 6px;
+    white-space: nowrap;
+    align-self: flex-start;
 }
 
 .action-desc {

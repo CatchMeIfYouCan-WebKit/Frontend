@@ -6,8 +6,10 @@ import Footer from '../../../shared/Footer/Footer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faUser } from '@fortawesome/free-regular-svg-icons';
 import { library } from '@fortawesome/fontawesome-svg-core';
+
 import logo from '../../../assets/logo2.png';
 import petImage from '../../../assets/수완강아지.jpeg';
+import pencil from '../../../assets/ei_pencil.svg'; // ✎ 연필 아이콘
 import ChartBox from '../components/ChartBox';
 import reportFoundIcon from '../../../assets/목격신고.svg';
 import medicalReservationImage from '../../../assets/진료예약.svg';
@@ -37,7 +39,13 @@ export default function Main() {
             </header>
 
             <main className="main-content">
+                {/* PET CARD */}
                 <section className="pet-card">
+                    {/* 편집 버튼 */}
+                    <button className="edit-button" onClick={() => navigate('/animal-profile')}>
+                        <img src={pencil} alt="프로필 편집" />
+                    </button>
+
                     <div className="pet-info-wrapper">
                         <img src={petImage} alt="프로필" className="pet-image" />
                         <div className="pet-text">
@@ -72,7 +80,6 @@ export default function Main() {
                             <img src={reportMissingImage} alt="실종신고" className="action-img" />
                         </div>
                     </div>
-
                     <div className="action-box tall" onClick={() => navigate('/report-found')}>
                         <div className="action-content">
                             <div className="action-text blue">
@@ -88,13 +95,13 @@ export default function Main() {
                             <img src={reportFoundIcon} alt="목격신고" className="action-img" />
                         </div>
                     </div>
-
                     <div className="action-box tall" onClick={() => navigate('/medical')}>
                         <div className="action-content">
                             <div className="action-text yellow">
                                 <div className="action-title">진료 예약</div>
                                 <div className="action-desc">
-                                    강아지가 <br />
+                                    강아지가
+                                    <br />
                                     아프다면
                                     <br />
                                     바로 예약!
@@ -103,7 +110,6 @@ export default function Main() {
                             <img src={medicalReservationImage} alt="진료예약" className="action-img" />
                         </div>
                     </div>
-
                     <div className="action-box tall" onClick={() => navigate('/shelter-board')}>
                         <div className="action-content">
                             <div className="action-text green">
