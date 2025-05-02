@@ -81,11 +81,10 @@
     cursor: pointer;
 }
 .icon-circle {
-    border: 1px solid #888;
     background-color: #fff;
     border-radius: 50%;
-    width: 32px;
-    height: 32px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

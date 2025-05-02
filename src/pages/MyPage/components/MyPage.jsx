@@ -5,6 +5,7 @@ import { FaCog, FaCamera } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import '../MyPage.css';
 import user from '../../../assets/users.svg';
+import option from '../../../assets/options.svg';
 
 export default function MyPage() {
     const navigate = useNavigate();
@@ -34,7 +35,7 @@ export default function MyPage() {
                 </div>
                 <button className="settings-button" aria-label="설정">
                     <div className="icon-circle">
-                        <FaCog size={16} color="#888" />
+                        <img src={option} alt="설정 아이콘" className="settings-icon" />
                     </div>
                 </button>
             </section>
