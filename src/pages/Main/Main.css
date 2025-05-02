@@ -4,7 +4,7 @@
     min-height: 100vh;
     padding-bottom: 60px;
     font-family: sans-serif;
-    background-color: #fdfaf7;
+    background: linear-gradient(180deg, rgba(242, 155, 48, 0.1) 0%, rgba(250, 246, 246, 0.06) 100%);
     margin: 0;
     box-sizing: border-box;
 }

@@ -47,7 +47,9 @@ export default function Main() {
                             <p>태어난지 920일</p>
                         </div>
                     </div>
-                    <button className="register-button">등록번호 조회 안함</button>
+                    <button className="register-button" onClick={() => navigate('/animal-profile')}>
+                        등록번호 조회 안함
+                    </button>
                 </section>
 
                 <section className="stat-section">
@@ -55,13 +57,14 @@ export default function Main() {
                 </section>
 
                 <section className="action-grid">
-                    <div className="action-box tall">
+                    <div className="action-box tall" onClick={() => navigate('/report-missing')}>
                         <div className="action-content">
                             <div className="action-text red">
                                 <div className="action-title">실종 신고</div>
                                 <div className="action-desc">
                                     강아지를
-                                    <br /> 잃었다면
+                                    <br />
+                                    잃었다면
                                     <br />
                                     바로 신고!
                                 </div>
@@ -69,12 +72,14 @@ export default function Main() {
                             <img src={reportMissingImage} alt="실종신고" className="action-img" />
                         </div>
                     </div>
-                    <div className="action-box tall">
+
+                    <div className="action-box tall" onClick={() => navigate('/report-found')}>
                         <div className="action-content">
                             <div className="action-text blue">
                                 <div className="action-title">목격 신고</div>
                                 <div className="action-desc">
-                                    강아지를 <br />
+                                    강아지를
+                                    <br />
                                     발견하면
                                     <br />
                                     찰칵!
@@ -83,12 +88,14 @@ export default function Main() {
                             <img src={reportFoundIcon} alt="목격신고" className="action-img" />
                         </div>
                     </div>
-                    <div className="action-box tall">
+
+                    <div className="action-box tall" onClick={() => navigate('/medical')}>
                         <div className="action-content">
                             <div className="action-text yellow">
                                 <div className="action-title">진료 예약</div>
                                 <div className="action-desc">
-                                    강아지가 아프다면
+                                    강아지가 <br />
+                                    아프다면
                                     <br />
                                     바로 예약!
                                 </div>
@@ -96,7 +103,8 @@ export default function Main() {
                             <img src={medicalReservationImage} alt="진료예약" className="action-img" />
                         </div>
                     </div>
-                    <div className="action-box tall">
+
+                    <div className="action-box tall" onClick={() => navigate('/shelter-board')}>
                         <div className="action-content">
                             <div className="action-text green">
                                 <div className="action-title">보호소 게시판</div>

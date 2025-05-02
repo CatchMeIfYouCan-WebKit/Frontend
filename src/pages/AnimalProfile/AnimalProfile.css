@@ -1,0 +1,158 @@
+/* 전체 box-sizing 리셋 */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* 레이아웃 컨테이너 */
+.animal-profile {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: #fff;
+}
+
+/* Header */
+.animal-profile-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid #eee;
+}
+.back-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    margin-right: 12px;
+    cursor: pointer;
+}
+.animal-profile-header h1 {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* Content 영역: 좌우 패딩만 주고 폭은 100% */
+.animal-profile-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+}
+
+/* Form 그룹 공통 */
+.form-group {
+    margin-bottom: 20px;
+}
+.form-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+.required {
+    color: #e74c3c;
+}
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* 프로필 사진 업로드 */
+.photo-group .photo-upload {
+    width: 100px;
+    height: 100px;
+    border: 1px dashed #ccc;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.camera-icon {
+    font-size: 28px;
+    color: #aaa;
+}
+
+/* 털색 옵션 */
+.color-group .color-options {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.color-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+}
+.color-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin-bottom: 4px;
+    border: 1px solid #ddd;
+}
+.color-circle.black {
+    background: #000;
+}
+.color-circle.white {
+    background: #fff;
+    border: 1px solid #ccc;
+}
+.color-circle.gray {
+    background: #888;
+}
+.color-circle.brown {
+    background: #c55;
+}
+.color-circle.red {
+    background: #e74c3c;
+}
+.color-circle.gold {
+    background: #f5c642;
+}
+
+/* 성별 옵션 */
+.gender-group .gender-options {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+.gender-button {
+    flex: 1;
+    padding: 10px 0;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #fafafa;
+    cursor: pointer;
+}
+.neuter {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    margin-top: 4px;
+}
+.neuter input {
+    margin-right: 6px;
+}
+
+/* 하단 등록 버튼 고정 */
+.submit-button {
+    position: fixed;
+    bottom: 16px;
+    left: 20px;
+    right: 20px;
+    padding: 14px 0;
+    background: #f5a623;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
