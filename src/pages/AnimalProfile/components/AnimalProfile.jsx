@@ -1,8 +1,8 @@
-// src/pages/AnimalProfile/components/AnimalProfile.jsx
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
 import { AiOutlineCamera } from 'react-icons/ai';
 import { FaRegCalendarAlt } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import BottomSheet from '../../Map/components/BottomSheet';
@@ -11,6 +11,7 @@ import downbtn from '../../../assets/downbtn.svg';
 import checkOn from '../../../assets/checkOn.svg';
 import checkOff from '../../../assets/checkOff.svg';
 import x from '../../../assets/x.svg';
+
 const prioritizedBreeds = [
     '선택안함',
     '믹스견',
@@ -22,7 +23,6 @@ const prioritizedBreeds = [
     '골든 리트리버',
     '치와와',
 ];
-
 const otherBreeds = ['비숑 프리제', '진돗개', '퍼그', '요크셔테리어'];
 const allBreeds = [...prioritizedBreeds, ...otherBreeds.sort((a, b) => a.localeCompare(b, 'ko'))];
 
@@ -34,10 +34,10 @@ const colorMap = {
     붉은색: '#FF0000',
     골드: '#FFD700',
 };
-
-const colorList = ['검은색', '하얀색', '회색', '브라운', '붉은색', '골드'];
+const colorList = Object.keys(colorMap);
 
 export default function AnimalProfile() {
+    const navigate = useNavigate();
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [isRegSheetOpen, setIsRegSheetOpen] = useState(false);
     const [search, setSearch] = useState('');
@@ -49,6 +49,8 @@ export default function AnimalProfile() {
     const [weight, setWeight] = useState('');
     const [registrationNo, setRegistrationNo] = useState('');
     const [owner, setOwner] = useState('');
+    const [regNumberError, setRegNumberError] = useState('');
+    const [ownerError, setOwnerError] = useState('');
 
     const filteredBreeds = useMemo(() => {
         if (!search.trim()) return allBreeds;
@@ -56,13 +58,53 @@ export default function AnimalProfile() {
     }, [search]);
 
     const toggleSheet = () => setIsSheetOpen((prev) => !prev);
-
     const toggleColor = (color) => {
         setSelectedColors((prev) => (prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]));
     };
-
     const openRegSheet = () => setIsRegSheetOpen(true);
     const closeRegSheet = () => setIsRegSheetOpen(false);
+
+    const handleRegSubmit = () => {
+        let isValid = true;
+        if (!registrationNo.trim()) {
+            setRegNumberError('동물등록번호를 입력해주세요.');
+            isValid = false;
+        } else {
+            setRegNumberError('');
+        }
+
+        if (!owner.trim()) {
+            setOwnerError('보호자 이름을 입력해주세요.');
+            isValid = false;
+        } else {
+            setOwnerError('');
+        }
+
+        if (isValid) {
+            console.log('인증 성공:', registrationNo, owner);
+            setIsRegSheetOpen(false); // ✅ 인증 성공 시 바텀시트 닫기
+        }
+    };
+
+    // 입력값 자동 유효성 검사 제거
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            if (registrationNo.trim()) setRegNumberError('');
+        }, 1000);
+        return () => clearTimeout(timeout);
+    }, [registrationNo]);
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            if (owner.trim()) setOwnerError('');
+        }, 1000);
+        return () => clearTimeout(timeout);
+    }, [owner]);
+
+    const handleProfileSubmit = () => {
+        // TODO: 프로필 전체 유효성 검사 필요시 여기에 추가
+        navigate('/main'); // ✅ 메인 페이지로 이동
+    };
 
     return (
         <div className="animal-profile">
@@ -194,7 +236,9 @@ export default function AnimalProfile() {
                 </div>
             </div>
 
-            <button className="submit-button">프로필 등록</button>
+            <button className="submit-button" onClick={handleProfileSubmit}>
+                프로필 등록
+            </button>
 
             {isSheetOpen && (
                 <BottomSheet initialPercent={0.8} maxPercent={0.9}>
@@ -231,32 +275,36 @@ export default function AnimalProfile() {
 
             {isRegSheetOpen && (
                 <BottomSheet initialPercent={0.5} maxPercent={0.6}>
-                    <div className="bread-sheet-header">
-                        <div className="bread-select">동물등록번호 인증</div>
+                    <div className="reg-sheet-header">
+                        <div className="reg-select">동물등록번호 인증</div>
                         <button onClick={closeRegSheet}>
-                            {' '}
                             <img src={x} alt="x" />
                         </button>
                     </div>
-                    <div className="bread-search">
+                    <div className="reg-search">
                         <label>동물등록번호</label>
                         <input
                             type="text"
-                            placeholder="동물등록번호를 입력하세요"
-                            className="bread-input"
+                            className="reg-input"
                             value={registrationNo}
                             onChange={(e) => setRegistrationNo(e.target.value)}
+                            placeholder="동물등록번호를 입력하세요"
                         />
+                        {regNumberError && <p className="error-message">{regNumberError}</p>}
+
                         <label>보호자</label>
                         <input
                             type="text"
-                            placeholder="보호자 이름을 입력하세요"
-                            className="bread-input"
+                            className="reg-input"
                             value={owner}
                             onChange={(e) => setOwner(e.target.value)}
+                            placeholder="보호자 이름을 입력하세요"
                         />
+                        {ownerError && <p className="error-message">{ownerError}</p>}
                     </div>
-                    <button className="reg-submit">인증하기</button>
+                    <button className="reg-submit" onClick={handleRegSubmit}>
+                        인증하기
+                    </button>
                 </BottomSheet>
             )}
         </div>
