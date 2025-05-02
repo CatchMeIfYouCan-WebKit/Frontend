@@ -18,7 +18,7 @@
 /* 검색 UI (입력창 + 버튼 포함) */
 .search-ui {
     position: absolute;
-    top: 20px;
+    top: 10px;
     left: 50%;
     transform: translateX(-50%);
     width: 90%;
@@ -94,7 +94,7 @@
     align-items: center;
     padding: 2px 0;
     gap: 1px;
-    margin-top: 0px;
+    margin-top: 7px;
 }
 
 .tag-wrap1,
@@ -131,7 +131,7 @@
 /* 현재 위치 버튼 */
 .location-wrap {
     position: absolute;
-    top: 105px;
+    top: 115px;
     right: 0px;
 }
 
@@ -349,4 +349,86 @@
     padding: 12px 20px;
     border-bottom: 1px solid #eee;
     background-color: white; /* ✅ 추가 */
+}
+.tag-wrap1:not(.active),
+.tag-wrap2:not(.active) {
+    background-color: #f9f9f9;
+    color: #000000;
+}
+
+/* 활성화 상태 */
+.tag-wrap1.active,
+.tag-wrap1.activeM {
+    background: #d92b2b;
+    backdrop-filter: blur(7.5px);
+    color: white;
+}
+.tag-wrap1.activeW {
+    background: #4b75ff;
+    backdrop-filter: blur(7.5px);
+    color: white;
+}
+.tag-wrap2.activeS {
+    background: #1eb32f;
+    backdrop-filter: blur(7.5px);
+    color: white;
+}
+.tag-wrap1.activeH {
+    background: #f29b30;
+    backdrop-filter: blur(7.5px);
+    color: white;
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between; /* 좌측·우측 끝으로 */
+    align-items: center;
+    padding: 0 16px; /* 좌우 여백 */
+    margin-bottom: 12px; /* 아래 요소와 간격 */
+}
+
+/* 2) 게시글 수 텍스트 */
+.post-count {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* 3) 정렬 토글 */
+.sort-toggle {
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* 4) 토글 아이콘 */
+.sort-toggle img {
+    width: 12px;
+    height: 12px;
+    margin-left: 4px;
+    transition: transform 0.2s ease;
+}
+
+/* 5) reversed 클래스가 붙으면 아이콘을 180도 회전 */
+.sort-toggle.reversed img {
+    transform: rotate(180deg);
+}
+
+.tag-wrap3-select {
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    border: 2px solid #f29b30;
+    color: #f29b30;
+    background: linear-gradient(106deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.8) 100%);
+
+    backdrop-filter: blur(7.5px);
+    padding: 6px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    height: 40px;
+    width: 60px;
 }
