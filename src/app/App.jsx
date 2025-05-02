@@ -19,6 +19,7 @@ import FailFindPassword from '../pages/FindPassword/components/FailFindPassword'
 import Main from '../pages/Main/components/Main';
 import Filtering from '../pages/Map/components/Filtering';
 import FindPassword from '../pages/FindPassword/components/FindPassword';
+import AnimalProfile from '../pages/AnimalProfile/components/AnimalProfile';
 
 <Route path="/main" element={<Main />} />;
 
@@ -46,6 +47,9 @@ function App() {
 
                 {/* 지도 필터링 */}
                 <Route path="/filters" element={<Filtering />} />
+
+                {/* 반려동물 프로필 등록 */}
+                <Route path="/animal-profile" element={<AnimalProfile />} />
             </Routes>
         </BrowserRouter>
     );
