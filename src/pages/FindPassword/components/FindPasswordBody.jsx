@@ -10,7 +10,7 @@ export default function FindPasswordBody({ onSendCode, onCheckCode }) {
 
             <div className="phone-row">
                 <input
-                    type="text"
+                    type="tel"
                     placeholder="휴대전화 번호('-' 제외)"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
@@ -21,7 +21,7 @@ export default function FindPasswordBody({ onSendCode, onCheckCode }) {
             </div>
 
             <input
-                type="text"
+                type="tel"
                 placeholder="인증번호 입력"
                 className="auth-input"
                 value={code}

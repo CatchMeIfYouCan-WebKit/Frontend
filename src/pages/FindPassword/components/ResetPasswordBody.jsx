@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import useFindPasswordStore from '../../../store/findPasswordStore';
 
 export default function ResetPasswordBody({ onResetPassword }) {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [confirmError, setConfirmError] = useState('');
+    const { loginId } = useFindPasswordStore;
 
     // 비밀번호 형식 검사 - 3초 디바운싱
     useEffect(() => {
@@ -20,7 +22,7 @@ export default function ResetPasswordBody({ onResetPassword }) {
             } else {
                 setPasswordError('유효한 비밀번호 형식이 아닙니다');
             }
-        }, 1000);
+        }, 500);
 
         return () => clearTimeout(timer);
     }, [newPassword]);
@@ -36,17 +38,30 @@ export default function ResetPasswordBody({ onResetPassword }) {
             if (newPassword === confirmPassword) {
                 setConfirmError('');
             } else {
-                setConfirmError('암호를 다시 확인하세요');
+                setConfirmError('비밀번호가 일치하지 않습니다.');
             }
-        }, 3000);
+        }, 500);
 
         return () => clearTimeout(timer);
     }, [confirmPassword, newPassword]);
 
     const handleSubmit = () => {
-        if (!passwordError && !confirmError && newPassword && confirmPassword) {
-            onResetPassword(newPassword);
+        if (!newPassword || !confirmPassword) {
+            alert('비밀번호를 입력해주세요.');
+            return;
         }
+
+        if (newPassword != confirmPassword) {
+            alert('비밀번호가 일치하지 않습니다.');
+            return;
+        }
+
+        if (passwordError || confirmError) {
+            alert('비밀번호 형식을 다시 확인해주세요.');
+            return;
+        }
+
+        onResetPassword(newPassword);
     };
 
     return (
