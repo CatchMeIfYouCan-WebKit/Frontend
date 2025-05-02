@@ -1,60 +1,79 @@
-// src/pages/MyPage/componets/MyPage.jsx
+// src/pages/MyPage/components/MyPage.jsx
 import React from 'react';
-import { IoIosSettings } from 'react-icons/io';
+import { IoIosArrowBack } from 'react-icons/io';
+import { FaCog, FaCamera } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import '../MyPage.css';
 
 export default function MyPage() {
-    const username = '금붕대'; // 실제 로그인 정보에 맞춰 바인딩하세요
+    const navigate = useNavigate();
 
     return (
         <div className="my-page">
-            {/* 상단 헤더 */}
-            <header className="my-header">
+            <header className="my-page-header">
+                <button className="back-button" onClick={() => window.history.back()}>
+                    <IoIosArrowBack size={24} />
+                </button>
                 <h1>마이페이지</h1>
             </header>
 
-            {/* 프로필 요약 */}
-            <div className="profile-section">
-                <div className="avatar">
-                    {/* 실제 프로필 이미지가 있다면 src를 교체하세요 */}
-                    <img src="https://via.placeholder.com/80" alt="avatar" />
+            <section className="profile-section">
+                <div className="avatar-wrapper">
+                    <div className="avatar" />
+                    <button className="avatar-edit" aria-label="프로필 사진 변경">
+                        <FaCamera size={16} color="#888" />
+                    </button>
                 </div>
-                <div className="greeting">
-                    <p>안녕하세요!</p>
-                    <strong>{username}님</strong>
+                <div className="user-info">
+                    <div className="user-greeting">안녕하세요!</div>
+                    <div className="user-name">금오공대님</div>
                 </div>
-                <button className="settings-btn">
-                    <IoIosSettings />
+                <button className="settings-button" aria-label="설정">
+                    <FaCog size={20} color="#888" />
                 </button>
+            </section>
+
+            <div className="menu-group1">
+                <div className="group-title">내 정보 수정</div>
+                <div className="menu-item" onClick={() => navigate('/change-password')}>
+                    비밀번호 변경
+                </div>
+                <div className="menu-item" onClick={() => navigate('/change-nickname')}>
+                    닉네임 변경
+                </div>
+                <div className="menu-item" onClick={() => navigate('/verify-phone')}>
+                    휴대전화 인증 변경
+                </div>
             </div>
 
-            {/* 섹션 리스트 */}
-            <div className="section">
-                <h2>내 정보 수정</h2>
-                <ul>
-                    <li>비밀번호 변경</li>
-                    <li>닉네임 변경</li>
-                    <li>휴대전화 인증 변경</li>
-                </ul>
+            <div className="menu-group2">
+                <div className="group-title">이용안내</div>
+                <div className="menu-item" onClick={() => navigate('/app-version')}>
+                    앱 버전
+                </div>
+                <div className="menu-item" onClick={() => navigate('/catchme-info')}>
+                    캐치미 안내
+                </div>
+                <div className="menu-item" onClick={() => navigate('/community-rules')}>
+                    커뮤니티 규칙
+                </div>
+                <div className="menu-item" onClick={() => navigate('/terms-of-service')}>
+                    서비스 이용약관
+                </div>
+                <div className="menu-item" onClick={() => navigate('/privacy-settings')}>
+                    정보동의 설정
+                </div>
             </div>
 
-            <div className="section">
-                <h2>이용안내</h2>
-                <ul>
-                    <li>앱 버전</li>
-                    <li>캐치미 안내</li>
-                    <li>커뮤니티 규칙</li>
-                    <li>서비스 이용약관</li>
-                </ul>
-            </div>
+            <div className="menu-group3">
+                <div className="group-title">기타</div>
 
-            <div className="section">
-                <h2>기타</h2>
-                <ul>
-                    <li>정보동의 설정</li>
-                    <li>캐치미 안내</li>
-                    <li>서비스 이용약관</li>
-                </ul>
+                <div className="menu-item" onClick={() => navigate('/delete-account')}>
+                    회원 탈퇴
+                </div>
+                <div className="menu-item" onClick={() => navigate('/logout')}>
+                    로그아웃
+                </div>
             </div>
         </div>
     );
