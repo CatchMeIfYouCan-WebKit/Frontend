@@ -73,9 +73,6 @@ const LoginPage = () => {
                     </div>
                 </form>
 
-                <button className="btn" onClick={() => navigate('/mapmain')}>
-                    지도로
-                </button>
 
                 <div className="login-links">
                     <span className="link-button" onClick={() => handleNavigate('/signup')}>
