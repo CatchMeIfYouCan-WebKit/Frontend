@@ -1,0 +1,137 @@
+/* ShelterDetail.css */
+
+.shelter-detail {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.title {
+    color: #000;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 140%; /* 28px */
+    letter-spacing: -0.5px;
+    text-align: left;
+}
+
+.tabs-container {
+    width: 100%;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 12px;
+}
+
+/* 2) 실제 버튼 그룹은 왼쪽 40%만 사용 */
+.tabs {
+    display: flex;
+    width: 40%;
+    /* 필요하면 margin-left 로 위치 조정 가능 */
+}
+
+/* 3) 기본 탭 스타일 */
+.tab {
+    flex: 1;
+    text-align: center;
+    padding: 12px 0;
+    font-size: 16px;
+    color: #aaa;
+    background: none;
+    border: none;
+    cursor: pointer;
+    /* 아래 구분선을 부모에서 그리고, 탭 자체는 제거 */
+    border-bottom: none;
+}
+
+/* 4) 활성 탭에만 굵은 언더라인 */
+.tab.active {
+    color: #333;
+    font-weight: 600;
+    border-bottom: 2px solid #333;
+    /* 부모 구분선 위에 올라오도록 약간 올려줍니다 */
+    margin-bottom: -1px;
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.filter {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.count-sort {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.count {
+    font-size: 14px;
+    color: #666;
+}
+
+.sort {
+    background-color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.animal-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 한 줄에 3개 */
+    grid-auto-rows: auto;
+}
+
+.animal-card {
+    background-color: #fff;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s;
+}
+
+.animal-card:hover {
+    transform: translateY(-4px);
+}
+
+.animal-img {
+    width: 100%;
+    height: 200px;
+    display: block;
+    object-fit: cover;
+}
+.tag-size {
+    width: 18px;
+    height: 18px;
+}
+.tag-wrap {
+    border-radius: 5px;
+    border: 1px solid #d9d9d9;
+
+    background: #fff;
+    display: flex;
+    height: 37px;
+    padding: 9px 7px;
+    align-items: center;
+    gap: 10px;
+}
