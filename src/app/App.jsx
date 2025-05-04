@@ -36,6 +36,7 @@ import PrivacySettings from '../pages/MyPage/components/PrivacySettings';
 import DeleteAccount from '../pages/MyPage/components/DeleteAccount';
 import Logout from '../pages/MyPage/components/Logout';
 import Contact from '../pages/MyPage/components/Contact';
+import ShelterDetail from '../pages/Map/components/ShelterDetail';
 
 function App() {
     return (
@@ -63,6 +64,9 @@ function App() {
                 {/* 지도 필터링, 마커 선택 */}
                 <Route path="/filters" element={<Filtering />} />
                 <Route path="/board/markerpick" element={<MarkerPick />} />
+
+                {/* 보호소 동물 상세페이지 */}
+                <Route path="/shelterdetail" element={<ShelterDetail />} />
 
                 {/* 반려동물 프로필 등록 */}
                 <Route path="/animal-profile" element={<AnimalProfile />} />

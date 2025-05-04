@@ -342,6 +342,7 @@
 /* 4) 오른쪽 썸네일은 크기 고정, flex-shrink 방지 */
 .list-img {
     flex-shrink: 0;
+    margin-left: 0px;
 }
 .sheet-nailimg {
     width: 90px;
@@ -352,7 +353,7 @@
 }
 .list-left {
     text-align: left;
-    margin-right: 150px;
+    width: 330px;
 }
 
 .main-header {
@@ -455,66 +456,115 @@
     height: 50px;
     border-radius: 50%;
     cursor: pointer;
-  }
-  .custom-marker-div.shelter  { background-color: #1eb32f; }
-  .custom-marker-div.hospital { background-color: #F29B30; }
-  
-  .custom-marker-img {
+}
+.custom-marker-div.shelter {
+    background-color: #1eb32f;
+}
+.custom-marker-div.hospital {
+    background-color: #f29b30;
+}
+
+.custom-marker-img {
     width: 35px;
     height: 35px;
-  }
-  
-  .custom-marker-container {
+}
+
+.custom-marker-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     cursor: pointer;
-  }
-  
-  .marker-circle {
+}
+
+.marker-circle {
     width: 50px;
     height: 50px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-  .marker-img {
+}
+.marker-img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-  }
-  
-  .custom-marker-container.sighting .marker-circle { background-color: #4b75ff; }
-  .custom-marker-container.missing  .marker-circle { background-color: #d92b2b; }
-  
-  .custom-marker-container.sighting .marker-label{
-    background-color: inherit;
-    color: rgb(255, 255, 255);
-    font-size: 14px;
-    border-radius: 4px;
-    white-space: nowrap;
-    background-color: #4B75FF;
-    width: 45px;
-    height: 21px;
-    padding: 0px 8px;
-    text-align: center;
-    justify-content: center;
-    gap: 10px;
-  }
-  
-  .custom-marker-container.missing  .marker-label {
-    background-color: inherit;
-    color: rgb(255, 255, 255);
-    font-size: 14px;
-    border-radius: 4px;
-    white-space: nowrap;
-    background-color: #D92B2B;
-    width: 45px;
-    height: 21px;
-    padding: 0px 8px;
-    text-align: center;
-    justify-content: center;
-    gap: 10px;
+}
 
-  }
+.custom-marker-container.sighting .marker-circle {
+    background-color: #4b75ff;
+}
+.custom-marker-container.missing .marker-circle {
+    background-color: #d92b2b;
+}
+
+.custom-marker-container.sighting .marker-label {
+    background-color: inherit;
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+    border-radius: 4px;
+    white-space: nowrap;
+    background-color: #4b75ff;
+    width: 45px;
+    height: 21px;
+    padding: 0px 8px;
+    text-align: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.custom-marker-container.missing .marker-label {
+    background-color: inherit;
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+    border-radius: 4px;
+    white-space: nowrap;
+    background-color: #d92b2b;
+    width: 45px;
+    height: 21px;
+    padding: 0px 8px;
+    text-align: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.shelter-title {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.shelter-address {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 400;
+    color: #000;
+}
+.shelter-call-number {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 400;
+    color: #000;
+}
+.shelter-images {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 8px 0;
+}
+
+/* 25% 너비에서 gap 만큼 빼면 정확히 4개 나열 */
+.shelter-img {
+    width: calc(25% - 6px);
+    height: 80px; /* 원하는 높이로 조절 */
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.view-detail{
+    text-align: right;
+    padding-right: 10px;
+    padding-left: 10px;
+    font-size: 14px;
+    font-weight: 400;
+    margin-right: 10px;
+}
