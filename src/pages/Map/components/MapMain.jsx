@@ -538,7 +538,9 @@ export default function MapMain() {
                                 <div className="shelter-address">{selectedMarker.data.location}</div>
                                 <div className="shelter-call-number">{selectedMarker.data.callNumber}</div>
                                 <hr />
-                                <div className='view-detail' onClick={() => navigate('/shelterdetail')}>상세보기</div>
+                                <div className="view-detail" onClick={() => navigate('/shelterdetail')}>
+                                    상세보기
+                                </div>
                                 <div className="shelter-images">
                                     {selectedMarker.data.imageUrl.slice(0, 4).map((url, idx) => (
                                         <img
@@ -575,7 +577,7 @@ export default function MapMain() {
                         </div>
                         {/* 리스트 백엔드에서 불라와서 밑에 형식으로 다 띄우면됨 클릭 시 게시글로 보내면 됨 */}
                         {/* 실종*/}
-                        <div className="list-wrap" onClick={() => navigate('')}>
+                        <div className="list-wrap" onClick={() => navigate('/missingpost')}>
                             <div className="list-left">
                                 <div className="state">
                                     <img src={missing2} alt="missing2" className="sheet-img" />
