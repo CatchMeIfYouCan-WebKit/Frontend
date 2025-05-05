@@ -3,9 +3,14 @@ import '../ShelterDetail.css';
 import dog1 from '../../../assets/수완강아지.jpeg';
 import dog2 from '../../../assets/민규강아지.jpeg';
 import tag from '../../../assets/tag.svg';
+import change from '../../../assets/change.svg';
+import tagdog from '../../../assets/tagdog.svg';
+import { useNavigate } from 'react-router-dom';
 
 export default function ShelterDetail() {
     const [activeTab, setActiveTab] = useState('adopted');
+    const [listChange, setListChange] = useState(true);
+    const navigate = useNavigate();
 
     return (
         <div className="shelter-detail">
@@ -41,22 +46,31 @@ export default function ShelterDetail() {
                 <select className="filter">
                     <option>체중</option>
                 </select>
-                <div className='tag-wrap'>
-                    <img src={tag} alt="태그" className='tag-size'/>
+                <div className="tag-wrap" onClick={() => navigate('/shelterdetail/filter')}>
+                    <img src={tag} alt="태그" className="tag-size" />
                 </div>
             </div>
 
-            <div className="controls">
-                <div className="count-sort">
-                    <span className="count">2,561 개</span>
-                    <button className="sort">최신작성순 ⇅</button>
+            <div className="list-header">
+                <div className="post-count">{}개의 게시글</div>
+                <div
+                    className={`sort-toggle ${!listChange ? 'reversed' : ''}`}
+                    onClick={() => setListChange((prev) => !prev)}
+                >
+                    {listChange ? '최근작성순' : '오래된 순'}
+                    <img src={change} alt="변경" />
                 </div>
             </div>
 
             <div className="animal-grid">
                 {Array.from({ length: 50 }).map((_, i) => (
                     <div key={i} className="animal-card">
-                        <img src={i % 2 === 0 ? dog1 : dog2} alt={`동물 ${i + 1}`} className="animal-img" onClick={()=>navigator('')}/>
+                        <img
+                            src={i % 2 === 0 ? dog1 : dog2}
+                            alt={`동물 ${i + 1}`}
+                            className="animal-img"
+                            onClick={() => navigator('')}
+                        />
                     </div>
                 ))}
             </div>
