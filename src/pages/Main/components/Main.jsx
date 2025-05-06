@@ -18,6 +18,7 @@ import reportMissingImage from '../../../assets/실종신고.svg';
 import reportFoundIcon from '../../../assets/목격신고.svg';
 import medicalReservationImage from '../../../assets/진료예약.svg';
 import shelterBoardImage from '../../../assets/보호소게시판.svg';
+import axios from 'axios';
 
 // 바텀시트 컴포넌트 import
 import MissingPostBottomSheet from '../../MissingForm/components/MissingPostBottomSheet';
@@ -28,6 +29,7 @@ export default function Main() {
     const navigate = useNavigate();
     const wrapperRef = useRef(null);
 
+<<<<<<< Updated upstream
     // 바텀시트 오픈 상태
     const [isSheetOpen, setIsSheetOpen] = useState(false);
 
@@ -53,10 +55,14 @@ export default function Main() {
         },
         // …추가 등록 가능
     ];
+=======
+    const [pets, setPets] = useState([]);
+>>>>>>> Stashed changes
     const totalSlides = pets.length + 1; // +1: 마지막 “추가하기” 카드
 
     // 슬라이더 페이지 인덱스 상태
     const [currentPage, setCurrentPage] = useState(0);
+    const isWeb = typeof window !== 'undefined' && window.location;
 
     // 슬라이더 스크롤 이벤트
     useEffect(() => {
@@ -72,7 +78,53 @@ export default function Main() {
         return () => el.removeEventListener('scroll', onScroll);
     }, [totalSlides]);
 
+<<<<<<< Updated upstream
     // 페이지 도트 클릭 시
+=======
+    // 펫 스크롤을 처음으로
+    useEffect(() => {
+        if (pets.length > 0 && wrapperRef.current) {
+            wrapperRef.current.scrollTo({ left: 0, behavior: 'auto' }); // 초기 위치로 스크롤 이동
+            setCurrentPage(0); // 페이지 표시도 초기화
+        }
+    }, [pets]);
+
+    // 내 반려동물 조회 api 요청
+    useEffect(() => {
+        const myPets = async () => {
+            try {
+                const res = await axios.get('/api/animal-profile/all', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                    },
+                });
+                setPets(res.data);
+            } catch (err) {
+                console.error('반려동물 조회 실패:', err);
+            }
+        };
+
+        myPets();
+    }, []);
+
+    // 사진 불러오기
+    const getImageUrl = (path) => {
+        if (!path) return '/default-image.png';
+        const host = window.location.hostname;
+        const port = 8080;
+        return `http://${host}:${port}${path}`;
+    };
+
+    // 태어난 지 ?일 계산
+    const calculateDays = (birthDate) => {
+        const today = new Date();
+        const birth = new Date(birthDate);
+        const diff = today - birth;
+        return Math.floor(diff / (1000 * 60 * 60 * 24));
+    };
+
+    // 도트 클릭 시 해당 슬라이드로 애니메이션 이동
+>>>>>>> Stashed changes
     const scrollTo = (idx) => {
         const el = wrapperRef.current;
         if (!el) return;
@@ -106,22 +158,42 @@ export default function Main() {
                 <section className="pet-card-wrapper" ref={wrapperRef}>
                     {pets.map((pet) => (
                         <section className="pet-card" key={pet.id}>
+<<<<<<< Updated upstream
                             <button className="edit-button" onClick={() => navigate('/animal-profile')}>
+=======
+                            {/* 등록된 펫에만 편집 버튼 표시 */}
+                            <button
+                                className="edit-button"
+                                onClick={() => navigate('/animal-profile', { state: { mode: 'edit', pet } })}
+                            >
+                                {/* 백엔드 작업시 url /animal-profile/{pet.id} 이런형식으로 참고하세용 */}
+>>>>>>> Stashed changes
                                 <img src={pencil} alt="프로필 편집" />
                             </button>
                             <div className="pet-info-wrapper">
-                                <img src={pet.img} alt={pet.name} className="pet-image" />
+                                <img
+                                    src={getImageUrl(pet.photoPath)}
+                                    alt={pet.name}
+                                    className="pet-image"
+                                    onError={(e) => {
+                                        e.target.src = '/default-image.png';
+                                    }}
+                                />
                                 <div className="pet-text">
                                     <h2>{pet.name}</h2>
                                     <p>
-                                        {pet.age} / {pet.gender}
+                                        {pet.age}살 / {pet.gender}
                                     </p>
                                     <p>{pet.breed}</p>
-                                    <p>태어난지 {pet.days}일</p>
+                                    <p>태어난지 {calculateDays(pet.dateOfBirth)}일</p>
                                 </div>
                             </div>
-                            <button className="register-button" onClick={() => navigate('/animal-profile')}>
-                                등록번호 조회 안함
+                            <button
+                                className="register-button"
+                                style={{ backgroundColor: pet.registrationNumber ? '#f5a623' : undefined }}
+                                onClick={() => navigate('/animal-profile', { state: { mode: 'edit', pet } })}
+                            >
+                                {pet.registrationNumber || '동물 등록번호 인증하기'}
                             </button>
                         </section>
                     ))}
