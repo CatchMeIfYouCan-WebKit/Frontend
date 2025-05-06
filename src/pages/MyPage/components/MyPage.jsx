@@ -30,8 +30,10 @@ export default function MyPage() {
                 </div>
 
                 <div className="user-info">
-                    <div className="user-greeting">안녕하세요!</div>
-                    <div className="user-name">금오공대님</div>
+                    <div className="user-text">
+                        <div className="user-greeting">안녕하세요!</div>
+                        <div className="user-name">금오공대님</div>
+                    </div>
                 </div>
                 <button className="settings-button" aria-label="설정">
                     <div className="icon-circle">
