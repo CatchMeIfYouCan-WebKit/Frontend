@@ -29,35 +29,7 @@ export default function Main() {
     const navigate = useNavigate();
     const wrapperRef = useRef(null);
 
-<<<<<<< Updated upstream
-    // 바텀시트 오픈 상태
-    const [isSheetOpen, setIsSheetOpen] = useState(false);
-
-    // 예시용 펫 배열 (여러 마리 등록 시 여기에 추가)
-    const pets = [
-        {
-            id: 1,
-            name: '나비',
-            age: '3살',
-            gender: '남아',
-            breed: '비숑',
-            days: 920,
-            img: petImage,
-        },
-        {
-            id: 2,
-            name: '형규',
-            age: '3살',
-            gender: '여아',
-            breed: '말티즈',
-            days: 950,
-            img: petImage,
-        },
-        // …추가 등록 가능
-    ];
-=======
     const [pets, setPets] = useState([]);
->>>>>>> Stashed changes
     const totalSlides = pets.length + 1; // +1: 마지막 “추가하기” 카드
 
     // 슬라이더 페이지 인덱스 상태
@@ -78,9 +50,6 @@ export default function Main() {
         return () => el.removeEventListener('scroll', onScroll);
     }, [totalSlides]);
 
-<<<<<<< Updated upstream
-    // 페이지 도트 클릭 시
-=======
     // 펫 스크롤을 처음으로
     useEffect(() => {
         if (pets.length > 0 && wrapperRef.current) {
@@ -124,7 +93,6 @@ export default function Main() {
     };
 
     // 도트 클릭 시 해당 슬라이드로 애니메이션 이동
->>>>>>> Stashed changes
     const scrollTo = (idx) => {
         const el = wrapperRef.current;
         if (!el) return;
@@ -158,16 +126,12 @@ export default function Main() {
                 <section className="pet-card-wrapper" ref={wrapperRef}>
                     {pets.map((pet) => (
                         <section className="pet-card" key={pet.id}>
-<<<<<<< Updated upstream
-                            <button className="edit-button" onClick={() => navigate('/animal-profile')}>
-=======
                             {/* 등록된 펫에만 편집 버튼 표시 */}
                             <button
                                 className="edit-button"
                                 onClick={() => navigate('/animal-profile', { state: { mode: 'edit', pet } })}
                             >
                                 {/* 백엔드 작업시 url /animal-profile/{pet.id} 이런형식으로 참고하세용 */}
->>>>>>> Stashed changes
                                 <img src={pencil} alt="프로필 편집" />
                             </button>
                             <div className="pet-info-wrapper">
