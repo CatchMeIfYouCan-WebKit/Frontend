@@ -28,6 +28,8 @@ library.add(faBell, faUser);
 export default function Main() {
     const navigate = useNavigate();
     const wrapperRef = useRef(null);
+    // 바텀시트 오픈 상태
+    const [isSheetOpen, setIsSheetOpen] = useState(false);
 
     const [pets, setPets] = useState([]);
     const totalSlides = pets.length + 1; // +1: 마지막 “추가하기” 카드
@@ -264,7 +266,15 @@ export default function Main() {
             </main>
 
             {/* ===== MISSING POST BOTTOM SHEET ===== */}
-            <MissingPostBottomSheet isOpen={isSheetOpen} onClose={() => setIsSheetOpen(false)} pets={pets} />
+            <MissingPostBottomSheet
+                isOpen={isSheetOpen}
+                onClose={() => setIsSheetOpen(false)}
+                pets={pets}
+                onSelect={(pet) => {
+                    setIsSheetOpen(false);
+                    navigate('/report-missing', { state: { pet } });
+                }}
+            />
 
             {/* ===== FOOTER ===== */}
             <Footer />
