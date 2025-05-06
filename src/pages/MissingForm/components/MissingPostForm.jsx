@@ -4,8 +4,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../MissingPostForm.css';
-import checkOn from '../../../assets/checkOn.svg';
-import checkOff from '../../../assets/checkOff.svg';
+import verifion from '../../../assets/verifion.svg';
+import verifioff from '../../../assets/verifioff.svg';
 import LocationPicker from './LocationPicker';
 
 export default function MissingPostForm() {
@@ -34,7 +34,7 @@ export default function MissingPostForm() {
                         <img src={pet.img} alt={pet.name} className="mpf-pet-img" />
                         <span className="mpf-pet-name">{pet.name}</span>
                         {/* 확인된 프로필 아이콘 (always on) */}
-                        <img src={checkOn} alt="verified" className="mpf-pet-check" />
+                        <img src={verifion} alt="verified" className="mpf-pet-check" />
                     </div>
                 )}
 
