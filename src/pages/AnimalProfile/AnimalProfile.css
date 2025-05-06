@@ -433,3 +433,19 @@
     padding: 0; /* 모든 padding 제거 */
     text-align: left;
 }
+
+/* 사진 미리보기 */
+.photo-preview {
+    width: 105px;
+    height: 105px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.reg-button.verified {
+    background-color: #f5a623;
+    color: white;
+}

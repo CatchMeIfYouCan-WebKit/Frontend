@@ -1,0 +1,130 @@
+/* src/pages/MissingForm/components/MissingPostForm.css */
+
+.mpf-container {
+    width: 100vw;
+    height: 100dvh;
+    padding: 16px;
+    box-sizing: border-box;
+    background: #fff;
+    overflow-y: auto;
+}
+
+.mpf-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.mpf-back {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 8px;
+}
+
+.mpf-header h1 {
+    flex: 1;
+    text-align: center;
+    font-size: 20px;
+}
+
+/* ✔️ 반려동물 이름 옆 체크 아이콘 스타일 */
+.mpf-pet-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    justify-content: flex-start;
+}
+
+/* 기존 펫 이미지 */
+.mpf-pet-img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+}
+
+/* 펫 이름 텍스트 */
+.mpf-pet-name {
+    font-weight: bold;
+    font-size: 24px;
+}
+
+/* 체크 아이콘 */
+.mpf-pet-check {
+    width: 24px;
+    height: 24px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+/* 폼 전체 */
+.mpf-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* ── 라벨 스타일 ── */
+.mpf-form label {
+    font-weight: 800;
+    font-size: 18px;
+    line-height: 0.8; /* 라벨 내부 줄간격 */
+    margin-bottom: 8px; /* 라벨 아래 여백 추가 */
+    text-align: left;
+}
+
+/* ── 입력 필드 공통 ── */
+.mpf-form input,
+.mpf-form textarea,
+.mpf-form .mpf-input {
+    /* DatePicker 의 custom class */
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.4; /* 입력창 내부 줄간격 */
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+/* 텍스트 입력창 */
+.mpf-form input {
+    height: 48px;
+}
+
+/* 텍스트 영역 */
+.mpf-form textarea {
+    height: 300px;
+    resize: none;
+    margin-bottom: 24px; /* 버튼과의 여백 확보 */
+    line-height: 1.5; /* 가독성을 위해 조금 더 넉넉히 */
+}
+
+/* DatePicker input */
+.mpf-input {
+    height: 48px;
+}
+
+/* 장소 선택 트리거 */
+.mpf-input--select {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* 제출 버튼 */
+.mpf-submit {
+    margin-top: 24px;
+    padding: 14px 0;
+    background: #f29b30;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}

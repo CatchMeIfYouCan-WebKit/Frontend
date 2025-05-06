@@ -40,6 +40,7 @@ import ShelterDetail from '../pages/Map/components/ShelterDetail';
 import ShelterFilter from '../pages/Map/components/ShelterFilter';
 import MissingPostDetail from '../pages/Missing/components/MissingPostDetail';
 import Adoption from '../pages/Adoption/components/Adoption';
+import MissingPostForm from '../pages/MissingForm/components/MissingPostForm';
 
 function App() {
     return (
@@ -92,7 +93,8 @@ function App() {
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/contact" element={<Contact />} />
 
-                <Route path="/missingpost" element={<MissingPostDetail />} />
+                <Route path="/missingpostDetail" element={<MissingPostDetail />} />
+                <Route path="/report-missing" element={<MissingPostForm />} />
             </Routes>
         </BrowserRouter>
     );
