@@ -1,0 +1,166 @@
+.adoption-page {
+    position: relative;
+    padding-bottom: 60px; /* Footer 높이만큼 패딩 */
+    background: #ffffff;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* 헤더: 두 줄 구조로 변경 */
+.adoption-header {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    background: #fff;
+    margin-top: 10px;
+    margin-bottom: 0px;
+    height: 95px;
+}
+
+/* ── 1행: 동네 + 아이콘 ── */
+.adoption-header .location-select {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.adoption-header .location-select > div:first-child {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.adoption-header .location-select .arrow {
+    font-size: 14px;
+    margin-left: 4px;
+}
+
+/* 1행 우측 아이콘 그룹 */
+.adoption-header .location-select > div:last-child {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ── 2행: 필터 버튼들 ── */
+.adoption-header .filters {
+    margin-top: 12px;
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+.filter {
+    display: flex;
+    justify-content: center;
+    border-radius: 10px;
+    border: 1px solid rgba(17, 17, 17, 0.3);
+
+    background: linear-gradient(106deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.8) 100%);
+
+    backdrop-filter: blur(7.5px);
+}
+
+.adoption-header .filters select,
+.adoption-header .filters .filter-btn,
+.adoption-header .filters > div {
+    /* select 대신 div 사용 시에도 동일 스타일 */
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* 게시글 리스트 */
+.post-list {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    text-align: left;
+    margin-top: 0px;
+}
+.post-card {
+    display: flex;
+    background: #fff;
+    border-radius: 5px;
+    overflow: hidden;
+    height: 140px;
+}
+.post-img {
+    margin: 10px;
+    width: 125px;
+    height: 125px;
+    object-fit: cover;
+}
+.post-info {
+    flex: 1;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.post-title {
+    color: #000;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+}
+.verified {
+    color: #f5a623;
+    margin-left: 4px;
+    font-size: 14px;
+}
+.post-meta {
+    color: #000;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px; /* 200% */
+    letter-spacing: -0.3px;
+}
+.post-footer {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    color: #999;
+    gap: 8px;
+}
+.comment-btn {
+    margin-left: auto;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* 글쓰기 버튼 */
+.write-btn {
+    position: fixed;
+    bottom: 90px; /* Footer 위에 떠 있도록 */
+    right: 16px;
+    color: #f5a623;
+    background-color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 24px;
+    font-size: 14px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+/* Footer 고정 */
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px; /* Footer 컴포넌트 높이와 동일 */
+    background: #fff;
+    z-index: 20;
+}
