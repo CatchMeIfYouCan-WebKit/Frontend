@@ -39,6 +39,7 @@ import Contact from '../pages/MyPage/components/Contact';
 import ShelterDetail from '../pages/Map/components/ShelterDetail';
 import ShelterFilter from '../pages/Map/components/ShelterFilter';
 import MissingPostDetail from '../pages/Missing/components/MissingPostDetail';
+import Adoption from '../pages/Adoption/components/Adoption';
 
 function App() {
     return (
@@ -71,6 +72,8 @@ function App() {
                 <Route path="/shelterdetail" element={<ShelterDetail />} />
                 <Route path="/shelterdetail/filter" element={<ShelterFilter />} />
 
+                {/* 입양 게시판 */}
+                <Route path="/adoption" element={<Adoption />} />
 
 
                 {/* 반려동물 프로필 등록 */}
