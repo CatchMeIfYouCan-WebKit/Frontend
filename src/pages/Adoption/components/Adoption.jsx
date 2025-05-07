@@ -147,7 +147,7 @@ export default function Adoption() {
                     <button
                         className="sheet-confirm"
                         disabled={selectedPet === null}
-                        onClick={() => navigate('')}
+                        onClick={() => navigate('/adoptionpost')}
                     >
                         확인
                     </button>
