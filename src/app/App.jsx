@@ -42,6 +42,8 @@ import MissingPostDetail from '../pages/Missing/components/MissingPostDetail';
 import Adoption from '../pages/Adoption/components/Adoption';
 import MissingPostForm from '../pages/MissingForm/components/MissingPostForm';
 import WitnessPostDetail from '../pages/Witness/components/WitnessPostDetail';
+import AdoptionPost from '../pages/Adoption/components/AdoptionPost';
+
 import WitnessPostForm from '../pages/WitnessForm/components/WitnessPostForm';
 function App() {
     return (
@@ -76,6 +78,8 @@ function App() {
 
                 {/* 입양 게시판 */}
                 <Route path="/adoption" element={<Adoption />} />
+                <Route path="/adoptionpost" element={<AdoptionPost />} />
+
 
                 {/* 반려동물 프로필 등록 */}
                 <Route path="/animal-profile" element={<AnimalProfile />} />
