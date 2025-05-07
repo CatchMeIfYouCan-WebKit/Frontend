@@ -595,7 +595,7 @@ export default function MapMain() {
                         </div>
 
                         {/* 목격 */}
-                        <div className="list-wrap">
+                        <div className="list-wrap" onClick={() => navigate('/witnesspostDetail')}>
                             <div className="list-left">
                                 <div className="state-find">
                                     <img src={missing2} alt="missing2" className="sheet-img" />

@@ -41,6 +41,7 @@ import ShelterFilter from '../pages/Map/components/ShelterFilter';
 import MissingPostDetail from '../pages/Missing/components/MissingPostDetail';
 import Adoption from '../pages/Adoption/components/Adoption';
 import MissingPostForm from '../pages/MissingForm/components/MissingPostForm';
+import WitnessPostDetail from '../pages/Witness/components/WitnessPostDetail';
 
 function App() {
     return (
@@ -76,7 +77,6 @@ function App() {
                 {/* 입양 게시판 */}
                 <Route path="/adoption" element={<Adoption />} />
 
-
                 {/* 반려동물 프로필 등록 */}
                 <Route path="/animal-profile" element={<AnimalProfile />} />
 
@@ -93,8 +93,12 @@ function App() {
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/contact" element={<Contact />} />
 
+                {/* ✅ 실종 하위 라우트 추가 */}
                 <Route path="/missingpostDetail" element={<MissingPostDetail />} />
                 <Route path="/report-missing" element={<MissingPostForm />} />
+
+                {/* ✅ 목격 하위 라우트 추가 */}
+                <Route path="/witnesspostDetail" element={<WitnessPostDetail />} />
             </Routes>
         </BrowserRouter>
     );

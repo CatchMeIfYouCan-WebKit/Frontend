@@ -38,10 +38,11 @@
     cursor: pointer;
 }
 .animal-profile-header h1 {
-    font-size: 18px;
-    font-weight: 600;
+    font-weight: 700;
     text-align: center;
     margin: 0 auto;
+    flex: 1;
+    font-size: 20px;
 }
 
 /* Content */
@@ -432,20 +433,4 @@
     margin: 4px 0; /* 위아래 여백만 */
     padding: 0; /* 모든 padding 제거 */
     text-align: left;
-}
-
-/* 사진 미리보기 */
-.photo-preview {
-    width: 105px;
-    height: 105px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 8px;
-}
-
-.reg-button.verified {
-    background-color: #f5a623;
-    color: white;
 }
