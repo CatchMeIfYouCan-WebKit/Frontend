@@ -217,6 +217,7 @@ export default function MapMain() {
         };
         document.head.appendChild(script);
     }, []);
+
     // 필터 상태 변경 시마다 마커 보이기/숨기기
     useEffect(() => {
         markersRef.current.forEach(({ type, overlay }) => {

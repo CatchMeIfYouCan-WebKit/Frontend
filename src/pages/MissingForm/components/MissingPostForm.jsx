@@ -7,6 +7,8 @@ import '../MissingPostForm.css';
 import verifion from '../../../assets/verifion.svg';
 import verifioff from '../../../assets/verifioff.svg';
 import LocationPicker from './LocationPicker';
+import axios from 'axios';
+import { format, formatDate } from 'date-fns';
 
 export default function MissingPostForm() {
     const navigate = useNavigate();
@@ -16,6 +18,59 @@ export default function MissingPostForm() {
     const [where, setWhere] = useState('');
     const [desc, setDesc] = useState('');
     const [isLocOpen, setIsLocOpen] = useState(false);
+    const [file, setFile] = useState(null);
+
+    // 사진 불러오기
+    const getImageUrl = (path) => {
+        if (!path) return '/default-image.png';
+        const host = window.location.hostname;
+        const port = 8080;
+        return `http://${host}:${port}${path}`;
+    };
+
+    // 실종게시글 등록하기
+    const handleSubmit = async () => {
+        if (!whenDate || !desc) {
+            alert('날짜와 상세설명은 필수입니다.');
+            return;
+        }
+
+        // TODO: 지도 구현 완료 시 마커를 주소로 변환하여 주소 설정
+        const location = where || '지도가 구현되면 다시 설정할거에요';
+
+        try {
+            const formData = new FormData();
+            const formattedDate = format(whenDate, "yyyy-MM-dd'T'HH:mm");
+
+            const missingData = {
+                petId: pet.id,
+                postType: 'missing',
+                missingDatetime: formattedDate,
+                missingLocation: location,
+                detailDescription: desc,
+            };
+
+            if (!file && pet?.photoPath) {
+                missingData.photoUrl = pet.photoPath;
+            }
+
+            formData.append('post', new Blob([JSON.stringify(missingData)], { type: 'application/json' }));
+            formData.append('file', file);
+
+            const res = await axios.post('/api/missing', formData, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            alert('실종 신고를 했습니다.');
+            navigate('/main'); // 혹은 메인 페이지로 이동
+        } catch (err) {
+            console.error(err);
+            alert('등록에 실패했습니다.');
+        }
+    };
 
     return (
         <>
@@ -31,7 +86,7 @@ export default function MissingPostForm() {
                 {/* 선택된 반려동물 */}
                 {pet && (
                     <div className="mpf-pet-row">
-                        <img src={pet.img} alt={pet.name} className="mpf-pet-img" />
+                        <img src={getImageUrl(pet.photoPath)} alt={pet.name} className="mpf-pet-img" />
                         <span className="mpf-pet-name">{pet.name}</span>
                         {/* 확인된 프로필 아이콘 (always on) */}
                         <img src={verifion} alt="verified" className="mpf-pet-check" />
@@ -44,8 +99,11 @@ export default function MissingPostForm() {
                     <DatePicker
                         selected={whenDate}
                         onChange={setWhenDate}
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={30}
                         placeholderText="실종일을 선택해주세요"
-                        dateFormat="yyyy년 MM월 dd일"
+                        dateFormat="yyyy년 MM월 dd일 HH:mm"
                         className="mpf-input"
                     />
 
@@ -79,7 +137,7 @@ export default function MissingPostForm() {
                         className="mpf-submit"
                         onClick={() => {
                             console.log({ pet, whenDate, where, desc });
-                            // TODO: 서버 전송
+                            handleSubmit();
                         }}
                     >
                         게시글 작성

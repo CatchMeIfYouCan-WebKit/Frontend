@@ -7,40 +7,123 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import LocationPicker from '../../MissingForm/components/LocationPicker';
 import '../WitnessPostForm.css';
+import { format } from 'date-fns';
+import axios from 'axios';
 
 export default function WitnessPostForm() {
     const navigate = useNavigate();
-    const [location, setLocation] = useState(null);
     const [isLocationPickerOpen, setIsLocationPickerOpen] = useState(false);
     const [date, setDate] = useState(null);
+    const [location, setLocation] = useState(null);
     const [description, setDescription] = useState('');
-    const [files, setFiles] = useState([]);
-    const [previews, setPreviews] = useState([]);
+    const [file, setFile] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState(null);
+    const [morpheusImagePath, setMorpheusImagePath] = useState(null);
 
-    const handleImageChange = (e) => {
-        const selectedFiles = Array.from(e.target.files).slice(0, 4); // 최대 4장
-        setFiles(selectedFiles);
-        const previewUrls = selectedFiles.map((file) => URL.createObjectURL(file));
-        setPreviews(previewUrls);
-    };
-
-    useEffect(() => {
-        return () => previews.forEach((url) => URL.revokeObjectURL(url));
-    }, [previews]);
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const formData = new FormData();
-        formData.append('location', JSON.stringify(location));
-        formData.append('date', date?.toISOString() || '');
-        formData.append('description', description);
-        files.forEach((file, index) => {
-            formData.append('images', file); // 백엔드가 배열 형태로 받는다면 'images[]'로 바꿔도 됩니다
-        });
+        if (!file) {
+            alert('사진을 첨부해주세요.');
+            return;
+        }
 
-        console.log({ location, date, description, files });
-        // axios.post('/api/witness', formData) 등으로 전송 가능
+        if (!date) {
+            alert('날짜 및 시간을 입력해주세요.');
+            return;
+        }
+
+        if (!description) {
+            alert('상세설명을 입력해주세요.');
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+
+            const formattedDate = format(date, "yyyy-MM-dd'T'HH:mm");
+
+            const witnessData = {
+                witnessDatetime: formattedDate,
+                witnessLocation: location?.trim() || '지도가 구현되면 다시 설정할거에요',
+                detailDescription: description,
+            };
+
+            formData.append('post', new Blob([JSON.stringify(witnessData)], { type: 'application/json' }));
+            formData.append('file', file);
+
+            const res = await axios.post('/api/missing/witness', formData, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            });
+
+            console.log({ location, date, description, file });
+            alert('목격 신고를 했습니다.');
+            navigate('/main');
+        } catch (error) {
+            console.error('등록 실패:', error);
+            alert('게시글 등록에 실패했습니다.');
+        }
+    };
+
+    const handleMorpheusImageUpload = () => {
+        const userChoice = confirm('사진을 촬영하시겠습니까?');
+
+        const callback = (status, result) => {
+            if (status === 'SUCCESS') {
+                if (!result.path || result.size < 10000) {
+                    alert('유효한 이미지가 아닙니다.');
+                    return;
+                }
+
+                setMorpheusImagePath(result.fullpath || result.path);
+                setPreviewUrl(result.fullpath || result.path); // 미리보기 표시
+                console.log('🖼 선택된 이미지 경로:', result.fullpath || result.path);
+            } else {
+                alert('사진 선택 실패 또는 취소됨');
+            }
+        };
+
+        if (userChoice) {
+            M.media.camera({
+                path: '/media',
+                mediaType: 'PHOTO',
+                saveAlbum: true,
+                callback,
+            });
+        } else {
+            M.media.picker({
+                mode: 'SINGLE',
+                mediaType: 'ALL',
+                path: '/media',
+                column: 3,
+                callback: async (status, result) => {
+                    if (status === 'SUCCESS') {
+                        const imagePath = result.fullpath || result.path;
+                        setMorpheusImagePath(imagePath);
+                        setPreviewUrl(imagePath);
+
+                        try {
+                            const response = await fetch(imagePath);
+                            const blob = await response.blob();
+                            const selectedFile = new File([blob], 'witness.jpg', { type: blob.type });
+                            setFile(selectedFile);
+                            alert('사진 선택 완료');
+                            console.log('status: ', status);
+                            console.log('result: ', result);
+                        } catch (error) {
+                            console.error('이미지 미리보기 로딩 실패:', error);
+                            alert('사진 미리보기에 실패했습니다.');
+                        }
+                    } else {
+                        alert('사진 선택 실패');
+                    }
+                },
+            });
+            console.log('morpheusImagePath:', morpheusImagePath);
+            console.log('파일 존재 여부:', !!morpheusImagePath && morpheusImagePath.endsWith('.jpg'));
+        }
     };
 
     return (
@@ -57,19 +140,22 @@ export default function WitnessPostForm() {
                 <div className="photo-section">
                     <div className="photo-grid">
                         <label htmlFor="file-upload" className="photo-upload-box">
-                            <AiOutlineCamera size={32} />
+                            <button type="button" onClick={handleMorpheusImageUpload}>
+                                {previewUrl ? (
+                                    <AiOutlineCamera
+                                        className="camera-icon"
+                                        id="camera-icon"
+                                        style={{ color: '#f5a623' }}
+                                    />
+                                ) : (
+                                    <AiOutlineCamera
+                                        className="camera-icon"
+                                        id="camera-icon"
+                                        style={{ color: 'lightgray' }}
+                                    />
+                                )}
+                            </button>
                         </label>
-                        <input
-                            id="file-upload"
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            onChange={handleImageChange}
-                            style={{ display: 'none' }}
-                        />
-                        {previews.map((url, index) => (
-                            <img key={index} src={url} alt={`preview-${index}`} className="photo-preview" />
-                        ))}
                     </div>
                 </div>
 

@@ -14,6 +14,14 @@ export default function MissingPostBottomSheet({ isOpen, onClose, pets }) {
         onClose();
     };
 
+    // 사진 불러오기
+    const getImageUrl = (path) => {
+        if (!path) return '/default-image.png';
+        const host = window.location.hostname;
+        const port = 8080;
+        return `http://${host}:${port}${path}`;
+    };
+
     return (
         <div className="mbs-overlay" onClick={onClose}>
             <div className="mbs-container" onClick={(e) => e.stopPropagation()}>
@@ -33,11 +41,11 @@ export default function MissingPostBottomSheet({ isOpen, onClose, pets }) {
                                 checked={selectedId === pet.id}
                                 onChange={() => setSelectedId(pet.id)}
                             />
-                            <img src={pet.img} alt={pet.name} className="mbs-pet-img" />
+                            <img src={getImageUrl(pet.photoPath)} alt={pet.name} className="mbs-pet-img" />
                             <div className="mbs-info">
                                 <div className="mbs-name">{pet.name}</div>
                                 <div className="mbs-details">
-                                    {pet.breed} · {pet.age}
+                                    {pet.breed} · {pet.age}살
                                 </div>
                             </div>
                         </label>
