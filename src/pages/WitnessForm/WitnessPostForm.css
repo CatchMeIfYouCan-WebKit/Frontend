@@ -1,0 +1,146 @@
+.mpf-container {
+    width: 100vw;
+    height: 100dvh;
+    padding: 16px;
+    box-sizing: border-box;
+    background: #fff;
+    overflow-y: auto;
+}
+
+/* Header 스타일: MissingForm 기준으로 통일 */
+.missing-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 24px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 4px;
+    background-color: #fff;
+    position: relative;
+    width: 100vw; /* ✅ 추가 */
+    margin-left: calc(-1 * 16px); /* ✅ container padding만큼 좌우 보정 */
+}
+
+.missing-header .back-button {
+    position: absolute;
+    left: 24px;
+    background: none;
+    border: none;
+    font-size: 36px;
+    cursor: pointer;
+}
+
+.missing-header h1 {
+    font-weight: 700;
+    text-align: center;
+    margin: 0 auto;
+    flex: 1;
+    font-size: 20px;
+}
+
+/* 폼 전체 */
+.mpf-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* ── 라벨 스타일 ── */
+.mpf-form label {
+    margin-top: 16px;
+    font-weight: 800;
+    font-size: 18px;
+    line-height: 0.8;
+    margin-bottom: -6px;
+    text-align: left;
+}
+
+/* ── 입력 필드 공통 ── */
+.mpf-form input,
+.mpf-form textarea,
+.mpf-form .mpf-input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.4;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    margin-top: 12px;
+}
+
+/* 텍스트 입력창 */
+.mpf-form input {
+    height: 48px;
+}
+
+/* 텍스트 영역 */
+.mpf-form textarea {
+    height: 300px;
+    resize: none;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+/* DatePicker input */
+.mpf-input {
+    height: 48px;
+}
+
+/* 장소 선택 트리거 */
+.mpf-input--select {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* 제출 버튼 */
+.mpf-submit {
+    margin-top: 8px;
+    background: #f29b30;
+    color: #fff;
+    height: 50px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* DatePicker 아이콘 */
+
+/* ─────────── 사진 업로드 추가 스타일 ─────────── */
+.photo-section {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.photo-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.photo-upload-box {
+    width: 140px;
+    height: 140px;
+    border: 1px dashed #ccc; /* ✅ 기존 2px → 1px */
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+    cursor: pointer;
+    margin-top: 8px; /* ✅ 추가 */
+}
+
+.photo-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #ccc; /* ✅ 기존 주황 테두리 → 동일한 연한 회색 */
+    margin-top: 8px; /* ✅ 통일감 있게 추가 */
+}

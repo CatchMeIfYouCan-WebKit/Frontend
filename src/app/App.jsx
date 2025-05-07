@@ -42,7 +42,7 @@ import MissingPostDetail from '../pages/Missing/components/MissingPostDetail';
 import Adoption from '../pages/Adoption/components/Adoption';
 import MissingPostForm from '../pages/MissingForm/components/MissingPostForm';
 import WitnessPostDetail from '../pages/Witness/components/WitnessPostDetail';
-
+import WitnessPostForm from '../pages/WitnessForm/components/WitnessPostForm';
 function App() {
     return (
         <BrowserRouter>
@@ -99,6 +99,7 @@ function App() {
 
                 {/* ✅ 목격 하위 라우트 추가 */}
                 <Route path="/witnesspostDetail" element={<WitnessPostDetail />} />
+                <Route path="/report-found" element={<WitnessPostForm />} />
             </Routes>
         </BrowserRouter>
     );
