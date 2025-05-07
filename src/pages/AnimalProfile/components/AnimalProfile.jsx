@@ -112,7 +112,7 @@ export default function AnimalProfile() {
             M.media.picker({
                 mode: 'SINGLE',
                 mediaType: 'ALL',
-                path: '/media',
+                path: '',
                 column: 3,
                 callback: async (status, result) => {
                     if (status === 'SUCCESS') {
