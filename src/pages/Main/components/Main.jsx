@@ -22,12 +22,14 @@ import axios from 'axios';
 
 // 바텀시트 컴포넌트 import
 import MissingPostBottomSheet from '../../MissingForm/components/MissingPostBottomSheet';
+import Header from '../../../shared/Header/components/Header';
 
 library.add(faBell, faUser);
 
 export default function Main() {
     const navigate = useNavigate();
     const wrapperRef = useRef(null);
+    const [isSheetOpen, setIsSheetOpen] = useState(false);
 
     const [pets, setPets] = useState([]);
     const totalSlides = pets.length + 1; // +1: 마지막 “추가하기” 카드
@@ -105,20 +107,7 @@ export default function Main() {
     return (
         <div className="main-page">
             {/* ===== HEADER ===== */}
-            <header className="main-header">
-                <div className="logo-section">
-                    <img src={logo} alt="logo" className="logo" />
-                    <span className="brand">CatchMe</span>
-                </div>
-                <div className="icons">
-                    <button className="icon-button">
-                        <FontAwesomeIcon icon={faBell} style={{ color: '#f29b30' }} />
-                    </button>
-                    <button className="icon-button" onClick={() => navigate('/mypage')}>
-                        <FontAwesomeIcon icon={faUser} style={{ color: '#f29b30' }} />
-                    </button>
-                </div>
-            </header>
+            <Header/>
 
             {/* ===== MAIN CONTENT ===== */}
             <main className="main-content">
