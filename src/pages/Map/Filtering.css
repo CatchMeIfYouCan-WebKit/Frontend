@@ -264,6 +264,7 @@
 }
 .bread-X {
     height: 16px;
+    width: 16px;
 }
 .bread-sheet-header {
     display: flex;
@@ -273,18 +274,17 @@
     padding: 0 0px;
 }
 
-.bread-name{
+.bread-name {
     font-size: 18px;
     font-weight: 600;
     line-height: 24px;
     margin: 10px;
     text-align: left;
 }
-.selected-color{
+.selected-color {
     display: inline-block;
     margin: 8px;
     padding: 2px;
     border-radius: 8px;
     width: 60px;
-    
 }
