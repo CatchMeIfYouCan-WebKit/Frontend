@@ -53,7 +53,7 @@ import ChatRoom from '../pages/Chat/components/ChatRoom';
 import ChatRoomTest from '../pages/Chat/components/ChatRoomTest';
 import AdoptionPostEdit from '../pages/Adoption/components/AdoptionPostEdit';
 
-import LocationSelect2 from '../pages/MissingForm/components/MissingLocationSelect';
+import MissingLocationSelect from '../pages/MissingForm/components/MissingLocationSelect';
 function App() {
     return (
         <BrowserRouter>
@@ -112,7 +112,7 @@ function App() {
                 {/* ✅ 실종 하위 라우트 추가 */}
                 <Route path="/missingpostDetail" element={<MissingPostDetail />} />
                 <Route path="/report-missing" element={<MissingPostForm />} />
-                <Route path="/report-missing/select-location" element={<LocationSelect2 />} />
+                <Route path="/report-missing/select-location" element={<MissingLocationSelect />} />
 
                 {/* ✅ 목격 하위 라우트 추가 */}
                 <Route path="/witnesspostDetail" element={<WitnessPostDetail />} />
