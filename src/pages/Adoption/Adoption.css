@@ -45,6 +45,7 @@
     padding: 8px;
     background: #fff;
     margin-top: 0;
+    height: 60px;
 }
 .adoption-header .filters {
     display: flex;
@@ -78,20 +79,21 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    min-height: 544px;
 }
 .post-card {
     display: flex;
     background: #fff;
     border-radius: 8px;
     overflow: hidden;
-    height: 140px;
+    height: 130px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.1);
     cursor: pointer;
 }
 .post-img {
     margin: 10px;
-    width: 125px;
-    height: 125px;
+    width: 115px;
+    height: 115px;
     object-fit: cover;
     border-radius: 8px;
 }
@@ -120,6 +122,7 @@
     font-size: 12px;
     font-weight: 500;
     line-height: 1.5;
+    text-align: left;
 }
 .post-footer {
     display: flex;
@@ -299,4 +302,39 @@ footer {
     height: 60px;
     background: #fff;
     z-index: 20;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.pagination button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.pagination button:disabled {
+  background-color: #e0e0e0;
+  color: #888;
+  cursor: default;
+}
+
+.pagination button:not(:disabled):hover {
+  background-color: #0056b3;
+}
+
+.pagination .page-info {
+  font-size: 14px;
+  color: #333;
+  min-width: 48px;
+  text-align: center;
 }

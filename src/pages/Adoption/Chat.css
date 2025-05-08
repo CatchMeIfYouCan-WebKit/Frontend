@@ -1,0 +1,53 @@
+/* src/pages/Chat.css */
+
+.chat-container {
+    position: fixed;
+    bottom: 1px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: 100%;
+    
+  }
+  
+  .chat-button-wrapper {
+    background-color: white;
+    height: 70px;
+    padding-top: 10px;
+    width: 100%;
+    justify-content: center;
+    vertical-align: middle;
+    
+  }
+  .love-button{
+    margin-right: 10px;
+    width: 30px;
+  }
+  .chat-button {
+    background-color: #FFA500;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 85%;
+  }
+  
+  .chat-button:hover {
+    background-color: #e59400;
+  }
+  
+  .chat-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #1E90FF;
+    color: #fff;
+    border-radius: 12px;
+    padding: 4px 8px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  

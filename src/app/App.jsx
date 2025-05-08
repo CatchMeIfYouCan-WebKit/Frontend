@@ -45,6 +45,9 @@ import WitnessPostDetail from '../pages/Witness/components/WitnessPostDetail';
 import AdoptionPost from '../pages/Adoption/components/AdoptionPost';
 
 import WitnessPostForm from '../pages/WitnessForm/components/WitnessPostForm';
+import RegisterPost from '../pages/Adoption/components/RegisterPost';
+import LocationSelect from '../pages/Adoption/components/LocationSelect';
+import PostDetail from '../pages/Adoption/components/PostDetail';
 function App() {
     return (
         <BrowserRouter>
@@ -77,9 +80,11 @@ function App() {
                 <Route path="/shelterdetail/filter" element={<ShelterFilter />} />
 
                 {/* 입양 게시판 */}
-                <Route path="/adoption" element={<Adoption />} />
-                <Route path="/adoptionpost" element={<AdoptionPost />} />
-
+                <Route path="/adoptionpost" element={<Adoption />} />
+                <Route path="/adoptionpost/add" element={<AdoptionPost />} />
+                <Route path="/adoptionpost/add/details" element={<RegisterPost />} />
+                <Route path="/adoptionpost/add/select-location" element={<LocationSelect />} />
+                <Route path="/adoptionpost/:id" element={<PostDetail />} />
 
                 {/* 반려동물 프로필 등록 */}
                 <Route path="/animal-profile" element={<AnimalProfile />} />
