@@ -1,21 +1,20 @@
+import axios from 'axios';
+import { format } from 'date-fns';
 import React, { useState } from 'react';
-import { IoIosArrowBack } from 'react-icons/io';
-import { useNavigate, useLocation } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import '../MissingPostForm.css';
+import { IoIosArrowBack } from 'react-icons/io';
+import { useLocation, useNavigate } from 'react-router-dom';
 import verifion from '../../../assets/verifion.svg';
-import verifioff from '../../../assets/verifioff.svg';
+import '../MissingPostForm.css';
 import LocationPicker from './LocationPicker';
-import axios from 'axios';
-import { format, formatDate } from 'date-fns';
 
 export default function MissingPostForm() {
     const navigate = useNavigate();
     const pet = useLocation().state?.pet;
 
-    const [whenDate, setWhenDate] = useState(null);
-    const [where, setWhere] = useState('');
+    const [date, setDate] = useState(null);
+    const [location, setLocation] = useState('');
     const [desc, setDesc] = useState('');
     const [isLocOpen, setIsLocOpen] = useState(false);
     const [file, setFile] = useState(null);
@@ -30,23 +29,21 @@ export default function MissingPostForm() {
 
     // 실종게시글 등록하기
     const handleSubmit = async () => {
-        if (!whenDate || !desc) {
+        if (!date || !desc) {
             alert('날짜와 상세설명은 필수입니다.');
             return;
         }
 
         // TODO: 지도 구현 완료 시 마커를 주소로 변환하여 주소 설정
-        const location = where || '지도가 구현되면 다시 설정할거에요';
-
         try {
             const formData = new FormData();
-            const formattedDate = format(whenDate, "yyyy-MM-dd'T'HH:mm");
+            const formattedDate = format(date, "yyyy-MM-dd'T'HH:mm");
 
             const missingData = {
                 petId: pet.id,
                 postType: 'missing',
                 missingDatetime: formattedDate,
-                missingLocation: location,
+                missingLocation: location?.trim() || '지도가 구현되면 다시 설정할거에요(실종)',
                 detailDescription: desc,
             };
 
@@ -57,7 +54,7 @@ export default function MissingPostForm() {
             formData.append('post', new Blob([JSON.stringify(missingData)], { type: 'application/json' }));
             formData.append('file', file);
 
-            const res = await axios.post('/api/missing', formData, {
+            const res = await axios.post('/api/posts/missing', formData, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                     'Content-Type': 'multipart/form-data',
@@ -97,8 +94,8 @@ export default function MissingPostForm() {
                     {/* 1. 날짜 선택 */}
                     <label>강아지를 언제 잃어버리셨나요?</label>
                     <DatePicker
-                        selected={whenDate}
-                        onChange={setWhenDate}
+                        selected={date}
+                        onChange={setDate}
                         showTimeSelect
                         timeFormat="HH:mm"
                         timeIntervals={30}
@@ -110,7 +107,7 @@ export default function MissingPostForm() {
                     {/* 2. 장소 선택 (모달) */}
                     <label>강아지를 어디서 잃어버리셨나요?</label>
                     <div className="mpf-input mpf-input--select" onClick={() => setIsLocOpen(true)}>
-                        {where || '장소를 선택해주세요'}
+                        {location || '장소를 선택해주세요'}
                     </div>
 
                     {/* 3. 상세 정보 */}
@@ -136,7 +133,7 @@ export default function MissingPostForm() {
                         type="button"
                         className="mpf-submit"
                         onClick={() => {
-                            console.log({ pet, whenDate, where, desc });
+                            console.log({ pet, date, location, desc });
                             handleSubmit();
                         }}
                     >
@@ -148,7 +145,7 @@ export default function MissingPostForm() {
             <LocationPicker
                 isOpen={isLocOpen}
                 onClose={() => setIsLocOpen(false)}
-                onSelect={(addr) => setWhere(addr)}
+                onSelect={(addr) => setLocation(addr)}
             />
         </>
     );

@@ -44,15 +44,16 @@ export default function WitnessPostForm() {
             const formattedDate = format(date, "yyyy-MM-dd'T'HH:mm");
 
             const witnessData = {
+                postType: 'witness',
                 witnessDatetime: formattedDate,
-                witnessLocation: location?.trim() || '지도가 구현되면 다시 설정할거에요',
+                witnessLocation: location?.trim() || '지도가 구현되면 다시 설정할거에요(목격)',
                 detailDescription: description,
             };
 
             formData.append('post', new Blob([JSON.stringify(witnessData)], { type: 'application/json' }));
             formData.append('file', file);
 
-            const res = await axios.post('/api/missing/witness', formData, {
+            const res = await axios.post('/api/posts/witness', formData, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                 },
@@ -78,7 +79,7 @@ export default function WitnessPostForm() {
                 }
 
                 setMorpheusImagePath(result.fullpath || result.path);
-                setPreviewUrl(result.fullpath || result.path); // 미리보기 표시
+                setPreviewUrl(result.fullpath || result.path);
                 console.log('🖼 선택된 이미지 경로:', result.fullpath || result.path);
             } else {
                 alert('사진 선택 실패 또는 취소됨');
