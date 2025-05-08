@@ -45,6 +45,9 @@ import WitnessPostDetail from '../pages/Witness/components/WitnessPostDetail';
 import AdoptionPost from '../pages/Adoption/components/AdoptionPost';
 
 import WitnessPostForm from '../pages/WitnessForm/components/WitnessPostForm';
+
+import ChatRoom from '../pages/Chat/components/ChatRoom';
+import ChatRoomTest from '../pages/Chat/components/ChatRoomTest';
 function App() {
     return (
         <BrowserRouter>
@@ -104,6 +107,10 @@ function App() {
                 {/* ✅ 목격 하위 라우트 추가 */}
                 <Route path="/witnesspostDetail" element={<WitnessPostDetail />} />
                 <Route path="/report-found" element={<WitnessPostForm />} />
+            
+                {/* ✅ 실시간 채팅방 */}
+                <Route path="/chat/:type/:relatedId" element={<ChatRoom />} />
+                <Route path="/chat/test" element={<ChatRoomTest />} />
             </Routes>
         </BrowserRouter>
     );
