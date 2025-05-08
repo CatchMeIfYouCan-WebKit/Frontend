@@ -1,4 +1,6 @@
-.missing-detail-container {
+/* WitnessPostDetail.css - witness prefix 적용 */
+
+.witness-detail-container {
     width: 100%;
     max-width: 540px;
     margin: 0 auto;
@@ -8,12 +10,11 @@
     transition: opacity 0.4s ease;
 }
 
-.missing-detail-container.fade-out {
+.witness-fade-out {
     opacity: 0;
 }
 
-/* 헤더 */
-.missing-header {
+.witness-header {
     width: 100%;
     display: flex;
     align-items: center;
@@ -23,13 +24,15 @@
     box-sizing: border-box;
 }
 
-.missing-header h1 {
-    margin: auto;
-    font-size: 26px;
-    font-weight: bold;
+.witness-header h1 {
+    font-weight: 700;
+    text-align: center;
+    margin: 0 auto;
+    flex: 1;
+    font-size: 20px;
 }
 
-.back-button {
+.witness-back-button {
     background: none;
     border: none;
     font-size: 36px;
@@ -37,84 +40,81 @@
     margin-left: -15px;
 }
 
-/* 사용자 정보 */
-.user-info {
+.witness-user-info {
     display: flex;
+    flex-direction: row;
     align-items: flex-start;
-    padding: 12px 12px 8px 8px; /* 왼쪽 padding만 8px로 줄임 */
+    gap: 12px;
+    padding: 12px 16px;
 }
 
-/* 프로필 원 (가운데 정렬 + 크기 키움) */
-.profile-circle {
+.witness-left-part {
+    flex-shrink: 0;
+}
+
+.witness-profile-circle {
     width: 54px;
     height: 54px;
-    background-color: #ccc;
     border-radius: 50%;
-    flex-shrink: 0;
-    margin-right: 12px;
+    background-color: #ccc;
     object-fit: cover;
-    align-self: center; /* <-- 핵심: 세로 가운데 정렬 */
+    display: block;
 }
 
-.info-wrapper {
+.witness-right-part {
     flex: 1;
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
-.first-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 4px;
-}
-
-.nickname {
-    font-weight: 400;
-    font-size: 20px;
-}
-
-.second-row {
+.witness-nickname-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.witness-nickname {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.witness-more-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.witness-dog-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
+}
+
+.witness-dog-info {
+    display: flex;
+    gap: 6px;
     font-size: 16px;
 }
 
-.dog-info {
-    display: flex;
-    align-items: center; /* ✅ 추가: 텍스트 높이 맞춤 */
-    gap: 6px;
-}
-
-.dog-name {
+.witness-dog-name {
     font-weight: bold;
     color: #000;
-    font-size: 20px;
-}
-.breed {
-    color: #666;
-    font-size: 20px;
-    text-decoration: none; /* 밑줄 제거 */
-    border-bottom: none; /* 혹시 있을 bottom border 제거 */
-    line-height: 1; /* ✅ 줄 간격 조정 */
 }
 
-.time-ago {
+.witness-breed {
+    color: #666;
+}
+
+.witness-time-ago {
     font-size: 13px;
     color: #888;
     white-space: nowrap;
 }
 
-.more-btn {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    margin-left: 8px;
-    align-self: flex-start;
-}
-
-.image-slider {
+.witness-image-slider {
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -124,11 +124,11 @@
     margin-left: calc(-50vw + 50%);
 }
 
-.image-slider::-webkit-scrollbar {
+.witness-image-slider::-webkit-scrollbar {
     display: none;
 }
 
-.slide {
+.witness-slide {
     flex: none;
     scroll-snap-align: center;
     width: 100%;
@@ -138,14 +138,14 @@
     position: relative;
 }
 
-.slide img {
+.witness-slide img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
 }
 
-.image-counter {
+.witness-image-counter {
     position: absolute;
     bottom: 8px;
     right: 14px;
@@ -157,7 +157,7 @@
     font-weight: bold;
 }
 
-.thumbnail-slider {
+.witness-thumbnail-slider {
     margin-left: 8px;
     display: flex;
     overflow-x: auto;
@@ -167,11 +167,11 @@
     scroll-snap-type: x mandatory;
 }
 
-.thumbnail-slider::-webkit-scrollbar {
+.witness-thumbnail-slider::-webkit-scrollbar {
     display: none;
 }
 
-.thumbnail-card {
+.witness-thumbnail-card {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -187,11 +187,11 @@
     transition: transform 0.2s;
 }
 
-.thumbnail-card:hover {
+.witness-thumbnail-card:hover {
     transform: scale(1.02);
 }
 
-.thumbnail-card img {
+.witness-thumbnail-card img {
     width: 80px;
     height: 90px;
     object-fit: cover;
@@ -199,7 +199,7 @@
     flex-shrink: 0;
 }
 
-.thumbnail-text {
+.witness-thumbnail-text {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -208,14 +208,14 @@
     color: #333;
 }
 
-.detail-info {
+.witness-detail-info {
     margin-top: 10px;
     font-size: 16px;
     color: #333;
 }
 
-.date-row,
-.location-row {
+.witness-date-row,
+.witness-location-row {
     display: flex;
     align-items: center;
     margin: 10px 0;
@@ -224,14 +224,14 @@
     font-size: 24px;
 }
 
-.calender-image,
-.location-image {
+.witness-calender-image,
+.witness-location-image {
     width: 30px;
     height: 30px;
     margin-right: 15px;
 }
 
-.description {
+.witness-description {
     margin: 20px 15px 0;
     line-height: 1.5;
     font-size: 24px;
@@ -239,55 +239,55 @@
     text-align: left;
 }
 
-.map-section {
+.witness-map-section {
     margin: 20px 0;
 }
 
-.map-image {
+.witness-map-image {
     width: 95%;
     border-radius: 12px;
     display: block;
     margin: 0 auto;
 }
 
-.comment-section {
+.witness-comment-section {
     margin-top: 20px;
 }
 
-.comment-count {
+.witness-comment-count {
     font-weight: bold;
     margin-bottom: 20px;
     text-align: left;
     margin-left: 15px;
 }
 
-.comment {
+.witness-comment {
     display: flex;
     align-items: flex-start;
     margin-bottom: 16px;
 }
 
-.comment-profile-circle {
+.witness-comment-profile-circle {
     width: 36px;
     height: 36px;
     border-radius: 50%;
     margin-left: 15px;
 }
 
-.comment-content {
+.witness-comment-content {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
 
-.comment-meta {
+.witness-comment-meta {
     font-size: 16px;
     color: #888;
     margin-bottom: 4px;
 }
 
-.comment-author {
+.witness-comment-author {
     font-weight: bold;
     color: #333;
     margin-right: 6px;
@@ -296,7 +296,7 @@
     margin-left: 15px;
 }
 
-.comment-text {
+.witness-comment-text {
     font-size: 15px;
     color: #444;
     text-align: left;
@@ -306,7 +306,7 @@
     font-weight: 600;
 }
 
-.comment-input-box {
+.witness-comment-input-box {
     position: relative;
     display: flex;
     align-items: center;
@@ -314,7 +314,7 @@
     padding-top: 10px;
 }
 
-.comment-input-box input {
+.witness-comment-input-box input {
     flex: 1;
     margin-left: 15px;
     margin-right: 15px;
@@ -326,7 +326,7 @@
     font-size: 14px;
 }
 
-.submit-btn {
+.witness-submit-btn {
     position: absolute;
     right: 25px;
     background: none;
@@ -341,7 +341,30 @@
     height: 30px;
 }
 
-.send-image {
+.witness-send-image {
     width: 30px;
     height: 30px;
+}
+.witness-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    min-width: 120px;
+    overflow: hidden;
+}
+
+.witness-dropdown-item {
+    padding: 10px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.witness-dropdown-item:hover {
+    background-color: #f8f8f8;
 }
