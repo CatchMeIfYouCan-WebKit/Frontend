@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { FaRegCalendarAlt } from 'react-icons/fa';
 import { AiOutlineCamera } from 'react-icons/ai';
 import DatePicker from 'react-datepicker';
@@ -11,14 +11,74 @@ import axios from 'axios';
 
 export default function WitnessPostForm() {
     const navigate = useNavigate();
-    const [isLocationPickerOpen, setIsLocationPickerOpen] = useState(false);
-    const [date, setDate] = useState(null);
-    const [location, setLocation] = useState(null);
-    const [description, setDescription] = useState('');
-    const [file, setFile] = useState(null);
-    const [previewUrl, setPreviewUrl] = useState(null);
-    const [morpheusImagePath, setMorpheusImagePath] = useState(null);
+    const locationState = useLocation();
+    const pet = locationState.state?.pet;
 
+    const [date, setDate] = useState(locationState.state?.date);
+    const [location, setLocation] = useState(null);
+    const [latitude, setLatitude] = useState(null);
+    const [longitude, setLongitude] = useState(null);
+    const [desc, setDesc] = useState(locationState.state?.desc);
+    // 서버에 보낼 파일
+    const [file, setFile] = useState(null);
+    // 미리보기 용 URL
+    const [previewUrl, setPreviewUrl] = useState();
+    // 모피어스 내부 경로
+
+    // 선택된 위치 좌표 수신
+    useEffect(() => {
+        const state = locationState.state;
+        if (state?.latitude && state?.longitude) {
+            setLatitude(state.latitude);
+            setLongitude(state.longitude);
+        }
+    }, [locationState]);
+
+    // 위도, 경도 -> 주소 변환 (1, 2, 3 중에 골라쓰면 됨. 1이 제일 짧아서 1로 함)
+    useEffect(() => {
+        if (latitude && longitude && window.kakao && window.kakao.maps) {
+            const geocoder = new window.kakao.maps.services.Geocoder();
+
+            geocoder.coord2Address(longitude, latitude, (result, status) => {
+                if (status === window.kakao.maps.services.Status.OK) {
+                    // 1. 도로명 주소
+                    const address = result[0].road_address?.address_name || result[0].address.address_name;
+                    setLocation(address);
+
+                    // 2. 도로명 주소 + 지번
+                    // const road = result[0].road_address?.address_name;
+                    // const jibun = result[0].address?.address_name;
+                    // const fullAddress = road && jibun ? `${road} (${jibun})` : road || jibun;
+                    // setLocation(fullAddress);
+
+                    // 3. 건물명 포함
+                    // const buildingName = result[0].road_address?.building_name;
+                    // const road = result[0].road_address?.address_name;
+                    // const fullAddress = buildingName ? `${road} (${buildingName})` : road;
+                    // setLocation(fullAddress);
+                }
+            });
+        }
+    }, [latitude, longitude]);
+
+    // 파일 복원
+    useEffect(() => {
+        const state = locationState.state;
+
+        if (state?.previewUrl) {
+            setPreviewUrl(state.previewUrl);
+
+            fetch(state.previewUrl)
+                .then((res) => res.blob())
+                .then((blob) => {
+                    const f = new File([blob], 'witness.jpg', { type: blob.type });
+                    setFile(f);
+                })
+                .catch((err) => console.error('파일 복원 실패:', err));
+        }
+    }, [locationState]);
+
+    // 작성
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -32,7 +92,7 @@ export default function WitnessPostForm() {
             return;
         }
 
-        if (!description) {
+        if (!desc) {
             alert('상세설명을 입력해주세요.');
             return;
         }
@@ -45,8 +105,8 @@ export default function WitnessPostForm() {
             const witnessData = {
                 postType: 'witness',
                 witnessDatetime: formattedDate,
-                witnessLocation: location?.trim() || '지도가 구현되면 다시 설정할거에요(목격)',
-                detailDescription: description,
+                witnessLocation: location,
+                detailDescription: desc,
             };
 
             formData.append('post', new Blob([JSON.stringify(witnessData)], { type: 'application/json' }));
@@ -58,7 +118,7 @@ export default function WitnessPostForm() {
                 },
             });
 
-            console.log({ location, date, description, file });
+            console.log({ location, date, desc, file });
             alert('목격 신고를 했습니다.');
             navigate('/main');
         } catch (error) {
@@ -67,22 +127,89 @@ export default function WitnessPostForm() {
         }
     };
 
+    // 이미지 가져오기
+    const getImageUrl = (path) => {
+        if (!path) return '';
+        const host = window.location.hostname;
+        const port = 8080;
+        return `http://${host}:${port}${path}`;
+    };
+
+    // 사진 업로드
     const handleMorpheusImageUpload = () => {
         const userChoice = confirm('사진을 촬영하시겠습니까?');
 
-        const callback = (status, result) => {
-            if (status === 'SUCCESS') {
-                if (!result.path || result.size < 10000) {
-                    alert('유효한 이미지가 아닙니다.');
-                    return;
-                }
+        const uploadImage = async (localPath) => {
+            const fileExt = localPath.split('.').pop().toLowerCase();
+            const mimeTypeMap = {
+                jpg: 'image/jpeg',
+                jpeg: 'image/jpeg',
+                png: 'image/png',
+                gif: 'image/gif',
+            };
+            const mimeType = mimeTypeMap[fileExt] || 'image/jpeg';
 
-                setMorpheusImagePath(result.fullpath || result.path);
-                setPreviewUrl(result.fullpath || result.path);
-                console.log('🖼 선택된 이미지 경로:', result.fullpath || result.path);
-            } else {
-                alert('사진 선택 실패 또는 취소됨');
+            const response = await fetch(localPath);
+            const blob = await response.blob();
+            const file = new File([blob], `profile.${fileExt}`, { type: mimeType });
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const uploadUrl = `http://${window.location.hostname}:8080/api/posts/witness/image-upload`;
+
+            const res = await axios.post(uploadUrl, formData, {
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            console.log('🚀 localPath:', localPath);
+            console.log('🚀 mimeType:', mimeType);
+            console.log('🚀 uploadUrl:', uploadUrl);
+            console.log('📸 previewUrl:', previewUrl);
+
+            M.net.http.upload({
+                url: `http://${window.location.hostname}:8080/api/animal-profile/image-upload`,
+                method: 'POST',
+                header: {
+                    Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+                },
+                body: [
+                    {
+                        name: 'file',
+                        content: localPath, // ex: /sdcard/...
+                        type: 'FILE', // MIME type
+                    },
+                ],
+                finish: (status, header, body) => {
+                    const result = JSON.parse(body);
+                    const uploadedPath = result.photoPath;
+
+                    setPreviewUrl(uploadedPath);
+                    setPreviewUrl(getImageUrl(uploadedPath));
+                    console.log('🔥 업로드 응답:', result);
+                    console.log('🔥 저장된 경로:', result.photoPath);
+
+                    alert('업로드 성공!');
+                },
+            });
+        };
+
+        const handleResult = (status, result) => {
+            if (status !== 'SUCCESS' || !result.path) {
+                alert('사진 선택 실패');
+                return;
             }
+
+            const path = result.fullpath || result.path;
+            if (!/\.(jpg|jpeg|png|gif)$/i.test(path)) {
+                alert('이미지 파일만 선택해주세요.');
+                return;
+            }
+
+            uploadImage(path);
         };
 
         if (userChoice) {
@@ -90,7 +217,7 @@ export default function WitnessPostForm() {
                 path: '/media',
                 mediaType: 'PHOTO',
                 saveAlbum: true,
-                callback,
+                callback: handleResult,
             });
         } else {
             M.media.picker({
@@ -98,31 +225,8 @@ export default function WitnessPostForm() {
                 mediaType: 'ALL',
                 path: '/media',
                 column: 3,
-                callback: async (status, result) => {
-                    if (status === 'SUCCESS') {
-                        const imagePath = result.fullpath || result.path;
-                        setMorpheusImagePath(imagePath);
-                        setPreviewUrl(imagePath);
-
-                        try {
-                            const response = await fetch(imagePath);
-                            const blob = await response.blob();
-                            const selectedFile = new File([blob], 'witness.jpg', { type: blob.type });
-                            setFile(selectedFile);
-                            alert('사진 선택 완료');
-                            console.log('status: ', status);
-                            console.log('result: ', result);
-                        } catch (error) {
-                            console.error('이미지 미리보기 로딩 실패:', error);
-                            alert('사진 미리보기에 실패했습니다.');
-                        }
-                    } else {
-                        alert('사진 선택 실패');
-                    }
-                },
+                callback: handleResult,
             });
-            console.log('morpheusImagePath:', morpheusImagePath);
-            console.log('파일 존재 여부:', !!morpheusImagePath && morpheusImagePath.endsWith('.jpg'));
         }
     };
 
@@ -142,11 +246,7 @@ export default function WitnessPostForm() {
                         <label htmlFor="file-upload" className="photo-upload-box">
                             <button type="button" onClick={handleMorpheusImageUpload}>
                                 {previewUrl ? (
-                                    <AiOutlineCamera
-                                        className="camera-icon"
-                                        id="camera-icon"
-                                        style={{ color: '#f5a623' }}
-                                    />
+                                    <img src={previewUrl} alt="사진 미리보기" className="photo-preview" />
                                 ) : (
                                     <AiOutlineCamera
                                         className="camera-icon"
@@ -160,8 +260,22 @@ export default function WitnessPostForm() {
                 </div>
 
                 <label>목격 장소</label>
-                <div className="mpf-input mpf-input--select" onClick={() => setIsLocationPickerOpen(true)}>
-                    {location ? location.address : '장소를 선택해주세요'}
+                <div
+                    className="mpf-input mpf-input--select"
+                    onClick={() => {
+                        navigate('/report-found/select-location', {
+                            state: {
+                                date,
+                                desc,
+                                latitude,
+                                longitude,
+                                file,
+                                previewUrl,
+                            },
+                        });
+                    }}
+                >
+                    {location ? `${location}` : '장소를 선택해주세요'}
                 </div>
 
                 <label>목격 일시</label>
@@ -179,8 +293,8 @@ export default function WitnessPostForm() {
                 <label>목격 당시 상황</label>
                 <textarea
                     className="mpf-input"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    value={desc}
+                    onChange={(e) => setDesc(e.target.value)}
                     placeholder={[
                         '길 잃은 동물을 발견하고 제보해주셔서 진심으로 감사합니다!',
                         '보호자의 품으로 돌아가거나 안전하게 구조되는 데 소중한 정보가 될 수 있습니다.',
@@ -197,17 +311,6 @@ export default function WitnessPostForm() {
                     게시글 작성
                 </button>
             </form>
-
-            {isLocationPickerOpen && (
-                <LocationPicker
-                    isOpen={true}
-                    onClose={() => setIsLocationPickerOpen(false)}
-                    onSelect={(loc) => {
-                        setLocation(loc);
-                        setIsLocationPickerOpen(false);
-                    }}
-                />
-            )}
         </div>
     );
 }

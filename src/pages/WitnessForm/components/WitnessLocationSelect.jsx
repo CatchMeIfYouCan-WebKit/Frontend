@@ -72,7 +72,7 @@ export default function LocationSelect() {
     const handleConfirm = () => {
         if (!selectedPos) return;
         // 뒤로 돌아가면서 latitude/longitude 전달
-        navigate('/report-missing', {
+        navigate('/report-found', {
             replace: true,
             state: {
                 ...location.state,
@@ -88,7 +88,7 @@ export default function LocationSelect() {
                 <div className="ls-back" onClick={handleBack}>
                     <IoIosArrowBack size={24} />
                 </div>
-                <h1 className="ls-title">강아지를 마지막으로 본 위치를 선택해주세요</h1>
+                <h1 className="ls-title">목격위치를 선택해주세요</h1>
                 <p className="ls-subtitle">지도를 눌러 마커를 표시해주세요</p>
             </header>
 

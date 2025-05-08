@@ -137,10 +137,9 @@
 }
 
 .photo-preview {
-    width: 100px;
-    height: 100px;
+    width: 140px;
+    height: 140px;
     border-radius: 8px;
     object-fit: cover;
     border: 1px solid #ccc; /* ✅ 기존 주황 테두리 → 동일한 연한 회색 */
-    margin-top: 8px; /* ✅ 통일감 있게 추가 */
 }

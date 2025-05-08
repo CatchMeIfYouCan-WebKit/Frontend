@@ -54,6 +54,8 @@ import ChatRoomTest from '../pages/Chat/components/ChatRoomTest';
 import AdoptionPostEdit from '../pages/Adoption/components/AdoptionPostEdit';
 
 import MissingLocationSelect from '../pages/MissingForm/components/MissingLocationSelect';
+import WitnessLocationSelect from '../pages/WitnessForm/components/WitnessLocationSelect';
+
 function App() {
     return (
         <BrowserRouter>
@@ -117,6 +119,7 @@ function App() {
                 {/* ✅ 목격 하위 라우트 추가 */}
                 <Route path="/witnesspostDetail" element={<WitnessPostDetail />} />
                 <Route path="/report-found" element={<WitnessPostForm />} />
+                <Route path="/report-found/select-location" element={<WitnessLocationSelect />} />
 
                 {/* ✅ 실시간 채팅방 */}
                 <Route path="/chat/:type/:relatedId" element={<ChatRoom />} />

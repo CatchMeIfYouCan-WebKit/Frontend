@@ -14,11 +14,11 @@ export default function MissingPostForm() {
     const locationState = useLocation();
     const pet = locationState.state?.pet;
 
-    const [date, setDate] = useState(null);
+    const [date, setDate] = useState(locationState.state?.date);
     const [location, setLocation] = useState('');
     const [latitude, setLatitude] = useState(null);
     const [longitude, setLongitude] = useState(null);
-    const [desc, setDesc] = useState('');
+    const [desc, setDesc] = useState(locationState.state?.desc);
     const [file, setFile] = useState(null);
 
     // 선택된 위치 좌표 수신
@@ -27,10 +27,37 @@ export default function MissingPostForm() {
         if (state?.latitude && state?.longitude) {
             setLatitude(state.latitude);
             setLongitude(state.longitude);
-            setLocation(`${state.latitude}, ${state.longitude}`);
         }
     }, [locationState]);
 
+    // 위도, 경도 -> 주소 변환 (1, 2, 3 중에 골라쓰면 됨. 1이 제일 짧아서 1로 함)
+    useEffect(() => {
+        if (latitude && longitude && window.kakao && window.kakao.maps) {
+            const geocoder = new window.kakao.maps.services.Geocoder();
+
+            geocoder.coord2Address(longitude, latitude, (result, status) => {
+                if (status === window.kakao.maps.services.Status.OK) {
+                    // 1. 도로명 주소
+                    const address = result[0].road_address?.address_name || result[0].address.address_name;
+                    setLocation(address);
+
+                    // 2. 도로명 주소 + 지번
+                    // const road = result[0].road_address?.address_name;
+                    // const jibun = result[0].address?.address_name;
+                    // const fullAddress = road && jibun ? `${road} (${jibun})` : road || jibun;
+                    // setLocation(fullAddress);
+
+                    // 3. 건물명 포함
+                    // const buildingName = result[0].road_address?.building_name;
+                    // const road = result[0].road_address?.address_name;
+                    // const fullAddress = buildingName ? `${road} (${buildingName})` : road;
+                    // setLocation(fullAddress);
+                }
+            });
+        }
+    }, [latitude, longitude]);
+
+    // 이미지 불러오기
     const getImageUrl = (path) => {
         if (!path) return '/default-image.png';
         const host = window.location.hostname;
@@ -38,6 +65,7 @@ export default function MissingPostForm() {
         return `http://${host}:${port}${path}`;
     };
 
+    // 작성
     const handleSubmit = async () => {
         if (!date || !desc) {
             alert('날짜와 상세설명은 필수입니다.');
@@ -55,8 +83,6 @@ export default function MissingPostForm() {
                 missingDatetime: formattedDate,
                 missingLocation: locationString,
                 detailDescription: desc,
-                latitude,
-                longitude,
             };
 
             if (!file && pet?.photoPath) {
@@ -117,9 +143,7 @@ export default function MissingPostForm() {
                     <div className="mpf-form">
                         <label>강아지를 어디서 잃어버리셨나요?</label>
                         <div className="space-box">
-                            <div className="space-comment">
-                                {latitude && longitude ? '장소 선택 완료' : '장소를 선택해주세요'}
-                            </div>
+                            <div className="space-comment">{location ? `${location}` : '장소를 선택해주세요'}</div>
                             <div
                                 className="space-side"
                                 onClick={() =>
