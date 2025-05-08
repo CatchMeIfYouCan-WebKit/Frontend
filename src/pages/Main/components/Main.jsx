@@ -108,7 +108,7 @@ export default function Main() {
     return (
         <div className="main-page">
             {/* ===== HEADER ===== */}
-            <Header/>
+            <Header />
 
             {/* ===== MAIN CONTENT ===== */}
             <main className="main-content">
@@ -143,11 +143,15 @@ export default function Main() {
                                 </div>
                             </div>
                             <button
-                                className="register-button"
-                                style={{ backgroundColor: pet.registrationNumber ? '#f5a623' : undefined }}
-                                onClick={() => navigate('/animal-profile', { state: { mode: 'edit', pet } })}
+                                className={`register-button ${pet.registrationNumber?.trim() ? 'complete' : ''}`}
+                                disabled={!!pet.registrationNumber?.trim()}
+                                onClick={() => {
+                                    if (!pet.registrationNumber?.trim()) {
+                                        navigate('/animal-profile', { state: { mode: 'edit', pet } });
+                                    }
+                                }}
                             >
-                                {pet.registrationNumber || '동물 등록번호 인증하기'}
+                                {pet.registrationNumber?.trim() ? '동물등록번호 조회완료' : '동물등록번호 등록하기'}
                             </button>
                         </section>
                     ))}
