@@ -87,8 +87,8 @@ export default function LocationSelect() {
                 <div className="ls-back" onClick={handleBack}>
                     <IoIosArrowBack size={24} />
                 </div>
-                <h1 className="ls-title">거래 위치를 선택해주세요</h1>
-                <p className="ls-subtitle">지도에서 클릭(또는 길게 누르기) 해주세요</p>
+                <h1 className="ls-title">아이가 새로운 반려인을 만날 곳을 선택해주세요</h1>
+                <p className="ls-subtitle">지도에서 원하시는 장소를 마커로 표시해주세요</p>
             </header>
 
             <div ref={mapRef} className="ls-map" />

@@ -1,26 +1,50 @@
-.location-select { display: flex; flex-direction: column; height: 100vh; }
-.ls-header { padding: 16px; }
-.ls-map { 
+/* LocationSelect.css */
+.location-select {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.ls-header {
+    padding: 16px;
+    padding-bottom: 0;
+}
+
+.ls-back {
+    text-align: left;
+    margin-bottom: 8px;
+    margin-left: -20px;
+}
+
+.ls-title {
+    text-align: left;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    margin-left: -14px;
+}
+
+.ls-subtitle {
+    text-align: left;
+    font-size: 14px;
+    color: #666;
+    margin-left: -14px;
+}
+
+.ls-map {
+    flex-grow: 1;
     width: 100%;
-    height: 746px;
 }
+
 .ls-confirm-btn {
-  background: #ffa500;
-  color: #fff;
-  border: none;
-  padding: 16px;
-  font-size: 16px;
+    background: #ffa500;
+    color: #fff;
+    border: none;
+    padding: 16px;
+    font-size: 16px;
+    width: 100%;
 }
-.ls-confirm-btn:disabled { opacity: 0.5; }
 
-.ls-back{
-    text-align: left;
-
-}
-.ls-title{
-    text-align: left;
-    margin-top: 20px;
-}
-.ls-subtitle{
-    text-align: left;
+.ls-confirm-btn:disabled {
+    opacity: 0.5;
 }

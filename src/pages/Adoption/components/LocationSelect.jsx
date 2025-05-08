@@ -26,13 +26,13 @@ export default function LocationSelect() {
             window.kakao.maps.load(() => {
                 const kakao = window.kakao;
                 const map = new kakao.maps.Map(mapRef.current, {
-                    center: new kakao.maps.LatLng(37.5665, 126.9780),
+                    center: new kakao.maps.LatLng(37.5665, 126.978),
                     level: 4,
                 });
                 const geocoder = new kakao.maps.services.Geocoder();
 
                 // 마커 & 클릭 처리 함수
-                const placeMarker = latLng => {
+                const placeMarker = (latLng) => {
                     // 이전 마커 제거
                     if (markerRef.current) {
                         markerRef.current.setMap(null);
@@ -48,10 +48,10 @@ export default function LocationSelect() {
                 };
 
                 // 데스크탑 · 모바일 모두 지원
-                kakao.maps.event.addListener(map, 'click', e => {
+                kakao.maps.event.addListener(map, 'click', (e) => {
                     placeMarker(e.latLng);
                 });
-                kakao.maps.event.addListener(map, 'rightclick', e => {
+                kakao.maps.event.addListener(map, 'rightclick', (e) => {
                     placeMarker(e.latLng);
                 });
             });
@@ -85,17 +85,13 @@ export default function LocationSelect() {
                 <div className="ls-back" onClick={handleBack}>
                     <IoIosArrowBack size={24} />
                 </div>
-                <h1 className="ls-title">거래 위치를 선택해주세요</h1>
-                <p className="ls-subtitle">지도에서 클릭(또는 길게 누르기) 해주세요</p>
+                <h1 className="ls-title">아이가 새로운 반려인을 만날 곳을 선택해주세요</h1>
+                <p className="ls-subtitle">지도에서 원하시는 장소를 마커로 표시해주세요</p>
             </header>
 
             <div ref={mapRef} className="ls-map" />
 
-            <button
-                className="ls-confirm-btn"
-                onClick={handleConfirm}
-                disabled={!selectedPos}
-            >
+            <button className="ls-confirm-btn" onClick={handleConfirm} disabled={!selectedPos}>
                 선택 완료
             </button>
         </div>
