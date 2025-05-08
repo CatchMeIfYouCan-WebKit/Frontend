@@ -5,7 +5,6 @@ import { FaRegCalendarAlt } from 'react-icons/fa';
 import { AiOutlineCamera } from 'react-icons/ai';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import LocationPicker from '../../MissingForm/components/LocationPicker';
 import '../WitnessPostForm.css';
 import { format } from 'date-fns';
 import axios from 'axios';
