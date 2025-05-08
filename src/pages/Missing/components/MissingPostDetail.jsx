@@ -14,6 +14,7 @@ export default function MissingPostDetail() {
     const [fadeOut, setFadeOut] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [commentInput, setCommentInput] = useState('');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [commentList, setCommentList] = useState([
         {
             author: '조진혁',
@@ -61,38 +62,52 @@ export default function MissingPostDetail() {
     return (
         <>
             <header className="missing-header">
-                <button className="back-button" onClick={goBack}>
+                <button className="missing-back-button" onClick={goBack}>
                     <IoIosArrowBack />
                 </button>
                 <h1>실종게시글</h1>
             </header>
 
-            <div className={`missing-detail-container ${fadeOut ? 'fade-out' : ''}`}>
-                <div className="user-info">
-                    <img src={user} alt="프로필 이미지" className="profile-circle" />
-
-                    <div className="info-wrapper">
-                        <div className="first-row">
-                            <div className="nickname">{post.author}</div>
-                        </div>
-                        <div className="second-row">
-                            <div className="dog-info">
-                                <span className="dog-name">{post.dogName}</span>
-                                <span className="breed">{post.breed}</span>
-                            </div>
-                            <div className="time-ago">{post.timeAgo}</div>
-                        </div>
+            <div className={`missing-detail-container ${fadeOut ? 'missing-fade-out' : ''}`}>
+                <div className="missing-user-info">
+                    <div className="missing-left-part">
+                        <img src={user} alt="프로필" className="missing-profile-circle" />
                     </div>
 
-                    <button className="more-btn">&#8942;</button>
+                    <div className="missing-right-part">
+                        <div className="missing-nickname-row">
+                            <span className="missing-nickname">{post.author}</span>
+                            <button className="missing-more-btn" onClick={() => setIsDropdownOpen((prev) => !prev)}>
+                                &#8942;
+                            </button>
+                            {isDropdownOpen && (
+                                <div className="missing-dropdown">
+                                    <div className="missing-dropdown-item" onClick={() => alert('게시글 수정')}>
+                                        게시글 수정
+                                    </div>
+                                    <div className="missing-dropdown-item" onClick={() => alert('게시글 삭제')}>
+                                        게시글 삭제
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="missing-dog-row">
+                            <div className="missing-dog-info">
+                                <span className="missing-dog-name">{post.dogName}</span>
+                                <span className="missing-breed">{post.breed}</span>
+                            </div>
+                            <div className="missing-time-ago">{post.timeAgo}</div>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="image-slider" onScroll={handleScroll}>
+                <div className="missing-image-slider" onScroll={handleScroll}>
                     {post.images.map((img, idx) => (
-                        <div className="slide" key={idx}>
+                        <div className="missing-slide" key={idx}>
                             <img src={img} alt={`강아지${idx}`} />
                             {idx === currentImageIndex && (
-                                <div className="image-counter">
+                                <div className="missing-image-counter">
                                     {currentImageIndex + 1}/{post.images.length}
                                 </div>
                             )}
@@ -100,11 +115,11 @@ export default function MissingPostDetail() {
                     ))}
                 </div>
 
-                <div className="thumbnail-slider">
+                <div className="missing-thumbnail-slider">
                     {post.images.map((img, idx) => (
-                        <div className="thumbnail-card" key={idx}>
+                        <div className="missing-thumbnail-card" key={idx}>
                             <img src={img} alt={`썸네일${idx}`} />
-                            <div className="thumbnail-text">
+                            <div className="missing-thumbnail-text">
                                 <div>목격 - 2025년 4월 30일</div>
                                 <div>품종</div>
                                 <div>털색</div>
@@ -113,47 +128,47 @@ export default function MissingPostDetail() {
                     ))}
                 </div>
 
-                <div className="detail-info">
-                    <div className="date-row">
-                        <img src={calender} alt="calender" className="calender-image" /> {post.date}
+                <div className="missing-detail-info">
+                    <div className="missing-date-row">
+                        <img src={calender} alt="calender" className="missing-calender-image" /> {post.date}
                     </div>
-                    <div className="location-row">
-                        <img src={location} alt="location" className="location-image" />
+                    <div className="missing-location-row">
+                        <img src={location} alt="location" className="missing-location-image" />
                         {post.location}
                     </div>
-                    <p className="description">{post.description}</p>
+                    <p className="missing-description">{post.description}</p>
                 </div>
 
-                <div className="map-section">
-                    <img src={mapimg} alt="map" className="map-image" />
+                <div className="missing-map-section">
+                    <img src={mapimg} alt="map" className="missing-map-image" />
                 </div>
 
-                <div className="comment-section">
-                    <div className="comment-count">댓글 {commentList.length}개</div>
+                <div className="missing-comment-section">
+                    <div className="missing-comment-count">댓글 {commentList.length}개</div>
                     {commentList.map((cmt, idx) => (
-                        <div className="comment" key={idx}>
-                            <img src={user} alt="댓글 작성자" className="comment-profile-circle" />
-                            <div className="comment-content">
-                                <div className="comment-meta">
-                                    <span className="comment-author">{cmt.author}</span>
-                                    <span className="comment-date">{cmt.date}</span>
+                        <div className="missing-comment" key={idx}>
+                            <img src={user} alt="댓글 작성자" className="missing-comment-profile-circle" />
+                            <div className="missing-comment-content">
+                                <div className="missing-comment-meta">
+                                    <span className="missing-comment-author">{cmt.author}</span>
+                                    <span className="missing-comment-date">{cmt.date}</span>
                                 </div>
-                                <div className="comment-text">{cmt.content}</div>
+                                <div className="missing-comment-text">{cmt.content}</div>
                             </div>
                         </div>
                     ))}
                 </div>
 
-                <div className="comment-input-box">
+                <div className="missing-comment-input-box">
                     <input
                         type="text"
                         placeholder="댓글을 작성해주세요"
-                        className="comment-input"
+                        className="missing-comment-input"
                         value={commentInput}
                         onChange={(e) => setCommentInput(e.target.value)}
                     />
-                    <button className="submit-btn" onClick={handleCommentSubmit}>
-                        <img src={send} alt="send" className="send-image" />
+                    <button className="missing-submit-btn" onClick={handleCommentSubmit}>
+                        <img src={send} alt="send" className="missing-send-image" />
                     </button>
                 </div>
             </div>

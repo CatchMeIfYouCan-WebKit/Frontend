@@ -23,6 +23,7 @@ export default function WitnessPostDetail() {
             content: '빨리 찾았으면 좋겠네요!',
         },
     ]);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const goBack = () => {
         setFadeOut(true);
@@ -62,37 +63,66 @@ export default function WitnessPostDetail() {
 
     return (
         <>
-            <header className="missing-header">
-                <button className="back-button" onClick={goBack}>
+            <header className="witness-header">
+                <button className="witness-back-button" onClick={goBack}>
                     <IoIosArrowBack />
                 </button>
                 <h1>목격게시글</h1>
             </header>
 
-            <div className={`missing-detail-container ${fadeOut ? 'fade-out' : ''}`}>
-                <div className="user-info">
-                    <img src={user} alt="프로필 이미지" className="profile-circle" />
-                    <div className="info-wrapper">
-                        <div className="first-row">
-                            <div className="nickname">{post.author}</div>
+            <div className={`witness-detail-container ${fadeOut ? 'witness-fade-out' : ''}`}>
+                <div className="witness-user-info">
+                    <div className="witness-left-part">
+                        <img src={user} alt="프로필 이미지" className="witness-profile-circle" />
+                    </div>
+
+                    <div className="witness-right-part">
+                        <div className="witness-nickname-row" style={{ position: 'relative' }}>
+                            <span className="witness-nickname">{post.author}</span>
+                            <button className="witness-more-btn" onClick={() => setIsDropdownOpen((prev) => !prev)}>
+                                &#8942;
+                            </button>
+
+                            {isDropdownOpen && (
+                                <div className="witness-dropdown">
+                                    <div
+                                        className="witness-dropdown-item"
+                                        onClick={() => {
+                                            alert('게시글 수정');
+                                            setIsDropdownOpen(false);
+                                        }}
+                                    >
+                                        게시글 수정
+                                    </div>
+                                    <div
+                                        className="witness-dropdown-item"
+                                        onClick={() => {
+                                            alert('게시글 삭제');
+                                            setIsDropdownOpen(false);
+                                        }}
+                                    >
+                                        게시글 삭제
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                        <div className="second-row">
-                            <div className="dog-info">
-                                <span className="dog-name">{post.dogName}</span>
-                                <span className="breed">{post.breed}</span>
+
+                        <div className="witness-dog-row">
+                            <div className="witness-dog-info">
+                                <span className="witness-dog-name">{post.dogName}</span>
+                                <span className="witness-breed">{post.breed}</span>
                             </div>
-                            <div className="time-ago">{post.timeAgo}</div>
+                            <div className="witness-time-ago">{post.timeAgo}</div>
                         </div>
                     </div>
-                    <button className="more-btn">&#8942;</button>
                 </div>
 
-                <div className="image-slider" onScroll={handleScroll}>
+                <div className="witness-image-slider" onScroll={handleScroll}>
                     {post.images.map((img, idx) => (
-                        <div className="slide" key={idx}>
+                        <div className="witness-slide" key={idx}>
                             <img src={img} alt={`강아지${idx}`} />
                             {idx === currentImageIndex && (
-                                <div className="image-counter">
+                                <div className="witness-image-counter">
                                     {currentImageIndex + 1}/{post.images.length}
                                 </div>
                             )}
@@ -100,11 +130,11 @@ export default function WitnessPostDetail() {
                     ))}
                 </div>
 
-                <div className="thumbnail-slider">
+                <div className="witness-thumbnail-slider">
                     {post.images.map((img, idx) => (
-                        <div className="thumbnail-card" key={idx}>
+                        <div className="witness-thumbnail-card" key={idx}>
                             <img src={img} alt={`썸네일${idx}`} />
-                            <div className="thumbnail-text">
+                            <div className="witness-thumbnail-text">
                                 <div>목격 - 2025년 4월 30일</div>
                                 <div>품종</div>
                                 <div>털색</div>
@@ -113,47 +143,47 @@ export default function WitnessPostDetail() {
                     ))}
                 </div>
 
-                <div className="detail-info">
-                    <div className="date-row">
-                        <img src={calender} alt="calender" className="calender-image" /> {post.date}
+                <div className="witness-detail-info">
+                    <div className="witness-date-row">
+                        <img src={calender} alt="calender" className="witness-calender-image" /> {post.date}
                     </div>
-                    <div className="location-row">
-                        <img src={location} alt="location" className="location-image" />
+                    <div className="witness-location-row">
+                        <img src={location} alt="location" className="witness-location-image" />
                         {post.location}
                     </div>
-                    <p className="description">{post.description}</p>
+                    <p className="witness-description">{post.description}</p>
                 </div>
 
-                <div className="map-section">
-                    <img src={mapimg} alt="map" className="map-image" />
+                <div className="witness-map-section">
+                    <img src={mapimg} alt="map" className="witness-map-image" />
                 </div>
 
-                <div className="comment-section">
-                    <div className="comment-count">댓글 {commentList.length}개</div>
+                <div className="witness-comment-section">
+                    <div className="witness-comment-count">댓글 {commentList.length}개</div>
                     {commentList.map((cmt, idx) => (
-                        <div className="comment" key={idx}>
-                            <img src={user} alt="댓글 작성자" className="comment-profile-circle" />
-                            <div className="comment-content">
-                                <div className="comment-meta">
-                                    <span className="comment-author">{cmt.author}</span>
-                                    <span className="comment-date">{cmt.date}</span>
+                        <div className="witness-comment" key={idx}>
+                            <img src={user} alt="댓글 작성자" className="witness-comment-profile-circle" />
+                            <div className="witness-comment-content">
+                                <div className="witness-comment-meta">
+                                    <span className="witness-comment-author">{cmt.author}</span>
+                                    <span className="witness-comment-date">{cmt.date}</span>
                                 </div>
-                                <div className="comment-text">{cmt.content}</div>
+                                <div className="witness-comment-text">{cmt.content}</div>
                             </div>
                         </div>
                     ))}
                 </div>
 
-                <div className="comment-input-box">
+                <div className="witness-comment-input-box">
                     <input
                         type="text"
                         placeholder="댓글을 작성해주세요"
-                        className="comment-input"
+                        className="witness-comment-input"
                         value={commentInput}
                         onChange={(e) => setCommentInput(e.target.value)}
                     />
-                    <button className="submit-btn" onClick={handleCommentSubmit}>
-                        <img src={send} alt="send" className="send-image" />
+                    <button className="witness-submit-btn" onClick={handleCommentSubmit}>
+                        <img src={send} alt="send" className="witness-send-image" />
                     </button>
                 </div>
             </div>

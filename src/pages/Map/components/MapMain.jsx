@@ -55,7 +55,8 @@ export default function MapMain() {
     const [breedFiltering, setBreedFiltering] = useState('');
 
     // DB에서 받아온 게시글
-    const [posts, setPosts] = useState([]);
+    const [missingPosts, setMissingPosts] = useState([]);
+    const [witnessPosts, setWitnessPosts] = useState([]);
 
     // 1) 마운트 시: 내 위치 조회 + Kakao SDK 로드 + 지도 초기화
     useEffect(() => {
@@ -217,7 +218,6 @@ export default function MapMain() {
         };
         document.head.appendChild(script);
     }, []);
-
     // 필터 상태 변경 시마다 마커 보이기/숨기기
     useEffect(() => {
         markersRef.current.forEach(({ type, overlay }) => {

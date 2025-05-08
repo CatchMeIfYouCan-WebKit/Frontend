@@ -26,7 +26,6 @@ const prioritizedBreeds = [
 ];
 const otherBreeds = ['비숑 프리제', '진돗개', '퍼그', '요크셔테리어'];
 const allBreeds = [...prioritizedBreeds, ...otherBreeds.sort((a, b) => a.localeCompare(b, 'ko'))];
-const isWeb = typeof window !== 'undefined' && window.location;
 
 const colorMap = {
     검은색: '#000000',
@@ -83,22 +82,81 @@ export default function AnimalProfile() {
     const openRegSheet = () => setIsRegSheetOpen(true);
     const closeRegSheet = () => setIsRegSheetOpen(false);
 
+    // 사진 업로드
     const handleMorpheusImageUpload = () => {
         const userChoice = confirm('사진을 촬영하시겠습니까?');
 
-        const callback = (status, result) => {
-            if (status === 'SUCCESS') {
-                if (!result.path || result.size < 10000) {
-                    alert('유효한 이미지가 아닙니다.');
-                    return;
-                }
+        const uploadImage = async (localPath) => {
+            const fileExt = localPath.split('.').pop().toLowerCase();
+            const mimeTypeMap = {
+                jpg: 'image/jpeg',
+                jpeg: 'image/jpeg',
+                png: 'image/png',
+                gif: 'image/gif',
+            };
+            const mimeType = mimeTypeMap[fileExt] || 'image/jpeg';
 
-                setMorpheusImagePath(result.fullpath || result.path);
-                setPreviewUrl(result.fullpath || result.path); // 미리보기 표시
-                console.log('🖼 선택된 이미지 경로:', result.fullpath || result.path);
-            } else {
-                alert('사진 선택 실패 또는 취소됨');
+            const response = await fetch(localPath);
+            const blob = await response.blob();
+            const file = new File([blob], `profile.${fileExt}`, { type: mimeType });
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const uploadUrl = `http://${window.location.hostname}:8080/api/animal-profile/image-upload`;
+
+            const res = await axios.post(uploadUrl, formData, {
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            console.log('🚀 localPath:', localPath);
+            console.log('🚀 mimeType:', mimeType);
+            console.log('🚀 uploadUrl:', uploadUrl);
+            console.log('📸 morpheusImagePath:', morpheusImagePath);
+
+            M.net.http.upload({
+                url: `http://${window.location.hostname}:8080/api/animal-profile/image-upload`,
+                method: 'POST',
+                header: {
+                    Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+                },
+                body: [
+                    {
+                        name: 'file',
+                        content: localPath, // ex: /sdcard/...
+                        type: 'FILE', // MIME type
+                    },
+                ],
+                finish: (status, header, body) => {
+                    const result = JSON.parse(body);
+                    const uploadedPath = result.photoPath;
+
+                    setMorpheusImagePath(uploadedPath);
+                    setPreviewUrl(getImageUrl(uploadedPath));
+                    console.log('🔥 업로드 응답:', result);
+                    console.log('🔥 저장된 경로:', result.photoPath);
+
+                    alert('업로드 성공!');
+                },
+            });
+        };
+
+        const handleResult = (status, result) => {
+            if (status !== 'SUCCESS' || !result.path) {
+                alert('사진 선택 실패');
+                return;
             }
+
+            const path = result.fullpath || result.path;
+            if (!/\.(jpg|jpeg|png|gif)$/i.test(path)) {
+                alert('이미지 파일만 선택해주세요.');
+                return;
+            }
+
+            uploadImage(path);
         };
 
         if (userChoice) {
@@ -106,38 +164,16 @@ export default function AnimalProfile() {
                 path: '/media',
                 mediaType: 'PHOTO',
                 saveAlbum: true,
-                callback,
+                callback: handleResult,
             });
         } else {
             M.media.picker({
                 mode: 'SINGLE',
                 mediaType: 'ALL',
-                path: '',
+                path: '/media',
                 column: 3,
-                callback: async (status, result) => {
-                    if (status === 'SUCCESS') {
-                        const imagePath = result.fullpath || result.path;
-                        setMorpheusImagePath(imagePath);
-
-                        try {
-                            const response = await fetch(imagePath);
-                            const blob = await response.blob();
-                            const objectURL = URL.createObjectURL(blob);
-                            setPreviewUrl(objectURL);
-                            alert('사진 선택 완료');
-                            console.log('status: ', status);
-                            console.log('result: ', result);
-                        } catch (error) {
-                            console.error('이미지 미리보기 로딩 실패:', error);
-                            alert('사진 미리보기에 실패했습니다.');
-                        }
-                    } else {
-                        alert('사진 선택 실패');
-                    }
-                },
+                callback: handleResult,
             });
-            console.log('morpheusImagePath:', morpheusImagePath);
-            console.log('파일 존재 여부:', !!morpheusImagePath && morpheusImagePath.endsWith('.jpg'));
         }
     };
 
@@ -177,7 +213,8 @@ export default function AnimalProfile() {
             dateOfBirth: birth.toISOString().split('T')[0],
             age: new Date().getFullYear() - birth.getFullYear(),
             weight: parseFloat(weight.replace('kg', '')),
-            registrationNumber: registrationNo || '미등록',
+            registrationNumber: registrationNo.trim() ? registrationNo : null,
+            photoPath: morpheusImagePath,
         };
 
         console.log('🚀 등록 버튼 클릭됨');
@@ -310,7 +347,7 @@ export default function AnimalProfile() {
         if (!file) {
             if (isEditMode && pet?.photoPath) {
                 setMorpheusImagePath(pet.photoPath);
-                setPreviewUrl(getImageUrl(pet.photoPath)); // 기존 사진 유지
+                setPreviewUrl(getImageUrl(pet.photoPath));
             } else {
                 setPreviewUrl(null);
             }
@@ -322,10 +359,8 @@ export default function AnimalProfile() {
     }, [file, isEditMode, pet]);
 
     useEffect(() => {
-        if (photoPath) {
-            setPreviewUrl(getImageUrl(photoPath));
-        }
-    }, [photoPath]);
+        console.log('📸 previewUrl:', previewUrl);
+    }, [previewUrl]);
 
     return (
         <div className="animal-profile">
@@ -342,12 +377,7 @@ export default function AnimalProfile() {
                     <div className="photo-upload">
                         <button type="button" onClick={handleMorpheusImageUpload}>
                             {previewUrl ? (
-                                // <img src={previewUrl} alt="preview" className="photo-preview" />
-                                <AiOutlineCamera
-                                    className="camera-icon"
-                                    id="camera-icon"
-                                    style={{ color: '#f5a623' }}
-                                />
+                                <img src={previewUrl} alt="사진 미리보기" className="photo-preview" />
                             ) : (
                                 <AiOutlineCamera
                                     className="camera-icon"

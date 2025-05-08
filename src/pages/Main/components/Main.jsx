@@ -12,6 +12,8 @@ import logo from '../../../assets/logo2.png';
 import petImage from '../../../assets/수완강아지.jpeg';
 import plusIcon from '../../../assets/plus.svg';
 import pencil from '../../../assets/ei_pencil.svg';
+import boy from '../../../assets/남아.png';
+import girl from '../../../assets/여아.png';
 
 import ChartBox from '../components/ChartBox';
 import reportMissingImage from '../../../assets/실종신고.svg';
@@ -108,7 +110,7 @@ export default function Main() {
     return (
         <div className="main-page">
             {/* ===== HEADER ===== */}
-            <Header/>
+            <Header />
 
             {/* ===== MAIN CONTENT ===== */}
             <main className="main-content">
@@ -136,18 +138,26 @@ export default function Main() {
                                 <div className="pet-text">
                                     <h2>{pet.name}</h2>
                                     <p>
-                                        {pet.age}살 / {pet.gender}
+                                        {pet.age}살 /{' '}
+                                        <img
+                                            src={pet.gender === '남아' ? boy : girl}
+                                            alt={pet.gender}
+                                            className="gender-icon"
+                                        />
                                     </p>
                                     <p>{pet.breed}</p>
-                                    <p>태어난지 {calculateDays(pet.dateOfBirth)}일</p>
                                 </div>
                             </div>
                             <button
-                                className="register-button"
-                                style={{ backgroundColor: pet.registrationNumber ? '#f5a623' : undefined }}
-                                onClick={() => navigate('/animal-profile', { state: { mode: 'edit', pet } })}
+                                className={`register-button ${pet.registrationNumber?.trim() ? 'complete' : ''}`}
+                                disabled={!!pet.registrationNumber?.trim()}
+                                onClick={() => {
+                                    if (!pet.registrationNumber?.trim()) {
+                                        navigate('/animal-profile', { state: { mode: 'edit', pet } });
+                                    }
+                                }}
                             >
-                                {pet.registrationNumber || '동물 등록번호 인증하기'}
+                                {pet.registrationNumber?.trim() ? '동물등록번호 조회완료' : '동물등록번호 등록하기'}
                             </button>
                         </section>
                     ))}
