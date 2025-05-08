@@ -52,6 +52,8 @@ import PostDetail from '../pages/Adoption/components/PostDetail';
 import ChatRoom from '../pages/Chat/components/ChatRoom';
 import ChatRoomTest from '../pages/Chat/components/ChatRoomTest';
 import AdoptionPostEdit from '../pages/Adoption/components/AdoptionPostEdit';
+
+import LocationSelect2 from '../pages/MissingForm/components/MissingLocationSelect';
 function App() {
     return (
         <BrowserRouter>
@@ -90,7 +92,6 @@ function App() {
                 <Route path="/adoptionpost/add/select-location" element={<LocationSelect />} />
                 <Route path="/adoptionpost/:id" element={<PostDetail />} />
                 <Route path="/adoption/post/edit/:id" element={<AdoptionPostEdit />} />
-                
 
                 {/* 반려동물 프로필 등록 */}
                 <Route path="/animal-profile" element={<AnimalProfile />} />
@@ -111,11 +112,12 @@ function App() {
                 {/* ✅ 실종 하위 라우트 추가 */}
                 <Route path="/missingpostDetail" element={<MissingPostDetail />} />
                 <Route path="/report-missing" element={<MissingPostForm />} />
+                <Route path="/report-missing/select-location" element={<LocationSelect2 />} />
 
                 {/* ✅ 목격 하위 라우트 추가 */}
                 <Route path="/witnesspostDetail" element={<WitnessPostDetail />} />
                 <Route path="/report-found" element={<WitnessPostForm />} />
-            
+
                 {/* ✅ 실시간 채팅방 */}
                 <Route path="/chat/:type/:relatedId" element={<ChatRoom />} />
                 <Route path="/chat/test" element={<ChatRoomTest />} />
