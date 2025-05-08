@@ -9,7 +9,6 @@ export default function LocationSelect() {
     const location = useLocation();
     const mapRef = useRef(null);
     const markerRef = useRef(null);
-    const downTimeRef = useRef(0);
     const [selectedPos, setSelectedPos] = useState(null);
 
     const KAKAO_MAP_SDK =
@@ -27,37 +26,38 @@ export default function LocationSelect() {
             window.kakao.maps.load(() => {
                 const kakao = window.kakao;
                 const map = new kakao.maps.Map(mapRef.current, {
-                    center: new kakao.maps.LatLng(37.5665, 126.978), // 초기 중심 좌표
+                    center: new kakao.maps.LatLng(37.5665, 126.9780),
                     level: 4,
                 });
+                const geocoder = new kakao.maps.services.Geocoder();
 
-                // 3) long-press 로 marker 찍기
-                kakao.maps.event.addListener(map, 'mousedown', () => {
-                    downTimeRef.current = Date.now();
-                });
-                kakao.maps.event.addListener(map, 'mouseup', (mouseEvent) => {
-                    const elapsed = Date.now() - downTimeRef.current;
-                    if (elapsed >= 500) {
-                        // 500ms 이상 누르고 있었으면
-                        const { Ma: lat, La: lng } = mouseEvent.latLng;
-                        setSelectedPos({ lat, lng });
-
-                        // 이전 마커 제거
-                        if (markerRef.current) {
-                            markerRef.current.setMap(null);
-                        }
-                        // 새 마커 생성
-                        markerRef.current = new kakao.maps.Marker({
-                            map,
-                            position: mouseEvent.latLng,
-                        });
+                // 마커 & 클릭 처리 함수
+                const placeMarker = latLng => {
+                    // 이전 마커 제거
+                    if (markerRef.current) {
+                        markerRef.current.setMap(null);
                     }
+                    // 새 마커 생성
+                    markerRef.current = new kakao.maps.Marker({
+                        map,
+                        position: latLng,
+                    });
+                    const lat = latLng.getLat();
+                    const lng = latLng.getLng();
+                    setSelectedPos({ lat, lng });
+                };
+
+                // 데스크탑 · 모바일 모두 지원
+                kakao.maps.event.addListener(map, 'click', e => {
+                    placeMarker(e.latLng);
+                });
+                kakao.maps.event.addListener(map, 'rightclick', e => {
+                    placeMarker(e.latLng);
                 });
             });
         };
 
         return () => {
-            // 컴포넌트 언마운트 시 스크립트 제거 (선택)
             document.head.removeChild(script);
         };
     }, []);
@@ -68,7 +68,7 @@ export default function LocationSelect() {
 
     const handleConfirm = () => {
         if (!selectedPos) return;
-        // 이전 화면으로 돌아가면서 latitude/longitude 추가 전달
+        // 뒤로 돌아가면서 latitude/longitude 전달
         navigate('/adoptionpost/add/details', {
             replace: true,
             state: {
@@ -85,13 +85,17 @@ export default function LocationSelect() {
                 <div className="ls-back" onClick={handleBack}>
                     <IoIosArrowBack size={24} />
                 </div>
-                <h1 className="ls-title">아이가 새로운 반려인을 만날 곳을 선택해주세요</h1>
-                <p className="ls-subtitle">지도에서 원하시는 장소를 마커로 표시해주세요</p>
+                <h1 className="ls-title">거래 위치를 선택해주세요</h1>
+                <p className="ls-subtitle">지도에서 클릭(또는 길게 누르기) 해주세요</p>
             </header>
 
             <div ref={mapRef} className="ls-map" />
 
-            <button className="ls-confirm-btn" onClick={handleConfirm} disabled={!selectedPos}>
+            <button
+                className="ls-confirm-btn"
+                onClick={handleConfirm}
+                disabled={!selectedPos}
+            >
                 선택 완료
             </button>
         </div>
