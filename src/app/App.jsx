@@ -51,6 +51,7 @@ import PostDetail from '../pages/Adoption/components/PostDetail';
 
 import ChatRoom from '../pages/Chat/components/ChatRoom';
 import ChatRoomTest from '../pages/Chat/components/ChatRoomTest';
+import AdoptionPostEdit from '../pages/Adoption/components/AdoptionPostEdit';
 function App() {
     return (
         <BrowserRouter>
@@ -88,6 +89,8 @@ function App() {
                 <Route path="/adoptionpost/add/details" element={<RegisterPost />} />
                 <Route path="/adoptionpost/add/select-location" element={<LocationSelect />} />
                 <Route path="/adoptionpost/:id" element={<PostDetail />} />
+                <Route path="/adoption/post/edit/:id" element={<AdoptionPostEdit />} />
+                
 
                 {/* 반려동물 프로필 등록 */}
                 <Route path="/animal-profile" element={<AnimalProfile />} />

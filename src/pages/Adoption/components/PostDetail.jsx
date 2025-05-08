@@ -86,10 +86,10 @@ export default function PostDetail() {
     }, []);
 
     const handleEdit = () => {
-        // 예: 수정 페이지로 이동
-        navigate('/edit', {
+        navigate(`/adoption/post/edit/${post.id}`, {
             state: {
-                /* post 데이터 */
+                post,
+                ownerName,
             },
         });
     };
