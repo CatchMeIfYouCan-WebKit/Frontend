@@ -367,3 +367,9 @@
 .witness-dropdown-item:hover {
     background-color: #f8f8f8;
 }
+.witness-map-image {
+    width: 95%;
+    height: 200px; /* or 250px 등 */
+    margin: 0 auto;
+    border-radius: 12px;
+}

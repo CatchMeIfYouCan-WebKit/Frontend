@@ -1,11 +1,8 @@
-// src/pages/Witness/components/WitnessPostDetail.jsx
-
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import '../WitnessPostDetail.css';
 import testdog from '../../../assets/수완강아지.jpeg';
-import mapimg from '../../../assets/map-example.svg';
 import calender from '../../../assets/uit_calender.svg';
 import location from '../../../assets/location.svg';
 import send from '../../../assets/send.svg';
@@ -36,10 +33,12 @@ export default function WitnessPostDetail() {
         breed: '말티즈',
         timeAgo: '7일 전',
         date: '2025년 4월 15일 오전 9:00 목격',
-        location: '경북 구미시 경상북도 구미시 대학로 61',
+        location: '경북 구미시 대학로 61',
         description:
             '도서관 앞 횡단보도에서 흰색 말티즈 목격했습니다. 주위에 사람이 많았고 겁에 질린 듯한 모습이었습니다.',
-        images: [testdog, testdog, testdog, testdog, testdog],
+        images: [testdog, testdog, testdog],
+        latitude: 36.1195,
+        longitude: 128.3446,
     };
 
     const handleScroll = (e) => {
@@ -60,6 +59,37 @@ export default function WitnessPostDetail() {
         setCommentList((prev) => [...prev, newComment]);
         setCommentInput('');
     };
+
+    // ✅ 지도 관련
+    const mapRef = useRef(null);
+    useEffect(() => {
+        const { latitude, longitude } = post;
+        if (!latitude || !longitude) return;
+
+        const script = document.createElement('script');
+        script.src =
+            'https://dapi.kakao.com/v2/maps/sdk.js?appkey=9402031e36074f7a2da9f3094bc383e7&autoload=false&libraries=services';
+        script.async = true;
+        document.head.appendChild(script);
+
+        script.onload = () => {
+            window.kakao.maps.load(() => {
+                const kakao = window.kakao;
+                const map = new kakao.maps.Map(mapRef.current, {
+                    center: new kakao.maps.LatLng(latitude, longitude),
+                    level: 4,
+                });
+                new kakao.maps.Marker({
+                    position: new kakao.maps.LatLng(latitude, longitude),
+                    map,
+                });
+            });
+        };
+
+        return () => {
+            document.head.removeChild(script);
+        };
+    }, [post.latitude, post.longitude]);
 
     return (
         <>
@@ -82,7 +112,6 @@ export default function WitnessPostDetail() {
                             <button className="witness-more-btn" onClick={() => setIsDropdownOpen((prev) => !prev)}>
                                 &#8942;
                             </button>
-
                             {isDropdownOpen && (
                                 <div className="witness-dropdown">
                                     <div
@@ -154,8 +183,9 @@ export default function WitnessPostDetail() {
                     <p className="witness-description">{post.description}</p>
                 </div>
 
+                {/* ✅ 지도 적용 */}
                 <div className="witness-map-section">
-                    <img src={mapimg} alt="map" className="witness-map-image" />
+                    <div ref={mapRef} className="witness-map-image" />
                 </div>
 
                 <div className="witness-comment-section">

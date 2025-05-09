@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+// src/pages/MissingPostDetail.jsx
+
+import React, { useState, useEffect, useRef } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import '../MissingPostDetail.css';
 import testdog from '../../../assets/수완강아지.jpeg';
-import mapimg from '../../../assets/map-example.svg';
 import calender from '../../../assets/uit_calender.svg';
 import location from '../../../assets/location.svg';
 import send from '../../../assets/send.svg';
@@ -34,10 +35,12 @@ export default function MissingPostDetail() {
         breed: '말티즈',
         timeAgo: '7일 전',
         date: '2025년 4월 15일 오전 9:00 실종',
-        location: '경북 구미시 경상북도 구미시 대학로 61',
+        location: '경북 구미시 대학로 61',
         description:
             '집에서 나가 도서관 위 빌라에서 발견후 아무소식 없다가 3일 후 도서관 앞에서 주민분이 강아지 봤다하심 이후 제보없음',
-        images: [testdog, testdog, testdog, testdog, testdog],
+        images: [testdog, testdog, testdog],
+        latitude: 36.1195,
+        longitude: 128.3446,
     };
 
     const handleScroll = (e) => {
@@ -59,6 +62,37 @@ export default function MissingPostDetail() {
         setCommentInput('');
     };
 
+    // ✅ 지도 관련
+    const mapRef = useRef(null);
+    useEffect(() => {
+        const { latitude, longitude } = post;
+        if (!latitude || !longitude) return;
+
+        const script = document.createElement('script');
+        script.src =
+            'https://dapi.kakao.com/v2/maps/sdk.js?appkey=9402031e36074f7a2da9f3094bc383e7&autoload=false&libraries=services';
+        script.async = true;
+        document.head.appendChild(script);
+
+        script.onload = () => {
+            window.kakao.maps.load(() => {
+                const kakao = window.kakao;
+                const map = new kakao.maps.Map(mapRef.current, {
+                    center: new kakao.maps.LatLng(latitude, longitude),
+                    level: 4,
+                });
+                new kakao.maps.Marker({
+                    position: new kakao.maps.LatLng(latitude, longitude),
+                    map,
+                });
+            });
+        };
+
+        return () => {
+            document.head.removeChild(script);
+        };
+    }, [post.latitude, post.longitude]);
+
     return (
         <>
             <header className="missing-header">
@@ -73,7 +107,6 @@ export default function MissingPostDetail() {
                     <div className="missing-left-part">
                         <img src={user} alt="프로필" className="missing-profile-circle" />
                     </div>
-
                     <div className="missing-right-part">
                         <div className="missing-nickname-row">
                             <span className="missing-nickname">{post.author}</span>
@@ -91,7 +124,6 @@ export default function MissingPostDetail() {
                                 </div>
                             )}
                         </div>
-
                         <div className="missing-dog-row">
                             <div className="missing-dog-info">
                                 <span className="missing-dog-name">{post.dogName}</span>
@@ -139,8 +171,9 @@ export default function MissingPostDetail() {
                     <p className="missing-description">{post.description}</p>
                 </div>
 
+                {/* ✅ 지도 적용 */}
                 <div className="missing-map-section">
-                    <img src={mapimg} alt="map" className="missing-map-image" />
+                    <div ref={mapRef} className="missing-map-image" />
                 </div>
 
                 <div className="missing-comment-section">
