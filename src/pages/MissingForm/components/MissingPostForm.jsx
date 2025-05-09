@@ -142,7 +142,7 @@ export default function MissingPostForm() {
                     {/* 장소 선택 */}
                     <div className="mpf-form">
                         <label>강아지를 어디서 잃어버리셨나요?</label>
-                        <div className="space-box">
+                        <div className="space-box-1">
                             <div className="space-comment">{location ? `${location}` : '장소를 선택해주세요'}</div>
                             <div
                                 className="space-side"
