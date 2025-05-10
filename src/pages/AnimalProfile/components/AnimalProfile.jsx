@@ -290,8 +290,6 @@ export default function AnimalProfile() {
                     setPreviewUrl(getImageUrl(uploadedPath));
                     console.log('🔥 업로드 응답:', result);
                     console.log('🔥 저장된 경로:', result.photoPath);
-
-                    alert('업로드 성공!');
                 },
             });
         };
@@ -529,7 +527,21 @@ export default function AnimalProfile() {
                     <div className="photo-upload">
                         <button type="button" onClick={handleMorpheusImageUpload}>
                             {previewUrl ? (
-                                <img src={previewUrl} alt="사진 미리보기" className="photo-preview" />
+                                <div style={{ position: 'relative' }}>
+                                    <img src={previewUrl} alt="사진 미리보기" className="animal-photo-preview" />
+                                    <button
+                                        type="button"
+                                        className="animal-photo-remove-btn"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setFile(null);
+                                            setPreviewUrl(null);
+                                            setMorpheusImagePath(null);
+                                        }}
+                                    >
+                                        ×
+                                    </button>
+                                </div>
                             ) : (
                                 <AiOutlineCamera
                                     className="camera-icon"
