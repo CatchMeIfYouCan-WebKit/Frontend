@@ -8,6 +8,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import '../WitnessPostForm.css';
 import { format } from 'date-fns';
 import axios from 'axios';
+import '../WitnessPostForm.css';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 export default function WitnessPostForm() {
     const navigate = useNavigate();
@@ -20,9 +22,9 @@ export default function WitnessPostForm() {
     const [longitude, setLongitude] = useState(null);
     const [desc, setDesc] = useState(locationState.state?.desc);
     // 서버에 보낼 파일
-    const [file, setFile] = useState(null);
+    const [files, setFiles] = useState([]);
     // 미리보기 용 URL
-    const [previewUrl, setPreviewUrl] = useState();
+    const [previewUrls, setPreviewUrls] = useState([]);
     // 모피어스 내부 경로
 
     // 선택된 위치 좌표 수신
@@ -65,15 +67,18 @@ export default function WitnessPostForm() {
     useEffect(() => {
         const state = locationState.state;
 
-        if (state?.previewUrl) {
-            setPreviewUrl(state.previewUrl);
+        if (state?.previewUrls) {
+            setPreviewUrls(state.previewUrls);
 
-            fetch(state.previewUrl)
-                .then((res) => res.blob())
-                .then((blob) => {
-                    const f = new File([blob], 'witness.jpg', { type: blob.type });
-                    setFile(f);
-                })
+            const restoredFiles = [];
+            Promise.all(
+                state.previewUrls.map((url) =>
+                    fetch(url)
+                        .then((res) => res.blob())
+                        .then((blob) => new File([blob], 'witness.jpg', { type: blob.type }))
+                )
+            )
+                .then((files) => setFiles(files))
                 .catch((err) => console.error('파일 복원 실패:', err));
         }
     }, [locationState]);
@@ -82,7 +87,7 @@ export default function WitnessPostForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!file) {
+        if (files.length === 0) {
             alert('사진을 첨부해주세요.');
             return;
         }
@@ -109,8 +114,8 @@ export default function WitnessPostForm() {
                 detailDescription: desc,
             };
 
-            formData.append('post', new Blob([JSON.stringify(witnessData)], { type: 'application/json' }));
-            formData.append('file', file);
+            formData.append('post', JSON.stringify(witnessData));
+            files.forEach((file) => formData.append('files', file));
 
             const res = await axios.post('/api/posts/witness', formData, {
                 headers: {
@@ -118,7 +123,7 @@ export default function WitnessPostForm() {
                 },
             });
 
-            console.log({ location, date, desc, file });
+            console.log({ location, date, desc, files });
             alert('목격 신고를 했습니다.');
             navigate('/main');
         } catch (error) {
@@ -137,7 +142,16 @@ export default function WitnessPostForm() {
 
     // 사진 업로드
     const handleMorpheusImageUpload = () => {
+        if (files.length >= 5) {
+            showToast('사진은 최대 5장까지 등록할 수 있습니다.');
+            return;
+        }
         const userChoice = confirm('사진을 촬영하시겠습니까?');
+
+        const handleAddPhoto = (newFile, newPreviewUrl) => {
+            setFiles([...files, newFile]);
+            setPreviewUrls([...previewUrls, newPreviewUrl]);
+        };
 
         const uploadImage = async (localPath) => {
             const fileExt = localPath.split('.').pop().toLowerCase();
@@ -161,14 +175,13 @@ export default function WitnessPostForm() {
             const res = await axios.post(uploadUrl, formData, {
                 headers: {
                     Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
-                    'Content-Type': 'multipart/form-data',
                 },
             });
 
             console.log('🚀 localPath:', localPath);
             console.log('🚀 mimeType:', mimeType);
             console.log('🚀 uploadUrl:', uploadUrl);
-            console.log('📸 previewUrl:', previewUrl);
+            console.log('📸 previewUrls:', previewUrls);
 
             M.net.http.upload({
                 url: `http://${window.location.hostname}:8080/api/animal-profile/image-upload`,
@@ -183,16 +196,15 @@ export default function WitnessPostForm() {
                         type: 'FILE', // MIME type
                     },
                 ],
+                indicator: false,
                 finish: (status, header, body) => {
                     const result = JSON.parse(body);
                     const uploadedPath = result.photoPath;
 
-                    setPreviewUrl(uploadedPath);
-                    setPreviewUrl(getImageUrl(uploadedPath));
+                    handleAddPhoto(file, getImageUrl(uploadedPath));
+
                     console.log('🔥 업로드 응답:', result);
                     console.log('🔥 저장된 경로:', result.photoPath);
-
-                    alert('업로드 성공!');
                 },
             });
         };
@@ -214,8 +226,8 @@ export default function WitnessPostForm() {
 
         if (userChoice) {
             M.media.camera({
-                path: '/media',
                 mediaType: 'PHOTO',
+                path: '/media',
                 saveAlbum: true,
                 callback: handleResult,
             });
@@ -230,6 +242,54 @@ export default function WitnessPostForm() {
         }
     };
 
+    // 사진 삭제
+    const handleRemovePhoto = (index) => {
+        setFiles((prev) => prev.filter((_, i) => i !== index));
+        setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
+    };
+
+    // Drag & Drop
+    const handleDragDrop = (result) => {
+        if (!result.destination) return;
+
+        const reorderedUrls = Array.from(previewUrls);
+        const [removedUrl] = reorderedUrls.splice(result.source.index, 1);
+        reorderedUrls.splice(result.destination.index, 0, removedUrl);
+        setPreviewUrls(reorderedUrls);
+
+        const reorderedFiles = Array.from(files);
+        const [removedFile] = reorderedFiles.splice(result.source.index, 1);
+        reorderedFiles.splice(result.destination.index, 0, removedFile);
+        setFiles(reorderedFiles);
+    };
+
+    // 사진 5장 초과 시 Toast 메세지
+    const showToast = (message) => {
+        const toast = document.createElement('div');
+
+        toast.innerText = message;
+
+        toast.style.position = 'fixed';
+        toast.style.bottom = '20px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.background = '#333';
+        toast.style.color = '#fff';
+        toast.style.padding = '8px 16px';
+        toast.style.borderRadius = '4px';
+        toast.style.zIndex = '9999';
+        toast.style.whiteSpace = 'nowrap'; // ✅ 줄바꿈 방지
+        toast.style.textOverflow = 'ellipsis'; // ✅ 넘치면 ...
+        toast.style.overflow = 'hidden';
+        toast.style.maxWidth = '80vw'; // 화면 너비 기준 최대 크기
+
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            document.body.removeChild(toast);
+        }, 2000);
+    };
+
     return (
         <div className="mpf-container">
             <header className="missing-header">
@@ -240,23 +300,58 @@ export default function WitnessPostForm() {
             </header>
 
             <form className="mpf-form" onSubmit={handleSubmit}>
-                <label>목격된 동물의 사진</label>
+                <label>
+                    목격된 동물의 사진&nbsp;&nbsp;
+                    <span style={{ color: '#999', fontSize: '16px' }}>({previewUrls.length}/5)</span>
+                </label>
                 <div className="photo-section">
-                    <div className="photo-grid">
-                        <label htmlFor="file-upload" className="photo-upload-box">
-                            <button type="button" onClick={handleMorpheusImageUpload}>
-                                {previewUrl ? (
-                                    <img src={previewUrl} alt="사진 미리보기" className="photo-preview" />
-                                ) : (
-                                    <AiOutlineCamera
-                                        className="camera-icon"
-                                        id="camera-icon"
-                                        style={{ color: 'lightgray' }}
-                                    />
-                                )}
-                            </button>
-                        </label>
-                    </div>
+                    {/* 포토 박스 */}
+                    <DragDropContext onDragEnd={handleDragDrop}>
+                        <Droppable droppableId="photo-list" direction="horizontal">
+                            {(provided) => (
+                                <div {...provided.droppableProps} ref={provided.innerRef} className="photo-list">
+                                    {previewUrls.map((url, idx) => (
+                                        <Draggable key={idx} draggableId={`photo-${idx}`} index={idx}>
+                                            {(provided) => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                    style={{
+                                                        position: 'relative',
+                                                        flex: '0 0 auto',
+                                                        ...provided.draggableProps.style,
+                                                    }}
+                                                >
+                                                    {idx === 0 && <div className="photo-representative">대표</div>}
+                                                    <img
+                                                        src={url}
+                                                        alt={`사진 미리보기 ${idx + 1}`}
+                                                        className="witness-photo-preview"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        className="photo-remove-btn"
+                                                        onClick={() => handleRemovePhoto(idx)}
+                                                    >
+                                                        ×
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </Draggable>
+                                    ))}
+                                    {provided.placeholder}
+
+                                    {/* 카메라 아이콘 (고정)) */}
+                                    <button type="button" onClick={handleMorpheusImageUpload}>
+                                        <label htmlFor="file-upload" className="photo-upload-box">
+                                            <AiOutlineCamera className="camera-icon" />
+                                        </label>
+                                    </button>
+                                </div>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
                 </div>
 
                 <label>목격 장소</label>
@@ -269,8 +364,8 @@ export default function WitnessPostForm() {
                                 desc,
                                 latitude,
                                 longitude,
-                                file,
-                                previewUrl,
+                                files,
+                                previewUrls,
                             },
                         });
                     }}
