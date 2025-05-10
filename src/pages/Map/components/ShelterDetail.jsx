@@ -6,11 +6,18 @@ import tag from '../../../assets/tag.svg';
 import change from '../../../assets/change.svg';
 import tagdog from '../../../assets/tagdog.svg';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 export default function ShelterDetail() {
     const [activeTab, setActiveTab] = useState('adopted');
     const [listChange, setListChange] = useState(true);
     const navigate = useNavigate();
+    const location = useLocation();
+    const shelters = location.state?.shelters ?? [];
+    const selectedShelter = location.state?.selectedShelter ?? null;
+    const filteredAnimals = location.state?.filteredAnimals ?? [];
+
+
 
     return (
         <div className="shelter-detail">
@@ -46,13 +53,26 @@ export default function ShelterDetail() {
                 <select className="filter">
                     <option>체중</option>
                 </select>
-                <div className="tag-wrap" onClick={() => navigate('/shelterdetail/filter')}>
+                <div className="tag-wrap" onClick={() => {
+                    navigate('/shelterdetail/filter', {
+                        state: {
+                            shelters: shelters
+                        }
+                    });
+                }}>
                     <img src={tag} alt="태그" className="tag-size" />
                 </div>
+
             </div>
 
             <div className="list-header">
-                <div className="post-count">{}개의 게시글</div>
+                <div className="post-count">
+                    {filteredAnimals.length > 0
+                        ? filteredAnimals.reduce((acc, shelter) => acc + (shelter.animalSummaries?.length || 0), 0)
+                        : (selectedShelter?.animalSummaries?.length ?? 0)
+                    }개의 게시글
+                </div>
+
                 <div
                     className={`sort-toggle ${!listChange ? 'reversed' : ''}`}
                     onClick={() => setListChange((prev) => !prev)}
@@ -62,18 +82,46 @@ export default function ShelterDetail() {
                 </div>
             </div>
 
+
             <div className="animal-grid">
-                {Array.from({ length: 50 }).map((_, i) => (
+                {(filteredAnimals.length > 0
+                    ? filteredAnimals.flatMap(shelter =>
+                        shelter.animalSummaries.map(animal => ({
+                            ...animal,
+                            shelterName: shelter.shelterName,
+                            imageUrl: (animal.imageUrl?.split(';')[0] || '').trim(), // ✅ 여기
+                        }))
+                    )
+                    : (selectedShelter?.animalSummaries ?? []).map(animal => ({
+                        ...animal,
+                        imageUrl: (animal.imageUrl?.split(';')[0] || '').trim(), // ✅ 여기도
+                    }))
+                ).map((animal, i) => (
                     <div key={i} className="animal-card">
                         <img
-                            src={i % 2 === 0 ? dog1 : dog2}
-                            alt={`동물 ${i + 1}`}
+                            src={animal.imageUrl}
+                            alt={animal.breed}
                             className="animal-img"
-                            onClick={() => navigator('')}
+                            onClick={() =>
+                                navigate('/animaldetail', {
+                                    state: {
+                                        animal,
+                                        shelterName: animal.shelterName ?? selectedShelter?.shelterName,
+                                    },
+                                })
+                            }
                         />
+                        <div className="animal-info">
+                            <div>{animal.breed}</div>
+                            <div>{animal.coatColor}</div>
+                            <div>{animal.gender}</div>
+                        </div>
                     </div>
                 ))}
             </div>
+
+
+
         </div>
     );
 }

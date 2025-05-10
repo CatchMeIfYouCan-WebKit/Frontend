@@ -1,18 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../ShelterFilter.css';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
-import { TiDelete } from 'react-icons/ti';
-
-const sheltersMock = [
-    { id: 1, name: '금오공대동물보호소' },
-    // 실제는 백엔드 데이터로 교체
-];
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const breedsMock = [
     { id: 1, ko: '말티즈', en: 'Maltese' },
     { id: 2, ko: '푸들', en: 'Poodle' },
     { id: 3, ko: '비숑', en: 'Bichon à poil frisé' },
-    // 실제는 백엔드 데이터로 교체
 ];
 
 const colors = [
@@ -25,9 +19,6 @@ const colors = [
 ];
 
 export default function ShelterFilter() {
-    // 이전: 하나짜리 openSection
-    // const [openSection, setOpenSection] = useState('shelter');
-    // ↓ 수정: 섹션별로 boolean
     const [openShelter, setOpenShelter] = useState(true);
     const [openAge, setOpenAge] = useState(true);
     const [openBreed, setOpenBreed] = useState(true);
@@ -35,30 +26,117 @@ export default function ShelterFilter() {
 
     const [shelterQuery, setShelterQuery] = useState('');
     const [breedQuery, setBreedQuery] = useState('');
-
     const [selectedShelters, setSelectedShelters] = useState([]);
     const [selectedBreeds, setSelectedBreeds] = useState([]);
     const [selectedColors, setSelectedColors] = useState([]);
-
     const [minAge, setMinAge] = useState('');
-    const [maxAge, setMaxAge] = useState('');
 
-    const onShelterSearch = () => console.log('search shelter:', shelterQuery);
-    const onBreedSearch = () => console.log('search breed:', breedQuery);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const shelters = location.state?.shelters ?? [];
 
-    const toggleItem = (id, list, setter) =>
-        list.includes(id) ? setter(list.filter((x) => x !== id)) : setter([...list, id]);
+    const [originalShelters] = useState(shelters);
+    const [filteredShelterList, setFilteredShelterList] = useState(originalShelters);
+
+    useEffect(() => {
+        if (shelterQuery.trim()) {
+            setFilteredShelterList(
+                originalShelters.filter((s) =>
+                    s.shelterName.includes(shelterQuery.trim())
+                )
+            );
+        } else {
+            setFilteredShelterList([]); // 검색창 비우면 리스트 감춤
+        }
+    }, [shelterQuery, originalShelters]);
+
+    const toggleItem = (item, list, setter) =>
+        list.includes(item)
+            ? setter(list.filter((x) => x !== item))
+            : setter([...list, item]);
+
+
+
+    const onApplyFilter = () => {
+        const filtered = [];
+
+        originalShelters.forEach((shelter) => {
+            // 보호소 필터 조건 검사
+            if (
+                selectedShelters.length > 0 &&
+                !selectedShelters.includes(shelter.shelterName)
+            ) return;
+
+            const matchedAnimals = shelter.animalSummaries?.filter((animal) => {
+                // 품종 필터
+                const matchBreed =
+                    selectedBreeds.length === 0 || selectedBreeds.includes(animal.breed);
+
+                // 털색 필터
+                const matchColor =
+                    selectedColors.length === 0 ||
+                    selectedColors.some((colorId) =>
+                        animal.coatColor?.includes(
+                            colors.find((c) => c.id === colorId)?.label
+                        )
+                    );
+
+                // 나이 필터 (출생년도 기반)
+                const currentYear = new Date().getFullYear();
+                const matchAge =
+                    !minAge ||
+                    (() => {
+                        const birthYearMatch = animal.ageWeight?.match(/(\d{4})\(년생\)/);
+                        if (birthYearMatch) {
+                            const birthYear = parseInt(birthYearMatch[1], 10);
+                            const calculatedAge = currentYear - birthYear;
+                            return calculatedAge >= Number(minAge);
+                        }
+                        return false;
+                    })();
+
+                return matchBreed && matchColor && matchAge;
+            });
+
+            if (matchedAnimals && matchedAnimals.length > 0) {
+                filtered.push({ ...shelter, animalSummaries: matchedAnimals });
+            }
+        });
+
+        console.log("✅ 필터 결과:", filtered);
+        navigate('/shelterdetail', {
+            state: {
+                shelters: originalShelters,
+                selectedShelter: null,
+                filteredAnimals: filtered,
+            },
+        });
+    };
+
+
 
     return (
         <div className="shelter-filter">
             <div className="sf-header">
-                <h3>필터링</h3>x
+                <h3 style={{ display: 'inline-block' }}>필터링</h3>
+                <span
+                    onClick={onApplyFilter}
+                    style={{
+                        float: 'right',
+                        cursor: 'pointer',
+                        fontSize: '20px',
+                        fontWeight: 'bold',
+                        marginTop: '4px',
+                    }}
+                >
+                    x
+                </span>
             </div>
             <hr />
 
             {/* 보호소 */}
             <div className="sf-section">
-                <div className="sf-sec-header" onClick={() => setOpenShelter((open) => !open)}>
+                <div className="sf-sec-header" onClick={() => setOpenShelter((o) => !o)}>
                     <span>보호소</span>
                     {openShelter ? <IoIosArrowUp /> : <IoIosArrowDown />}
                 </div>
@@ -71,18 +149,20 @@ export default function ShelterFilter() {
                                 value={shelterQuery}
                                 onChange={(e) => setShelterQuery(e.target.value)}
                             />
-                            <button onClick={onShelterSearch}>검색</button>
+                            <button>검색</button>
                         </div>
                         <ul className="sf-item-list">
-                            {sheltersMock.map((s) => (
-                                <li key={s.id}>
+                            {filteredShelterList.map((s) => (
+                                <li key={s.shelterName}>
                                     <label>
                                         <input
                                             type="checkbox"
-                                            checked={selectedShelters.includes(s.id)}
-                                            onChange={() => toggleItem(s.id, selectedShelters, setSelectedShelters)}
+                                            checked={selectedShelters.includes(s.shelterName)}
+                                            onChange={() =>
+                                                toggleItem(s.shelterName, selectedShelters, setSelectedShelters)
+                                            }
                                         />
-                                        {s.name}
+                                        {s.shelterName}
                                     </label>
                                 </li>
                             ))}
@@ -91,6 +171,7 @@ export default function ShelterFilter() {
                 )}
             </div>
             <hr />
+
             {/* 나이 */}
             <div className="sf-section">
                 <div className="sf-sec-header" onClick={() => setOpenAge((o) => !o)}>
@@ -113,9 +194,9 @@ export default function ShelterFilter() {
             </div>
             <hr />
 
-            {/* 강아지 품종 */}
+            {/* 품종 */}
             <div className="sf-section">
-                <div className="sf-sec-header" onClick={() => setOpenBreed((open) => !open)}>
+                <div className="sf-sec-header" onClick={() => setOpenBreed((o) => !o)}>
                     <span>강아지 품종</span>
                     {openBreed ? <IoIosArrowUp /> : <IoIosArrowDown />}
                 </div>
@@ -128,24 +209,28 @@ export default function ShelterFilter() {
                                 value={breedQuery}
                                 onChange={(e) => setBreedQuery(e.target.value)}
                             />
-                            <button onClick={onBreedSearch}>검색</button>
+                            <button>검색</button>
                         </div>
                         <ul className="sf-item-list">
-                            {breedsMock.map((b) => (
-                                <li key={b.id}>
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedBreeds.includes(b.id)}
-                                            onChange={() => toggleItem(b.id, selectedBreeds, setSelectedBreeds)}
-                                        />
-                                        <span className="ko">{b.ko}</span>
-                                        <span className="en" style={{ color: '#d29113' }}>
-                                            {b.en}
-                                        </span>
-                                    </label>
-                                </li>
-                            ))}
+                            {breedsMock
+                                .filter((b) => b.ko.includes(breedQuery.trim()))
+                                .map((b) => (
+                                    <li key={b.id}>
+                                        <label>
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedBreeds.includes(b.ko)}
+                                                onChange={() =>
+                                                    toggleItem(b.ko, selectedBreeds, setSelectedBreeds)
+                                                }
+                                            />
+                                            <span className="ko">{b.ko}</span>
+                                            <span className="en" style={{ color: '#d29113' }}>
+                                                {b.en}
+                                            </span>
+                                        </label>
+                                    </li>
+                                ))}
                         </ul>
                     </div>
                 )}
@@ -154,7 +239,7 @@ export default function ShelterFilter() {
 
             {/* 털색 */}
             <div className="sf-section">
-                <div className="sf-sec-header" onClick={() => setOpenColor((open) => !open)}>
+                <div className="sf-sec-header" onClick={() => setOpenColor((o) => !o)}>
                     <span>털색</span>
                     {openColor ? <IoIosArrowUp /> : <IoIosArrowDown />}
                 </div>
