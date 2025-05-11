@@ -8,7 +8,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 import '../WitnessPostForm.css';
 import { format } from 'date-fns';
 import axios from 'axios';
-import '../WitnessPostForm.css';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 export default function WitnessPostForm() {
