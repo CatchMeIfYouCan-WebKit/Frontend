@@ -5,6 +5,7 @@
     color: #333;
     font-family: sans-serif;
     width: 100%;
+    max-height: 500px;
 }
 
 /* Header */
@@ -12,8 +13,8 @@
     position: relative;
     display: flex;
     align-items: center;
-    height: 56px;
     padding: 0 16px;
+    min-height: 5%;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     z-index: 10;
 }
@@ -219,7 +220,7 @@
     height: 16px;
     background: #faf6f6;
     margin-top: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 .pd-meet-label {
@@ -233,34 +234,103 @@
     margin-top: 10px;
 }
 .pd-actions {
-  position: relative;
-  display: inline-block;
+    position: relative;
+    display: inline-block;
 }
 
 .pd-dropdown {
-  position: absolute;
-  top: 36px;      /* 아이콘 바로 아래 */
-  right: 0;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  z-index: 1000;
-  width: 140px;
+    position: absolute;
+    top: 36px; /* 아이콘 바로 아래 */
+    right: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    width: 140px;
 }
 
 .pd-dropdown-item {
-  display: block;
-  width: 100%;
-  padding: 10px 12px;
-  text-align: left;
-  background: none;
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.2s;
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    text-align: left;
+    background: none;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
 .pd-dropdown-item:hover {
-  background: #f5f5f5;
+    background: #f5f5f5;
+}
+
+/* 1) 워터마크 */
+.pd-page {
+    position: relative;
+}
+.pd-watermark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex; /* ➜ flex on */
+    flex-direction: column; /* 세로로 쌓기 */
+    justify-content: space-around; /* 위아래 여백 균등 분배 */
+    align-items: center; /* 가로 중앙 정렬 */
+    pointer-events: none;
+    transform: rotate(-30deg); /* 회전 */
+    z-index: 0;
+}
+.pd-watermark-line {
+    font-size: 3rem; /* 너무 크지 않게 */
+    line-height: 1; /* 텍스트 높이만큼만 */
+    color: rgba(0, 0, 0, 0.05);
+    white-space: nowrap; /* 단어가 줄 바꿈되지 않도록 */
+    margin: 0; /* 불필요한 마진 제거 */
+}
+
+/* 2) 상태 드롭다운 */
+.pd-status-section {
+    position: relative;
+    display: inline-block;
+    margin: 16px 0;
+}
+.pd-status-btn {
+    padding: 6px 10px;
+    margin-left: 10px;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+}
+.pd-status-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 4px;
+}
+.pd-status-item {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+.pd-status-item:hover {
+    background: #f5f5f5;
+}
+
+/* 3) 비활성 채팅 버튼 */
+.pd-chat-disabled {
+    padding: 10px 20px;
+    border: none;
+    background: #ccc;
+    color: #666;
+    height: 70px;
+    padding-top: 10px;
+    width: 100%;
+    justify-content: center;
+    vertical-align: middle;
 }
