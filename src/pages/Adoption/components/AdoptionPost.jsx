@@ -290,25 +290,30 @@ export default function AdoptionPost() {
                     </div>
                 )}
 
-                {/* 털색 */}
                 <div className="form-group color-group">
                     <label>털색*</label>
                     <div className="color-options">
-                        {colorOptions.map((c) => (
-                            <div
-                                key={c.value}
-                                className={`color-box ${color.includes(c.value) ? 'selected' : ''}`}
-                                onClick={() =>
-                                    setColor((prev) =>
-                                        prev.includes(c.value) ? prev.filter((v) => v !== c.value) : [...prev, c.value]
-                                    )
-                                }
-                            >
-                                <span className="dot" style={{ backgroundColor: c.hex }} />
-
-                                <span className="color-label">{c.label}</span>
-                            </div>
-                        ))}
+                        {colorOptions.map((c) => {
+                            const isSelected = color.includes(c.value);
+                            return (
+                                <div
+                                    key={c.value}
+                                    className="color-box"
+                                    onClick={() =>
+                                        setColor((prev) =>
+                                            prev.includes(c.value)
+                                                ? prev.filter((v) => v !== c.value)
+                                                : [...prev, c.value]
+                                        )
+                                    }
+                                >
+                                    <span className="dot" style={{ backgroundColor: c.hex }}>
+                                        {isSelected && <span className="color-check">✔</span>}
+                                    </span>
+                                    <span className="color-label">{c.label}</span>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
 

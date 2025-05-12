@@ -28,9 +28,9 @@
     margin: auto;
 }
 
-.back-button {
+.back-button2 {
     border: none;
-    font-size: 40px;
+    font-size: 24px;
     padding: 0;
     margin-bottom: 7px;
     margin-left: 4px;
@@ -119,13 +119,29 @@
 
 /* 2) 각 아이템은 세로 정렬, 텍스트는 가운데 정렬 */
 .color-container .color-item {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
+    cursor: pointer;
     margin: auto;
 }
-
+.color-check {
+    position: absolute;
+    top: 34%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgb(21, 0, 255);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; /* 클릭 방지 */
+}
 /* 3) 이미지 크기 조정 (필요에 따라 변경) */
 .color-container .color-item img {
     width: 50px;

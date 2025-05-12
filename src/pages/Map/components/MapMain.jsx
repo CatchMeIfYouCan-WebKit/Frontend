@@ -77,14 +77,24 @@ export default function MapMain() {
         fetch('/api/posts/missing/missing-posts')
             .then((res) => res.json())
             .then((data) => {
-                setMissingPosts(data);
+                if (Array.isArray(data)) {
+                    setMissingPosts(data);
+                } else {
+                    console.warn('실종 API 응답이 배열이 아님:', data);
+                    setMissingPosts([]);
+                }
             })
             .catch((err) => console.error('실종 API 에러', err));
         // 3) 목격 게시글 API 호출
         fetch('/api/posts/witness/witness-posts')
             .then((res) => res.json())
             .then((data) => {
-                setWitnessPosts(data);
+                if (Array.isArray(data)) {
+                    setWitnessPosts(data);
+                } else {
+                    console.warn('목격 API 응답이 배열이 아님:', data);
+                    setWitnessPosts([]);
+                }
             })
             .catch((err) => console.error('목격 API 에러', err));
 
@@ -117,7 +127,6 @@ export default function MapMain() {
                     level: 3,
                 });
                 mapRef.current = map;
-                console.log('🗺️ Kakao 지도 생성됨:', map);
                 // Places 서비스
                 psRef.current = new kakao.maps.services.Places();
 
@@ -128,7 +137,6 @@ export default function MapMain() {
 
                 // 마커 배열 초기화
                 // markersRef.current = [];
-
             });
         };
         document.head.appendChild(script);
@@ -181,7 +189,6 @@ export default function MapMain() {
                             });
 
                             markersRef.current.push({ type: 'missing', overlay });
-                            console.log('✅ 실종 마커 생성 완료:', post.missingLocation);
                         } else {
                             console.warn('❌ 주소 변환 실패:', post.missingLocation);
                         }
@@ -191,11 +198,11 @@ export default function MapMain() {
             });
 
         Promise.all(markerPromises).then(() => {
-            setMarkerLoadStates(prev => ({ ...prev, missing: true }));
+            setMarkerLoadStates((prev) => ({ ...prev, missing: true }));
         });
     }, [missingPosts, mapRef.current]);
 
-    //overlay 
+    //overlay
     useEffect(() => {
         if (!mapRef.current || witnessPosts.length === 0) return;
 
@@ -244,7 +251,6 @@ export default function MapMain() {
                             });
 
                             markersRef.current.push({ type: 'sighting', overlay });
-                            console.log('✅ 목격 마커 생성 완료:', post.witnessLocation);
                         } else {
                             console.warn('❌ 주소 변환 실패 (목격):', post.witnessLocation);
                         }
@@ -254,7 +260,7 @@ export default function MapMain() {
             });
 
         Promise.all(markerPromises).then(() => {
-            setMarkerLoadStates(prev => ({ ...prev, witness: true }));
+            setMarkerLoadStates((prev) => ({ ...prev, witness: true }));
         });
     }, [witnessPosts, mapRef.current]);
 
@@ -286,7 +292,7 @@ export default function MapMain() {
                             shelterName: shelter.shelterName,
                             location: shelter.address,
                             callNumber: shelter.phone ?? '전화번호 없음',
-                            fullShelter: shelter
+                            fullShelter: shelter,
                         },
                     });
                 });
@@ -302,7 +308,6 @@ export default function MapMain() {
                         });
 
                         markersRef.current.push({ type: 'shelter', overlay });
-                        console.log('✅ 보호소 마커 생성 완료:', shelter.shelterName);
                     } else {
                         console.warn('❌ 주소 변환 실패 (보호소):', shelter.address);
                     }
@@ -312,7 +317,7 @@ export default function MapMain() {
         });
 
         Promise.all(markerPromises).then(() => {
-            setMarkerLoadStates(prev => ({ ...prev, shelter: true }));
+            setMarkerLoadStates((prev) => ({ ...prev, shelter: true }));
         });
     }, [shelterAnnouncements, mapRef.current]);
 
@@ -362,7 +367,6 @@ export default function MapMain() {
                         });
 
                         markersRef.current.push({ type: 'hospital', overlay });
-                        console.log('✅ 병원 마커 생성 완료:', hospital.name);
                     } else {
                         console.warn('❌ 주소 변환 실패 (병원):', hospital.address);
                     }
@@ -372,15 +376,14 @@ export default function MapMain() {
         });
 
         Promise.all(markerPromises).then(() => {
-            setMarkerLoadStates(prev => ({ ...prev, hospital: true }));
+            setMarkerLoadStates((prev) => ({ ...prev, hospital: true }));
         });
     }, [hospitals, mapRef.current]);
 
     useEffect(() => {
-        const allLoaded = Object.values(markerLoadStates).every(v => v === true);
+        const allLoaded = Object.values(markerLoadStates).every((v) => v === true);
 
         if (allLoaded) {
-            console.log("🎯 모든 마커 생성 완료 → 필터 적용 시작");
             applyInitialMarkerFilter();
 
             // 선택적으로 마커 로드 상태를 초기화하려면 아래 코드 추가:
@@ -407,9 +410,7 @@ export default function MapMain() {
             overlay.setMap(shouldShow ? map : null);
         });
 
-        console.log('✅ 초기 필터 적용 완료');
     };
-
 
     // 필터 상태 변경 시마다 마커 보이기/숨기기
     useEffect(() => {
@@ -732,14 +733,17 @@ export default function MapMain() {
                                 <div className="shelter-address">{selectedMarker.data.location}</div>
                                 <div className="shelter-call-number">{selectedMarker.data.callNumber}</div>
                                 <hr />
-                                <div className="view-detail" onClick={() =>
-                                    navigate('/shelterdetail', {
-                                        state:
-                                        {
-                                            shelters: shelterAnnouncements,
-                                            selectedShelter: selectedMarker.data.fullShelter
-                                        }
-                                    })}>
+                                <div
+                                    className="view-detail"
+                                    onClick={() =>
+                                        navigate('/shelterdetail', {
+                                            state: {
+                                                shelters: shelterAnnouncements,
+                                                selectedShelter: selectedMarker.data.fullShelter,
+                                            },
+                                        })
+                                    }
+                                >
                                     상세보기
                                 </div>
                                 <div className="shelter-images">
@@ -754,7 +758,8 @@ export default function MapMain() {
                                 </div>
                                 <hr />
                             </div>
-                        )}// post-count
+                        )}
+                        // post-count
                         {selectedMarker.type === 'hospital' && (
                             <div className="hospital-wrap">
                                 <div>{selectedMarker.data.name}</div>
@@ -768,12 +773,11 @@ export default function MapMain() {
                     <div>
                         <div className="list-header">
                             <div className="post-count">
-                                {
-                                    (missFiltering ? missingPosts.length : 0) +
+                                {(missFiltering ? missingPosts.length : 0) +
                                     (seeFiltering ? witnessPosts.length : 0) +
                                     (shelterFiltering ? shelterAnnouncements.length : 0) +
-                                    (hospitalFiltering ? hospitals.length : 0)
-                                }개의 게시글
+                                    (hospitalFiltering ? hospitals.length : 0)}
+                                개의 게시글
                             </div>
                             <div
                                 className={`sort-toggle ${!listChange ? 'reversed' : ''}`}
@@ -786,114 +790,116 @@ export default function MapMain() {
 
                         <div className="list-wrap-group">
                             {/* ✅ 실종 리스트 */}
-                            {missFiltering && missingPosts
-                                .slice()
-                                .sort((a, b) =>
-                                    listChange
-                                        ? new Date(b.missingDatetime) - new Date(a.missingDatetime)
-                                        : new Date(a.missingDatetime) - new Date(b.missingDatetime)
-                                )
-                                .map((post) => (
-                                    <div
-                                        key={`missing-${post.id}`}
-                                        className="list-wrap"
-                                        onClick={() => navigate(`/missingpostDetail/${post.id}`)}
-                                    >
-                                        <div className="list-left">
-                                            <div className="state">
-                                                <img src={missing2} alt="missing2" className="sheet-img" />
-                                                실종
+                            {missFiltering &&
+                                missingPosts
+                                    .slice()
+                                    .sort((a, b) =>
+                                        listChange
+                                            ? new Date(b.missingDatetime) - new Date(a.missingDatetime)
+                                            : new Date(a.missingDatetime) - new Date(b.missingDatetime)
+                                    )
+                                    .map((post) => (
+                                        <div
+                                            key={`missing-${post.id}`}
+                                            className="list-wrap"
+                                            onClick={() => navigate(`/missingpostDetail/${post.id}`)}
+                                        >
+                                            <div className="list-left">
+                                                <div className="state">
+                                                    <img src={missing2} alt="missing2" className="sheet-img" />
+                                                    실종
+                                                </div>
+                                                <div className="list-location">
+                                                    {post.missingLocation}
+                                                    <p>{new Date(post.missingDatetime).toLocaleString()}</p>
+                                                </div>
                                             </div>
-                                            <div className="list-location">
-                                                {post.missingLocation}
-                                                <p>{new Date(post.missingDatetime).toLocaleString()}</p>
+                                            <div className="list-img">
+                                                <img src={post.photoUrl} alt="dog" className="sheet-nailimg" />
                                             </div>
+                                            <hr />
                                         </div>
-                                        <div className="list-img">
-                                            <img src={post.photoUrl} alt="dog" className="sheet-nailimg" />
-                                        </div>
-                                        <hr />
-                                    </div>
-                                ))}
+                                    ))}
 
                             {/* ✅ 목격 리스트 */}
-                            {seeFiltering && witnessPosts
-                                .slice()
-                                .sort((a, b) =>
-                                    listChange
-                                        ? new Date(b.witnessDatetime) - new Date(a.witnessDatetime)
-                                        : new Date(a.witnessDatetime) - new Date(b.witnessDatetime)
-                                )
-                                .map((post) => (
-                                    <div
-                                        key={`witness-${post.id}`}
-                                        className="list-wrap"
-                                        onClick={() => navigate(`/witnesspostDetail/${post.id}`)}
-                                    >
+                            {seeFiltering &&
+                                witnessPosts
+                                    .slice()
+                                    .sort((a, b) =>
+                                        listChange
+                                            ? new Date(b.witnessDatetime) - new Date(a.witnessDatetime)
+                                            : new Date(a.witnessDatetime) - new Date(b.witnessDatetime)
+                                    )
+                                    .map((post) => (
+                                        <div
+                                            key={`witness-${post.id}`}
+                                            className="list-wrap"
+                                            onClick={() => navigate(`/witnesspostDetail/${post.id}`)}
+                                        >
+                                            <div className="list-left">
+                                                <div className="state-find">
+                                                    <img src={missing2} alt="witness" className="sheet-img" />
+                                                    목격
+                                                </div>
+                                                <div className="list-location">
+                                                    {post.witnessLocation}
+                                                    <p>{new Date(post.witnessDatetime).toLocaleString()}</p>
+                                                </div>
+                                            </div>
+                                            <div className="list-img">
+                                                <img src={post.photoUrl} alt="dog" className="sheet-nailimg" />
+                                            </div>
+                                            <hr />
+                                        </div>
+                                    ))}
+
+                            {/* ✅ 보호소 리스트 */}
+                            {shelterFiltering &&
+                                shelterAnnouncements.map((shelter, index) => (
+                                    <div key={`shelter-${index}`} className="list-wrap">
                                         <div className="list-left">
-                                            <div className="state-find">
-                                                <img src={missing2} alt="witness" className="sheet-img" />
-                                                목격
+                                            <div className="state-shelter">
+                                                <img src={customMarkerImg} alt="shelter" className="sheet-img" />
+                                                보호소
                                             </div>
                                             <div className="list-location">
-                                                {post.witnessLocation}
-                                                <p>{new Date(post.witnessDatetime).toLocaleString()}</p>
+                                                {shelter.address}
+                                                <p>{shelter.shelterName}</p>
                                             </div>
                                         </div>
                                         <div className="list-img">
-                                            <img src={post.photoUrl} alt="dog" className="sheet-nailimg" />
+                                            <img
+                                                src={shelter.animalSummaries?.[0]?.imageUrl ?? defaultImg}
+                                                alt="animal"
+                                                className="sheet-nailimg"
+                                            />
                                         </div>
                                         <hr />
                                     </div>
                                 ))}
 
-                            {/* ✅ 보호소 리스트 */}
-                            {shelterFiltering && shelterAnnouncements.map((shelter, index) => (
-                                <div key={`shelter-${index}`} className="list-wrap">
-                                    <div className="list-left">
-                                        <div className="state-shelter">
-                                            <img src={customMarkerImg} alt="shelter" className="sheet-img" />
-                                            보호소
-                                        </div>
-                                        <div className="list-location">
-                                            {shelter.address}
-                                            <p>{shelter.shelterName}</p>
-                                        </div>
-                                    </div>
-                                    <div className="list-img">
-                                        <img
-                                            src={shelter.animalSummaries?.[0]?.imageUrl ?? defaultImg}
-                                            alt="animal"
-                                            className="sheet-nailimg"
-                                        />
-                                    </div>
-                                    <hr />
-                                </div>
-                            ))}
-
                             {/* ✅ 병원 리스트 */}
-                            {hospitalFiltering && hospitals.map((hospital, index) => (
-                                <div key={`hospital-${index}`} className="list-wrap">
-                                    <div className="list-left">
-                                        <div className="state-hospital">
-                                            <img src={hospital2} alt="hospital" className="sheet-img" />
-                                            병원
+                            {hospitalFiltering &&
+                                hospitals.map((hospital, index) => (
+                                    <div key={`hospital-${index}`} className="list-wrap">
+                                        <div className="list-left">
+                                            <div className="state-hospital">
+                                                <img src={hospital2} alt="hospital" className="sheet-img" />
+                                                병원
+                                            </div>
+                                            <div className="list-location">
+                                                {hospital.address}
+                                                <p>{hospital.name}</p>
+                                            </div>
                                         </div>
-                                        <div className="list-location">
-                                            {hospital.address}
-                                            <p>{hospital.name}</p>
+                                        <div className="list-img">
+                                            <img src={hospital2} alt="hospital" className="sheet-nailimg" />
                                         </div>
+                                        <hr />
                                     </div>
-                                    <div className="list-img">
-                                        <img src={hospital2} alt="hospital" className="sheet-nailimg" />
-                                    </div>
-                                    <hr />
-                                </div>
-                            ))}
+                                ))}
                         </div>
                     </div>
-
-
                 )}
             </BottomSheet>
 

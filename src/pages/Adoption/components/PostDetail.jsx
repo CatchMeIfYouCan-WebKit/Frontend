@@ -31,6 +31,7 @@ export default function PostDetail() {
     const prevImage = () => setCurrentIndex((i) => (i - 1 + totalImages) % totalImages);
     const nextImage = () => setCurrentIndex((i) => (i + 1) % totalImages);
     const {
+        user_id,
         image,
         petName,
         isVerified,
@@ -256,7 +257,9 @@ export default function PostDetail() {
                     <div className="pd-info-value">{address || meetText}</div>
                 </li>
             </ul>
-            {ownerName !== currentUser && <Chat />}
+            {/* 여기 밑에 게시글 장성한 유저 아이디랑 현재 유저 아이디 체크해서 유저 아이디가 다르면 chat이 보이게  */}
+            {<Chat onClick={() => {}} />}
+            {/* 클릭하면 주인이랑 채팅할 수 있게 */}
         </div>
     );
 }
