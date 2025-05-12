@@ -112,12 +112,12 @@ function App() {
                 <Route path="/contact" element={<Contact />} />
 
                 {/* ✅ 실종 하위 라우트 추가 */}
-                <Route path="/missingpostDetail" element={<MissingPostDetail />} />
+                <Route path="/missingpostDetail/:id" element={<MissingPostDetail />} />
                 <Route path="/report-missing" element={<MissingPostForm />} />
                 <Route path="/report-missing/select-location" element={<MissingLocationSelect />} />
 
                 {/* ✅ 목격 하위 라우트 추가 */}
-                <Route path="/witnesspostDetail" element={<WitnessPostDetail />} />
+                <Route path="/witnesspostDetail/:id" element={<WitnessPostDetail />} />
                 <Route path="/report-found" element={<WitnessPostForm />} />
                 <Route path="/report-found/select-location" element={<WitnessLocationSelect />} />
 
