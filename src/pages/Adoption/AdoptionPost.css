@@ -141,7 +141,7 @@
 }
 .bread-input::placeholder {
     color: #888;
-  }
+}
 
 /* 리스트 */
 .bread-sheet-body {
@@ -180,9 +180,13 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
+    position: relative;
+    display: flex;
     /* 내부 색상은 inline style 에서 설정됩니다 */
     border: 2px solid transparent;
     box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
 }
 
 .color-box.selected .dot {
@@ -470,6 +474,16 @@
     margin-bottom: 4px;
     border: 1px solid #ccc;
 }
+.color-check {
+    color: rgb(0, 21, 255);
+    font-size: 18px;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
 
 .selected-colors {
     display: flex;

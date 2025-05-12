@@ -250,7 +250,7 @@ export default function Filtering() {
     return (
         <div className="filter-page">
             <div className="filtering-header">
-                <button className="back-button" onClick={goBack}>
+                <button className="back-button2" onClick={goBack}>
                     <IoIosArrowBack />
                 </button>
                 <div className="header-title">필터링</div>
@@ -346,32 +346,20 @@ export default function Filtering() {
                         [browncircle, '브라운'],
                         [redcircle, '붉은색'],
                         [goldcircle, '골드'],
-                    ].map(([src, label]) => (
-                        <div
-                            className="color-item"
-                            key={label}
-                            onClick={() => toggleColor(label)}
-                            style={{ opacity: selectedColors.includes(label) ? 0.5 : 1 }}
-                        >
-                            <img src={src} alt={label} />
-                            <p className="color-comment">{label}</p>
-                        </div>
-                    ))}
-                </div>
-                <div>
-                    <div className="selected-colors">
-                        {selectedColors.map((color) => (
-                            <span
-                                key={color}
-                                className="selected-color"
-                                style={{
-                                    border: `1px solid ${colorMap[color] || color}`,
-                                }}
+                    ].map(([src, label]) => {
+                        const isSelected = selectedColors.includes(label);
+                        return (
+                            <div
+                                className={`color-item ${isSelected ? 'selected' : ''}`}
+                                key={label}
+                                onClick={() => toggleColor(label)}
                             >
-                                {color}
-                            </span>
-                        ))}
-                    </div>
+                                <img src={src} alt={label} />
+                                {isSelected && <div className="color-check">✔</div>}
+                                <p className="color-comment">{label}</p>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
 

@@ -77,7 +77,14 @@ export default function RegisterPost() {
                         </div>
                         <div
                             className="space-side"
-                            onClick={() => navigate('/adoptionpost/add/select-location', { state })}
+                            onClick={() =>
+                                navigate('/adoptionpost/add/select-location', {
+                                    state: {
+                                        ...state,
+                                        description,
+                                    },
+                                })
+                            }
                         >
                             <img src={rightside} alt=">" />
                         </div>
@@ -95,7 +102,7 @@ export default function RegisterPost() {
                             image: photoUrl || fallbackImage, // 이미지
                             title: breed ? `${breed} 분양합니다` : '제목 없음', // 제목
                             description, // 이게 코멘트임
-                            breed,  // 픔종
+                            breed, // 픔종
                             birth: birthDate // 태어난 날
                                 ? birthDate.toLocaleDateString('ko-KR', {
                                       year: 'numeric',
@@ -109,7 +116,8 @@ export default function RegisterPost() {
                             weight, // 몸무게
                             neutered, // 중성화 여부
                             registrationNo, // 동물 등록 번호
-                            location: // 위치
+                            // 위치
+                            location:
                                 latitude != null && longitude != null
                                     ? `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`
                                     : '미정',
