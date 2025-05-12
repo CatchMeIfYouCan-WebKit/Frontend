@@ -196,10 +196,10 @@ export default function SignupBody() {
             </div>
 
             <div className="input-group">
-                <label>닉네임</label>
+                <label>사용자 이름</label>
                 <input
                     type="text"
-                    placeholder="닉네임 입력"
+                    placeholder="사용자 이름 입력"
                     value={nickname}
                     onChange={(e) => setNickname(e.target.value)}
                 />
