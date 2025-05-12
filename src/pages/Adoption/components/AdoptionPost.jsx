@@ -9,6 +9,10 @@ import BottomSheet from '../../Map/components/BottomSheet';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
+import { IoIosArrowBack } from 'react-icons/io';
+
+
+// 등록된 반려동물 입양글 등록 시 반려동물 이름, 사진 , 품종, 털색 성별, 중성화 여부, 생일, 몸무게, 동물 등록번호 있으면 받아오기
 
 const colorOptions = [
     { label: '검은색', value: 'black', hex: '#000000' },
@@ -216,7 +220,10 @@ export default function AdoptionPost() {
     return (
         <div className="adoption-post">
             <header className="header">
-                <h1>동물정보입력</h1>
+                <button className="rp-back" onClick={() => navigate(-1)}>
+                    <IoIosArrowBack size={24} />
+                </button>
+                <h4>동물정보입력</h4>
             </header>
 
             <section className="profile-pics">
@@ -308,7 +315,7 @@ export default function AdoptionPost() {
                                     }
                                 >
                                     <span className="dot" style={{ backgroundColor: c.hex }}>
-                                        {isSelected && <span className="color-check">✔</span>}
+                                        {isSelected && <span className="color-check2">✔</span>}
                                     </span>
                                     <span className="color-label">{c.label}</span>
                                 </div>
