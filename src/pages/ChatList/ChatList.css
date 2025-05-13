@@ -40,7 +40,7 @@
 
 .chatlist-icons svg {
     font-size: 24px;
-    color: #f5a623; /* 주황색 */
+    color: #111111 !important; /* 주황색 */
 }
 
 /* 알림 박스 */

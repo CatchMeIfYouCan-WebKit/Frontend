@@ -33,10 +33,10 @@ export default function ChatList() {
                 </div>
                 <div className="icons">
                     <button className="icon-button" onClick={() => navigate('/notifications')} aria-label="알림">
-                        <FontAwesomeIcon icon={faBell} style={{ color: '#f29b30' }} />
+                        <FontAwesomeIcon icon={faBell} style={{ color: '#111111' }} />
                     </button>
                     <button className="icon-button" onClick={() => navigate('/mypage')} aria-label="마이페이지">
-                        <FontAwesomeIcon icon={faUser} style={{ color: '#f29b30' }} />
+                        <FontAwesomeIcon icon={faUser} style={{ color: '#111111' }} />
                     </button>
                 </div>
             </header>

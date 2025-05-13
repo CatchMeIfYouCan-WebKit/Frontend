@@ -29,7 +29,7 @@
     padding-right: 30px;
 }
 
-.back-button {
+.back-button2 {
     background: none;
     border: none;
     font-size: 40px;
@@ -80,8 +80,8 @@
 
 .next-button {
     margin-top: 10px;
-    padding: 14px 0;
-    background-color: #f4a340;
+    padding: 7px 0;
+    background-color: #111111;
     color: white;
     border: none;
     border-radius: 8px;
