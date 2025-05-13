@@ -7,40 +7,39 @@
     padding: 5px 20px;
     border-bottom: 1px solid #eee;
     background: #fff;
-  }
-  
-  .logo-section {
+}
+
+.logo-section {
     display: flex;
     align-items: center;
     gap: 8px;
-  }
-  
-  .logo {
+}
+
+.logo {
     width: 60px;
     height: 60px;
     object-fit: contain;
-  }
-  
-  .brand {
+}
+
+.brand {
     font-size: 20px;
     font-weight: bold;
     color: #f29b30;
-  }
-  
-  .icons {
+}
+
+.icons {
     display: flex;
     gap: 16px;
-  }
-  
-  .icon-button {
+}
+
+.icon-button {
     background: none;
     border: none;
     font-size: 24px;
     cursor: pointer;
     padding: 0;
-  }
-  
-  .icon-button:not(:last-child) {
+}
+
+.icon-button:not(:last-child) {
     margin-right: 12px;
-  }
-  
+}
