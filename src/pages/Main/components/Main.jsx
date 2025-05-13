@@ -245,7 +245,7 @@ export default function Main() {
                     </div>
 
                     {/* 보호소게시판 */}
-                    <div className="action-box tall" onClick={() => navigate('/shelter-board')}>
+                    <div className="action-box tall" onClick={() => navigate('/shelterdetail')}>
                         <div className="action-content">
                             <div className="action-text">
                                 <div className="action-title">
