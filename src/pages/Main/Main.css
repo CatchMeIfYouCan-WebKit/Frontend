@@ -187,7 +187,7 @@
 
 /* “동물 등록 번호 조회 완료” 버튼 스타일 */
 .register-button.complete {
-    background-color: #f29b30;
+    background-color: #111111;
     color: white;
     cursor: default;
 }
@@ -212,7 +212,7 @@
 }
 
 .pet-pagination-dot.active {
-    background-color: #f29b30;
+    background-color: #111111;
     width: 24px; /* 가로로 길게 */
     border-radius: 12px; /* 타원형 모양 */
 }
@@ -302,16 +302,16 @@
 
 /* 각 텍스트 컬러 */
 .red {
-    color: red;
+    color: #111111;
 }
 .blue {
-    color: #3456db;
+    color: #111111;
 }
 .yellow {
-    color: #ffb800;
+    color: #111111;
 }
 .green {
-    color: #0b9c3c;
+    color: #111111;
 }
 
 /* ────────────────────────────────────────────────────────────────────────── */
