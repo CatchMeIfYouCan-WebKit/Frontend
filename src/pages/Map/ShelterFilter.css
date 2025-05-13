@@ -33,8 +33,9 @@ hr {
     margin: 8px 0;
 }
 
-.sf-section + .sf-section {
-    margin-top: 8px;
+.sf-section{
+    margin-top: 20px;
+    margin-bottom: 40px;
 }
 
 .sf-sec-header {
@@ -82,7 +83,8 @@ hr {
 }
 
 .sf-item-list li {
-    margin-bottom: 6px;
+    margin-bottom: 12px;
+    margin-top: 5px;
 }
 
 .sf-item-list label {
@@ -159,4 +161,36 @@ hr {
     padding: 5px;
     border-radius: 8px;
 
+}
+.color-check {
+    position: absolute;
+    top: 32%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgb(255, 255, 255);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; /* 클릭 방지 */
+}
+.white-check{
+    position: absolute;
+    top: 32%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgb(0, 0, 0);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; /* 클릭 방지 */
 }

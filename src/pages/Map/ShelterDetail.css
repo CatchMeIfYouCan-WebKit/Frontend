@@ -26,7 +26,7 @@
 /* 2) 실제 버튼 그룹은 왼쪽 40%만 사용 */
 .tabs {
     display: flex;
-    width: 75%;
+    width: 35%;
     /* 필요하면 margin-left 로 위치 조정 가능 */
 }
 
@@ -74,9 +74,10 @@
     cursor: pointer;
 }
 .filter.applied {
-    background: #8dafd5;
-    color: #fff;
-    box-shadow: 0 2px 6px rgba(0, 112, 243, 0.3);
+    background: #ffffff;
+    color: #000000;
+    box-shadow: 0 2px 6px rgba(1, 117, 248, 0.3);
+    border: 1px solid rgba(1, 117, 248, 0.3);
 }
 
 /* 태그 아이콘 */
@@ -169,13 +170,13 @@
     padding: 8px;
 }
 .shelter-name {
-    font-size: 0.875rem;
-    font-weight: 600;
+    font-size: 0.975rem;
+    font-weight: 500;
     margin-bottom: 4px;
-    color: #555;
+    color: #000000;
 }
 .animal-info > div {
-    font-size: 0.5rem;
-    color: #333;
+    font-size: 0.7rem;
+    color: #000000;
     margin-bottom: 2px;
 }
