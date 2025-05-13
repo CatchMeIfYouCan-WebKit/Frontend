@@ -2,17 +2,19 @@
 /* MAIN LAYOUT */
 /* ────────────────────────────────────────────────────────────────────────── */
 .main-page {
+    width: 100vw;
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    width: 100%;
-    min-height: 100vh;
-    padding-bottom: 60px;
-    font-family: sans-serif;
-    background: FAFAFA;
-    margin: 0;
+    background: #fafafa;
+    overflow: hidden;
     box-sizing: border-box;
 }
 
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+}
 .main-header {
     display: flex;
     justify-content: space-between;
@@ -144,6 +146,7 @@
     margin: 0 0 8px 10px;
     line-height: 1.2;
     font-weight: bold;
+    color: #111111;
 }
 
 .pet-text p {
@@ -206,6 +209,8 @@
 .pet-pagination-dot {
     width: 8px;
     height: 8px;
+    margin-top: 8px;
+    margin-bottom: 8px;
     background-color: #ccc;
     border-radius: 50%;
     cursor: pointer;
@@ -222,41 +227,93 @@
 /* ────────────────────────────────────────────────────────────────────────── */
 .stat-section {
     display: flex;
-    justify-content: center;
+    justify-content: center; /* 가운데 정렬 */
     padding: 0 20px;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    height: 20%;
+}
+
+.stat-box-wrapper {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    max-width: 720px; /* 적당한 너비 제한 */
+    justify-content: center;
+}
+
+.stat-text-box,
+.stat-chart-box {
+    flex: 1;
+    background-color: white;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); /* 지우면 보더 사라짐 */
+    text-align: center;
+}
+
+.stat-date {
+    font-size: 16px;
+    color: #8c8c8c;
+    margin-bottom: px;
+    font-weight: 600;
+    text-align: left;
+    margin-bottom: 4px;
+}
+
+.stat-count {
+    font-size: 40px;
+    font-weight: bold;
+    margin-bottom: -14px;
+    text-align: center;
+}
+
+.stat-count strong {
+    color: #111;
+    font-size: 80px;
+}
+
+.stat-sub {
+    text-align: left;
+    font-size: 12px;
+    color: #8c8c8c;
+    margin-top: -18px;
 }
 
 /* ────────────────────────────────────────────────────────────────────────── */
 /* ACTION GRID */
 /* ────────────────────────────────────────────────────────────────────────── */
+/* ────────────────────────────────────────────────────────────────────────── */
+/* ACTION GRID */
+/* ────────────────────────────────────────────────────────────────────────── */
 .action-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    padding: 20px;
-    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px 20px;
+    margin: 0;
+    overflow: hidden;
 }
 
 .action-box {
     background-color: white;
-    border-radius: 16px;
-    padding: 16px;
+    border-radius: 6px;
+    padding: 10px 14px;
     text-align: center;
     font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     line-height: 1.4;
-}
-
-.action-box.tall {
-    height: 130px;
+    width: 100%;
+    height: 100px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-size: 16px;
-    width: 215px;
+    font-size: 15px;
+    border: 1px solid #d9d9d9;
+    margin-bottom: 14px;
 }
+
 .action-content {
     display: flex;
     justify-content: space-between;
@@ -270,34 +327,33 @@
     flex-direction: column;
     justify-content: flex-start;
     text-align: left;
-    margin-left: 10px;
+    margin-left: 8px;
     flex: 1;
 }
 
 .action-title {
-    margin-top: 10px;
-    font-size: 20px;
-    font-weight: 900;
-    margin-bottom: 6px;
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 12px;
     white-space: nowrap;
     align-self: flex-start;
+    color: #111111;
 }
 
 .action-desc {
     font-size: 16px;
-    line-height: 1.5;
-    color: #767676;
-    font-weight: 500;
-    min-height: 72px;
+    line-height: 1.4;
+    color: #8c8c8c;
+    font-weight: 600;
+    min-height: auto;
 }
 
 .action-img {
-    width: 100px;
-    height: 100px;
+    width: 76px;
+    height: 76px;
     object-fit: contain;
-    margin-left: -20px;
-    margin-right: -20px;
-    margin-top: 50px;
+    margin: 0;
 }
 
 /* 각 텍스트 컬러 */
@@ -344,8 +400,9 @@
 }
 
 .main-content {
-    flex: 1;
+    min-height: auto;
 }
+
 .gender-icon {
     width: 14px;
     height: 14px;
