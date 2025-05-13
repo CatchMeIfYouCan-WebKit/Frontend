@@ -138,6 +138,12 @@ function App() {
                 {/* ✅ 실시간 채팅방 */}
                 <Route path="/chat/:type/:relatedId" element={<ChatRoom />} />
                 <Route path="/chat/test" element={<ChatRoomTest />} />
+
+                <Route path="/medical" element={<MedicalPage />} />
+                <Route path="/reservation" element={<ReservationPage />} />
+                <Route path="/hospital/:id" element={<HospitalDetailPage />} />
+                <Route path="/vet/:id" element={<VetDetailPage />} />
+                <Route path="/nearby-hospital" element={<NearbyHospitalPage />} />
             </Routes>
         </BrowserRouter>
     );
