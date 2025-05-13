@@ -164,7 +164,7 @@
     width: 100px;
     height: 50px;
     border-radius: 20px;
-    color: #f5a623;
+    color: #000000;
     background: #fff;
     font-size: 16px;
     line-height: 1;
@@ -182,7 +182,7 @@
     height: 56px;
     border-radius: 50%;
     font-size: 32px;
-    background: #f5a623;
+    background: #000000;
     color: #fff;
 }
 .fab-options {
@@ -192,7 +192,7 @@
     gap: 8px;
 }
 .fab-option {
-    background: #f5a623;
+    background: #000000;
     color: #fff;
     border: none;
     border-radius: 20px;
@@ -272,7 +272,7 @@
     text-align: left;
   }
 .select-sheet .sheet-item input {
-  accent-color: #f5a623;
+  accent-color: #000000;
 }
 
 /* 고정된 확인 버튼 */
@@ -282,7 +282,7 @@
   left: 16px;
   right: 16px;
   height: 48px;
-  background: #f5a623;
+  background: #000000;
   color: #fff;
   border: none;
   border-radius: 8px;

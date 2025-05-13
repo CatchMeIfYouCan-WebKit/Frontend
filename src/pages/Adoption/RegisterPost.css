@@ -26,14 +26,14 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: #333;
+    color: #000000;
 }
 
 .rp-title {
     font-size: 18px;
     font-weight: bold;
     margin: 0;
-    color: #333;
+    color: #000000;
 }
 
 /* Pet Info Section */
@@ -111,7 +111,7 @@
 .rp-select:focus,
 .rp-textarea:focus {
     outline: none;
-    border-color: #f29b30;
+    border-color: #000000;
 }
 
 /* Textarea */
@@ -137,7 +137,7 @@
     padding: 14px;
     font-size: 16px;
     color: #fff;
-    background-color: #f29b30;
+    background-color: #000000;
     border: none;
     border-radius: 6px;
     cursor: pointer;
@@ -145,7 +145,7 @@
 }
 
 .rp-submit-btn:hover {
-    background-color: #e07b00;
+    background-color: #000000;
 }
 
 .space-box {
