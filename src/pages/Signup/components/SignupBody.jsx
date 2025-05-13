@@ -167,6 +167,7 @@ export default function SignupBody() {
                     placeholder="아이디 입력"
                     value={userId}
                     onChange={(e) => setUserId(e.target.value)}
+                    className="login-input2" // ✅ 추가
                 />
                 {idMessage && <p className={idMessage.includes('사용 가능') ? 'success' : 'error'}>{idMessage}</p>}{' '}
             </div>
@@ -178,6 +179,7 @@ export default function SignupBody() {
                     placeholder="영문, 숫자, 특수문자 포함 8자리 이상"
                     value={userPw}
                     onChange={(e) => setUserPw(e.target.value)}
+                    className="login-input2" // ✅ 추가
                 />
                 {pwMessage && <p className="error">{pwMessage}</p>}
             </div>
@@ -189,6 +191,7 @@ export default function SignupBody() {
                     placeholder="비밀번호 다시 입력"
                     value={userPwConfirm}
                     onChange={(e) => setUserPwConfirm(e.target.value)}
+                    className="login-input2" // ✅ 추가
                 />
                 {pwConfirmMessage && (
                     <p className={pwConfirmMessage.includes('일치합니다') ? 'success' : 'error'}>{pwConfirmMessage}</p>
@@ -202,6 +205,7 @@ export default function SignupBody() {
                     placeholder="사용자 이름 입력"
                     value={nickname}
                     onChange={(e) => setNickname(e.target.value)}
+                    className="login-input2" // ✅ 추가
                 />
                 {nickMessage && (
                     <p className={nickMessage.includes('사용 가능') ? 'success' : 'error'}>{nickMessage}</p>
@@ -215,6 +219,7 @@ export default function SignupBody() {
                     placeholder="휴대전화 입력"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
+                    className="login-input2" // ✅ 추가
                 />
                 {phoneMessage && (
                     <p className={phoneMessage.includes('올바른') ? 'success' : 'error'}>{phoneMessage}</p>

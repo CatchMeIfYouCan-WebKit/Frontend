@@ -347,8 +347,11 @@
     flex: 1;
 }
 .gender-icon {
-    width: 42px;
-    height: 42px;
+    width: 14px;
+    height: 14px;
     vertical-align: middle;
     margin-bottom: 4px;
+}
+.icon-white {
+    color: white;
 }

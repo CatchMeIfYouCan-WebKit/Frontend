@@ -53,7 +53,7 @@
     width: 100% !important;
     height: 60px !important;
     padding: 14px 18px;
-    border: 2px solid transparent #111111;
+    border: 1px solid #111111; /* ✅ 여기만 수정 */
     border-radius: 8px;
     background-color: #fff;
     font-size: 20px;
