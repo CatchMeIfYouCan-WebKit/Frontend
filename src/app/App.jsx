@@ -36,26 +36,16 @@ import PrivacySettings from '../pages/MyPage/components/PrivacySettings';
 import DeleteAccount from '../pages/MyPage/components/DeleteAccount';
 import Logout from '../pages/MyPage/components/Logout';
 import Contact from '../pages/MyPage/components/Contact';
-import ShelterDetail from '../pages/Map/components/ShelterDetail';
-import ShelterFilter from '../pages/Map/components/ShelterFilter';
-import MissingPostDetail from '../pages/Missing/components/MissingPostDetail';
-import Adoption from '../pages/Adoption/components/Adoption';
-import MissingPostForm from '../pages/MissingForm/components/MissingPostForm';
-import WitnessPostDetail from '../pages/Witness/components/WitnessPostDetail';
-import AdoptionPost from '../pages/Adoption/components/AdoptionPost';
 
-import WitnessPostForm from '../pages/WitnessForm/components/WitnessPostForm';
-import RegisterPost from '../pages/Adoption/components/RegisterPost';
-import LocationSelect from '../pages/Adoption/components/LocationSelect';
-import PostDetail from '../pages/Adoption/components/PostDetail';
-
-import ChatRoom from '../pages/Chat/components/ChatRoom';
-import ChatRoomTest from '../pages/Chat/components/ChatRoomTest';
-import AdoptionPostEdit from '../pages/Adoption/components/AdoptionPostEdit';
-
-import MissingLocationSelect from '../pages/MissingForm/components/MissingLocationSelect';
-import WitnessLocationSelect from '../pages/WitnessForm/components/WitnessLocationSelect';
-
+// ***** 👇 진료 페이지 임포트 추가 *****
+// 경로 예시: src/pages/MedicalPage/MedicalPage.jsx
+// 실제 파일 위치에 따라 경로를 정확하게 수정해주세요.
+// 예: import MedicalPage from "../pages/진료페이지/MedicalPage";
+import MedicalPage from '../pages/Medical/components/MedicalPage';
+import ReservationPage from '../pages/Reservation/components/ReservationPage';
+import NearbyHospitalPage from '../pages/NearbyHospital/components/NearbyHospitalPage';
+import HospitalDetailPage from '../pages/HospitalDetail/components/HospitalDetailPage.';
+import VetDetailPage from '../pages/VetDetail/components/VetDetailPage';
 function App() {
     return (
         <BrowserRouter>
@@ -83,22 +73,12 @@ function App() {
                 <Route path="/filters" element={<Filtering />} />
                 <Route path="/board/markerpick" element={<MarkerPick />} />
 
-                {/* 보호소 동물 상세페이지 */}
-                <Route path="/shelterdetail" element={<ShelterDetail />} />
-                <Route path="/shelterdetail/filter" element={<ShelterFilter />} />
-
-                {/* 입양 게시판 */}
-                <Route path="/adoptionpost" element={<Adoption />} />
-                <Route path="/adoptionpost/add" element={<AdoptionPost />} />
-                <Route path="/adoptionpost/add/details" element={<RegisterPost />} />
-                <Route path="/adoptionpost/add/select-location" element={<LocationSelect />} />
-                <Route path="/adoptionpost/:id" element={<PostDetail />} />
-                <Route path="/adoption/post/edit/:id" element={<AdoptionPostEdit />} />
-
                 {/* 반려동물 프로필 등록 */}
                 <Route path="/animal-profile" element={<AnimalProfile />} />
 
-                {/* ✅ 마이페이지 하위 라우트 추가 */}
+                {/* 실종게시글 상세 페이지 라우트 */}
+
+                {/* ✅ 마이페이지 하위 라우트 */}
                 <Route path="/change-password" element={<ChangePassword />} />
                 <Route path="/change-nickname" element={<ChangeNickname />} />
                 <Route path="/verify-phone" element={<VerifyPhone />} />
@@ -111,19 +91,13 @@ function App() {
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/contact" element={<Contact />} />
 
-                {/* ✅ 실종 하위 라우트 추가 */}
-                <Route path="/missingpostDetail" element={<MissingPostDetail />} />
-                <Route path="/report-missing" element={<MissingPostForm />} />
-                <Route path="/report-missing/select-location" element={<MissingLocationSelect />} />
-
-                {/* ✅ 목격 하위 라우트 추가 */}
-                <Route path="/witnesspostDetail" element={<WitnessPostDetail />} />
-                <Route path="/report-found" element={<WitnessPostForm />} />
-                <Route path="/report-found/select-location" element={<WitnessLocationSelect />} />
-
-                {/* ✅ 실시간 채팅방 */}
-                <Route path="/chat/:type/:relatedId" element={<ChatRoom />} />
-                <Route path="/chat/test" element={<ChatRoomTest />} />
+                {/* ***** 👇 진료 페이지 라우트 추가 ***** */}
+                <Route path="/medical" element={<MedicalPage />} />
+                <Route path="/reservation" element={<ReservationPage />} />
+                <Route path="/nearby-hospital" element={<NearbyHospitalPage />} />
+                <Route path="/hospital/:id" element={<HospitalDetailPage />} />
+                <Route path="/vet/:name" element={<VetDetailPage />} />
+                {/* 예: /medical URL로 접속 시 MedicalPage 컴포넌트 렌더링 */}
             </Routes>
         </BrowserRouter>
     );

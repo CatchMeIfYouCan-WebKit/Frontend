@@ -1,0 +1,161 @@
+.vet-detail-page {
+    font-family: Pretendard;
+    background: #fff;
+    padding-bottom: 60px;
+    position: relative;
+    text-align: left; /* ✅ 추가 */
+    text-align: left !important;
+}
+
+/* 상단 영역 */
+.vet-detail-header-section {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    gap: 16px;
+}
+
+.vet-detail-image-placeholder {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background-color: #ddd;
+}
+
+.vet-detail-header-info {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.vet-detail-hospital-name {
+    font-size: 16px;
+    color: #767676;
+}
+
+.vet-detail-name {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.vet-detail-rating {
+    font-size: 16x;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #767676;
+}
+
+/* 섹션 공통 */
+.vet-detail-section {
+    padding: 20px;
+    border-bottom: 8px solid #f6f6f6;
+    text-align: left; /* ✅ 추가 */
+}
+
+.vet-detail-section h4 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-align: left;
+    color: #767676;
+}
+
+.vet-detail-section p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 8px;
+
+    text-align: left;
+    font-weight: 400;
+}
+
+.vet-detail-tag {
+    display: inline-block;
+    background-color: #f4f4f4;
+    color: #444;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 16px;
+}
+
+/* 평점 바 */
+.vet-detail-rating-bar-summary {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #111111;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.vet-detail-rating-bars {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.vet-detail-rating-bars li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.vet-detail-rating-bars .bar {
+    flex: 1;
+    height: 6px;
+    background: #eee;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.vet-detail-rating-bars .filled {
+    height: 100%;
+    background-color: #111111;
+}
+
+/* 리뷰 박스 */
+.vet-detail-review-box .review-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.vet-detail-review-box .stars {
+    font-size: 16px;
+    color: #f29b30;
+    margin-bottom: 4px;
+}
+
+/* 고정된 진료 신청 버튼 */
+.vet-detail-fixed-button-wrapper {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    padding: 12px 16px 24px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+}
+.vet-detail-fixed-button {
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+    display: block;
+    background-color: #111111;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 14px 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
