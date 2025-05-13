@@ -1,5 +1,5 @@
 // src/pages/ShelterDetail.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';  // useEffect 추가
 import '../ShelterDetail.css';
 import tag from '../../../assets/tag.svg';
 import change from '../../../assets/change.svg';
@@ -79,6 +79,13 @@ export default function ShelterDetail() {
             return listChange ? tb - ta : ta - tb;
         });
 
+    // 동물 정보가 없을 때 콘솔에 메시지 출력
+    useEffect(() => {
+        if (animals.length === 0) {
+            console.log('동물 정보가 없습니다.');
+        }
+    }, [animals]);
+
     return (
         <div className="shelter-detail">
             <h2 className="title">보호소 동물현황</h2>
@@ -126,6 +133,7 @@ export default function ShelterDetail() {
 
             {/* 동물 카드 그리드 */}
             <div className="animal-grid">
+                
                 {animals.map((animal, i) => (
                     <div
                         key={i}

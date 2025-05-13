@@ -122,7 +122,19 @@
     backdrop-filter: blur(7.5px);
     color: white;
 }
-.tag-wrap1,
+.tag-wrap1{
+    display: flex;
+    align-items: center;
+    border: 1px solid #d9d9d9;
+    border-radius: 10px;
+    background: linear-gradient(106deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.8));
+    padding: 6px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    height: 40px;
+    width: 80px;
+    margin: auto;
+}
 .tag-wrap2,
 .tag-wrap3 {
     display: flex;
@@ -134,31 +146,24 @@
     font-size: 16px;
     cursor: pointer;
     height: 40px;
-}
-.tag-wrap1 {
     width: 90px;
-}
-.tag-wrap2 {
-    width: 110px;
-}
-.tag-wrap3 {
-    width: 60px;
+    margin: auto;
 }
 
-.tag-img {
-    width: 18px;
-    height: 18px;
+.tag-img1 {
+    width: 20px;
+    height: 20px;
     margin-right: 6px;
     border-radius: 4px;
-    object-fit: contain;
+}
+.tag-img {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    margin-left: 1px;
 }
 
-/* 현재 위치 버튼 */
-.location-wrap {
-    position: absolute;
-    top: 115px;
-    right: 0px;
-}
+
 
 .location-img {
     width: 42px;
