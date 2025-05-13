@@ -242,10 +242,8 @@
     color: #fff;
     width: 170px;
     text-align: left;
-    -webkit-text-stroke-width: 0.5px;
-    -webkit-text-stroke-color: #111;
     font-family: Pretendard;
-    font-size: 20px;
+    font-size: 2px;
     font-style: normal;
     font-weight: 600;
     line-height: 24px; /* 150% */
