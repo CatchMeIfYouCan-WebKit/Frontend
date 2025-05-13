@@ -2,16 +2,19 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import '../MissingPostDetail.css';
 import testdog from '../../../assets/수완강아지.jpeg';
 import calender from '../../../assets/uit_calender.svg';
 import location from '../../../assets/location.svg';
 import send from '../../../assets/send.svg';
 import user from '../../../assets/users.svg';
+import axios from 'axios';
 
 export default function MissingPostDetail() {
     const navigate = useNavigate();
+    const { id } = useParams();
+    const [post, setPost] = useState(null);
     const [fadeOut, setFadeOut] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [commentInput, setCommentInput] = useState('');
@@ -24,23 +27,11 @@ export default function MissingPostDetail() {
         },
     ]);
 
+    const post2 = { images: [testdog, testdog, testdog] };
+
     const goBack = () => {
         setFadeOut(true);
         setTimeout(() => navigate(-1), 400);
-    };
-
-    const post = {
-        author: '금오H',
-        dogName: '벨아키마야',
-        breed: '말티즈',
-        timeAgo: '7일 전',
-        date: '2025년 4월 15일 오전 9:00 실종',
-        location: '경북 구미시 대학로 61',
-        description:
-            '집에서 나가 도서관 위 빌라에서 발견후 아무소식 없다가 3일 후 도서관 앞에서 주민분이 강아지 봤다하심 이후 제보없음',
-        images: [testdog, testdog, testdog],
-        latitude: 36.1195,
-        longitude: 128.3446,
     };
 
     const handleScroll = (e) => {
@@ -62,11 +53,49 @@ export default function MissingPostDetail() {
         setCommentInput('');
     };
 
+    // 사진 불러오기
+    const getImageUrl = (path) => {
+        if (!path) return '/default-image.png';
+        const host = window.location.hostname;
+        const port = 8080;
+        return `http://${host}:${port}${path}`;
+    };
+
+    // ?일 전 계산
+    const calculateTimeAgo = (createdAt) => {
+        const now = new Date();
+        const createdDate = new Date(createdAt);
+
+        const diffMs = now - createdDate;
+        const diffMinutes = Math.floor(diffMs / (1000 * 60));
+        const diffHours = Math.floor(diffMinutes / 60);
+        const diffDays = Math.floor(diffHours / 24);
+
+        if (diffMinutes < 1) return '방금 전';
+        if (diffMinutes < 60) return `${diffMinutes}분 전`;
+        if (diffHours < 24) return `${diffHours}시간 전`;
+        return `${diffDays}일 전`;
+    };
+
+    useEffect(() => {
+        console.log('요청 ID:', id);
+        axios
+            .get(`/api/posts/${id}`)
+            .then((response) => {
+                console.log('응답 데이터:', response.data);
+                setPost(response.data);
+            })
+            .catch((error) => console.error('Error:', error));
+    }, [id]);
+
     // ✅ 지도 관련
     const mapRef = useRef(null);
+
     useEffect(() => {
-        const { latitude, longitude } = post;
-        if (!latitude || !longitude) return;
+        if (!post || !post.missingLocation) {
+            console.log('지도 표시 실패: 주소 정보 없음', post);
+            return;
+        }
 
         const script = document.createElement('script');
         script.src =
@@ -77,21 +106,42 @@ export default function MissingPostDetail() {
         script.onload = () => {
             window.kakao.maps.load(() => {
                 const kakao = window.kakao;
-                const map = new kakao.maps.Map(mapRef.current, {
-                    center: new kakao.maps.LatLng(latitude, longitude),
-                    level: 4,
-                });
-                new kakao.maps.Marker({
-                    position: new kakao.maps.LatLng(latitude, longitude),
-                    map,
+                const geocoder = new kakao.maps.services.Geocoder();
+
+                console.log('주소로 좌표 변환 요청:', post.missingLocation);
+
+                geocoder.addressSearch(post.missingLocation, (result, status) => {
+                    console.log('주소 검색 결과:', result, '상태:', status);
+
+                    if (status === window.kakao.maps.services.Status.OK) {
+                        const latitude = parseFloat(result[0].y);
+                        const longitude = parseFloat(result[0].x);
+                        console.log('변환된 좌표:', latitude, longitude);
+
+                        const map = new kakao.maps.Map(mapRef.current, {
+                            center: new kakao.maps.LatLng(latitude, longitude),
+                            level: 4,
+                        });
+
+                        new window.kakao.maps.Marker({
+                            position: new window.kakao.maps.LatLng(latitude, longitude),
+                            map,
+                        });
+                        console.log('지도와 마커 생성 완료');
+                    } else {
+                        console.error('주소 변환 실패: 상태 =', status);
+                    }
                 });
             });
         };
 
         return () => {
+            console.log('카카오 스크립트 제거');
             document.head.removeChild(script);
         };
-    }, [post.latitude, post.longitude]);
+    }, [post]);
+
+    if (!post) return <div>Loading...</div>;
 
     return (
         <>
@@ -109,7 +159,7 @@ export default function MissingPostDetail() {
                     </div>
                     <div className="missing-right-part">
                         <div className="missing-nickname-row">
-                            <span className="missing-nickname">{post.author}</span>
+                            <span className="missing-nickname">{post.userNickname}</span>
                             <button className="missing-more-btn" onClick={() => setIsDropdownOpen((prev) => !prev)}>
                                 &#8942;
                             </button>
@@ -129,26 +179,19 @@ export default function MissingPostDetail() {
                                 <span className="missing-dog-name">{post.dogName}</span>
                                 <span className="missing-breed">{post.breed}</span>
                             </div>
-                            <div className="missing-time-ago">{post.timeAgo}</div>
+                            <div className="missing-time-ago">{calculateTimeAgo(post.createdAt)}</div>
                         </div>
                     </div>
                 </div>
 
                 <div className="missing-image-slider" onScroll={handleScroll}>
-                    {post.images.map((img, idx) => (
-                        <div className="missing-slide" key={idx}>
-                            <img src={img} alt={`강아지${idx}`} />
-                            {idx === currentImageIndex && (
-                                <div className="missing-image-counter">
-                                    {currentImageIndex + 1}/{post.images.length}
-                                </div>
-                            )}
-                        </div>
-                    ))}
+                    <div className="missing-slide">
+                        <img src={getImageUrl(post.photoUrl)} alt={'강아지'} />
+                    </div>
                 </div>
 
                 <div className="missing-thumbnail-slider">
-                    {post.images.map((img, idx) => (
+                    {post2.images.map((img, idx) => (
                         <div className="missing-thumbnail-card" key={idx}>
                             <img src={img} alt={`썸네일${idx}`} />
                             <div className="missing-thumbnail-text">
@@ -162,13 +205,22 @@ export default function MissingPostDetail() {
 
                 <div className="missing-detail-info">
                     <div className="missing-date-row">
-                        <img src={calender} alt="calender" className="missing-calender-image" /> {post.date}
+                        <img src={calender} alt="calender" className="missing-calender-image" />{' '}
+                        {new Date(post.missingDatetime).toLocaleString('ko-KR', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: 'numeric',
+                            minute: 'numeric',
+                            hour12: true,
+                        })}{' '}
+                        {post.postType === 'missing' ? '실종' : '목격'}{' '}
                     </div>
                     <div className="missing-location-row">
                         <img src={location} alt="location" className="missing-location-image" />
-                        {post.location}
+                        {post.missingLocation}
                     </div>
-                    <p className="missing-description">{post.description}</p>
+                    <p className="missing-description">{post.detailDescription}</p>
                 </div>
 
                 {/* ✅ 지도 적용 */}

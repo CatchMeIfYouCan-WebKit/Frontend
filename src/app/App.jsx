@@ -36,6 +36,26 @@ import PrivacySettings from '../pages/MyPage/components/PrivacySettings';
 import DeleteAccount from '../pages/MyPage/components/DeleteAccount';
 import Logout from '../pages/MyPage/components/Logout';
 import Contact from '../pages/MyPage/components/Contact';
+import ShelterDetail from '../pages/Map/components/ShelterDetail';
+import ShelterFilter from '../pages/Map/components/ShelterFilter';
+import MissingPostDetail from '../pages/Missing/components/MissingPostDetail';
+import Adoption from '../pages/Adoption/components/Adoption';
+import MissingPostForm from '../pages/MissingForm/components/MissingPostForm';
+import WitnessPostDetail from '../pages/Witness/components/WitnessPostDetail';
+import AdoptionPost from '../pages/Adoption/components/AdoptionPost';
+
+import WitnessPostForm from '../pages/WitnessForm/components/WitnessPostForm';
+import RegisterPost from '../pages/Adoption/components/RegisterPost';
+import LocationSelect from '../pages/Adoption/components/LocationSelect';
+import PostDetail from '../pages/Adoption/components/PostDetail';
+
+import ChatRoom from '../pages/Chat/components/ChatRoom';
+import ChatRoomTest from '../pages/Chat/components/ChatRoomTest';
+import AdoptionPostEdit from '../pages/Adoption/components/AdoptionPostEdit';
+
+import MissingLocationSelect from '../pages/MissingForm/components/MissingLocationSelect';
+import WitnessLocationSelect from '../pages/WitnessForm/components/WitnessLocationSelect';
+import ShelterPostDetial from '../pages/Map/components/ShelterPostDetial';
 
 // ***** 👇 진료 페이지 임포트 추가 *****
 // 경로 예시: src/pages/MedicalPage/MedicalPage.jsx
@@ -73,6 +93,20 @@ function App() {
                 <Route path="/filters" element={<Filtering />} />
                 <Route path="/board/markerpick" element={<MarkerPick />} />
 
+                {/* 보호소 동물 상세페이지 */}
+                <Route path="/shelterdetail" element={<ShelterDetail />} />
+                <Route path="/shelterdetail/filter" element={<ShelterFilter />} />
+                <Route path="/shelterdetail/:id" element={<ShelterPostDetial />} />
+                <Route path="/shelterdetail/dumy" element={<ShelterPostDetial />} />
+
+                {/* 입양 게시판 */}
+                <Route path="/adoptionpost" element={<Adoption />} />
+                <Route path="/adoptionpost/add" element={<AdoptionPost />} />
+                <Route path="/adoptionpost/add/details" element={<RegisterPost />} />
+                <Route path="/adoptionpost/add/select-location" element={<LocationSelect />} />
+                <Route path="/adoptionpost/:id" element={<PostDetail />} />
+                <Route path="/adoption/post/edit/:id" element={<AdoptionPostEdit />} />
+
                 {/* 반려동물 프로필 등록 */}
                 <Route path="/animal-profile" element={<AnimalProfile />} />
 
@@ -91,13 +125,19 @@ function App() {
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/contact" element={<Contact />} />
 
-                {/* ***** 👇 진료 페이지 라우트 추가 ***** */}
-                <Route path="/medical" element={<MedicalPage />} />
-                <Route path="/reservation" element={<ReservationPage />} />
-                <Route path="/nearby-hospital" element={<NearbyHospitalPage />} />
-                <Route path="/hospital/:id" element={<HospitalDetailPage />} />
-                <Route path="/vet/:name" element={<VetDetailPage />} />
-                {/* 예: /medical URL로 접속 시 MedicalPage 컴포넌트 렌더링 */}
+                {/* ✅ 실종 하위 라우트 추가 */}
+                <Route path="/missingpostDetail/:id" element={<MissingPostDetail />} />
+                <Route path="/report-missing" element={<MissingPostForm />} />
+                <Route path="/report-missing/select-location" element={<MissingLocationSelect />} />
+
+                {/* ✅ 목격 하위 라우트 추가 */}
+                <Route path="/witnesspostDetail/:id" element={<WitnessPostDetail />} />
+                <Route path="/report-found" element={<WitnessPostForm />} />
+                <Route path="/report-found/select-location" element={<WitnessLocationSelect />} />
+
+                {/* ✅ 실시간 채팅방 */}
+                <Route path="/chat/:type/:relatedId" element={<ChatRoom />} />
+                <Route path="/chat/test" element={<ChatRoomTest />} />
             </Routes>
         </BrowserRouter>
     );

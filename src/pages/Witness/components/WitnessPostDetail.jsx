@@ -1,15 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import '../WitnessPostDetail.css';
 import testdog from '../../../assets/수완강아지.jpeg';
 import calender from '../../../assets/uit_calender.svg';
 import location from '../../../assets/location.svg';
 import send from '../../../assets/send.svg';
 import user from '../../../assets/users.svg';
+import axios from 'axios';
 
 export default function WitnessPostDetail() {
     const navigate = useNavigate();
+    const { id } = useParams();
+    const [post, setPost] = useState(null);
     const [fadeOut, setFadeOut] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [commentInput, setCommentInput] = useState('');
@@ -27,19 +30,7 @@ export default function WitnessPostDetail() {
         setTimeout(() => navigate(-1), 400);
     };
 
-    const post = {
-        author: '금오H',
-        dogName: '벨아키마야',
-        breed: '말티즈',
-        timeAgo: '7일 전',
-        date: '2025년 4월 15일 오전 9:00 목격',
-        location: '경북 구미시 대학로 61',
-        description:
-            '도서관 앞 횡단보도에서 흰색 말티즈 목격했습니다. 주위에 사람이 많았고 겁에 질린 듯한 모습이었습니다.',
-        images: [testdog, testdog, testdog],
-        latitude: 36.1195,
-        longitude: 128.3446,
-    };
+    const post2 = { images: [testdog, testdog, testdog] };
 
     const handleScroll = (e) => {
         const scrollLeft = e.target.scrollLeft;
@@ -60,11 +51,34 @@ export default function WitnessPostDetail() {
         setCommentInput('');
     };
 
+    // 사진 불러오기
+    const getImageUrl = (path) => {
+        if (!path) return '/default-image.png';
+        const host = window.location.hostname;
+        const port = 8080;
+        return `http://${host}:${port}${path}`;
+    };
+
+    // ?일 전 계산
+    const calculateTimeAgo = (createdAt) => {
+        const now = new Date();
+        const createdDate = new Date(createdAt);
+
+        const diffMs = now - createdDate;
+        const diffMinutes = Math.floor(diffMs / (1000 * 60));
+        const diffHours = Math.floor(diffMinutes / 60);
+        const diffDays = Math.floor(diffHours / 24);
+
+        if (diffMinutes < 1) return '방금 전';
+        if (diffMinutes < 60) return `${diffMinutes}분 전`;
+        if (diffHours < 24) return `${diffHours}시간 전`;
+        return `${diffDays}일 전`;
+    };
+
     // ✅ 지도 관련
     const mapRef = useRef(null);
     useEffect(() => {
-        const { latitude, longitude } = post;
-        if (!latitude || !longitude) return;
+        if (!post?.witnessLocation) return;
 
         const script = document.createElement('script');
         script.src =
@@ -74,14 +88,22 @@ export default function WitnessPostDetail() {
 
         script.onload = () => {
             window.kakao.maps.load(() => {
-                const kakao = window.kakao;
-                const map = new kakao.maps.Map(mapRef.current, {
-                    center: new kakao.maps.LatLng(latitude, longitude),
-                    level: 4,
-                });
-                new kakao.maps.Marker({
-                    position: new kakao.maps.LatLng(latitude, longitude),
-                    map,
+                const geocoder = new window.kakao.maps.services.Geocoder();
+                geocoder.addressSearch(post.witnessLocation, (result, status) => {
+                    if (status === window.kakao.maps.services.Status.OK) {
+                        const latitude = parseFloat(result[0].y);
+                        const longitude = parseFloat(result[0].x);
+
+                        const map = new window.kakao.maps.Map(mapRef.current, {
+                            center: new window.kakao.maps.LatLng(latitude, longitude),
+                            level: 4,
+                        });
+
+                        new window.kakao.maps.Marker({
+                            position: new window.kakao.maps.LatLng(latitude, longitude),
+                            map,
+                        });
+                    }
                 });
             });
         };
@@ -89,7 +111,16 @@ export default function WitnessPostDetail() {
         return () => {
             document.head.removeChild(script);
         };
-    }, [post.latitude, post.longitude]);
+    }, [post]);
+
+    useEffect(() => {
+        axios
+            .get(`/api/posts/witness/${id}`)
+            .then((response) => setPost(response.data))
+            .catch((err) => console.error('Error loading post:', err));
+    }, [id]);
+
+    if (!post) return <div>Loading...</div>;
 
     return (
         <>
@@ -108,7 +139,7 @@ export default function WitnessPostDetail() {
 
                     <div className="witness-right-part">
                         <div className="witness-nickname-row" style={{ position: 'relative' }}>
-                            <span className="witness-nickname">{post.author}</span>
+                            <span className="witness-nickname">{post.userNickname}</span>
                             <button className="witness-more-btn" onClick={() => setIsDropdownOpen((prev) => !prev)}>
                                 &#8942;
                             </button>
@@ -141,18 +172,18 @@ export default function WitnessPostDetail() {
                                 <span className="witness-dog-name">{post.dogName}</span>
                                 <span className="witness-breed">{post.breed}</span>
                             </div>
-                            <div className="witness-time-ago">{post.timeAgo}</div>
+                            <div className="witness-time-ago">{calculateTimeAgo(post.createdAt)}</div>
                         </div>
                     </div>
                 </div>
 
                 <div className="witness-image-slider" onScroll={handleScroll}>
-                    {post.images.map((img, idx) => (
+                    {post.photoUrl?.split(',').map((img, idx) => (
                         <div className="witness-slide" key={idx}>
-                            <img src={img} alt={`강아지${idx}`} />
+                            <img src={getImageUrl(img)} alt={`목격사진${idx}`} />
                             {idx === currentImageIndex && (
                                 <div className="witness-image-counter">
-                                    {currentImageIndex + 1}/{post.images.length}
+                                    {currentImageIndex + 1}/{post.photoUrl.split(',').length}
                                 </div>
                             )}
                         </div>
@@ -160,7 +191,7 @@ export default function WitnessPostDetail() {
                 </div>
 
                 <div className="witness-thumbnail-slider">
-                    {post.images.map((img, idx) => (
+                    {post2.images.map((img, idx) => (
                         <div className="witness-thumbnail-card" key={idx}>
                             <img src={img} alt={`썸네일${idx}`} />
                             <div className="witness-thumbnail-text">
@@ -174,13 +205,22 @@ export default function WitnessPostDetail() {
 
                 <div className="witness-detail-info">
                     <div className="witness-date-row">
-                        <img src={calender} alt="calender" className="witness-calender-image" /> {post.date}
+                        <img src={calender} alt="calender" className="witness-calender-image" />{' '}
+                        {new Date(post.witnessDatetime).toLocaleString('ko-KR', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: 'numeric',
+                            minute: 'numeric',
+                            hour12: true,
+                        })}{' '}
+                        {post.postType === 'missing' ? '실종' : '목격'}{' '}
                     </div>
                     <div className="witness-location-row">
                         <img src={location} alt="location" className="witness-location-image" />
-                        {post.location}
+                        {post.witnessLocation}
                     </div>
-                    <p className="witness-description">{post.description}</p>
+                    <p className="witness-description">{post.detailDescription}</p>
                 </div>
 
                 {/* ✅ 지도 적용 */}
