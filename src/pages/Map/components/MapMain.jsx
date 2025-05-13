@@ -12,7 +12,6 @@ import shelter from '../../../assets/shelter.svg';
 import shelter2 from '../../../assets/shelter2.svg';
 import mylocation from '../../../assets/my-location.svg';
 import change from '../../../assets/change.svg';
-import customMarkerImg from '../../../assets/shelter.svg'; // 보호소 마커 이미지
 import { useNavigate } from 'react-router-dom';
 import { GoChevronLeft } from 'react-icons/go';
 import { TiDelete } from 'react-icons/ti';
@@ -20,6 +19,8 @@ import '../MapMain.css';
 import BottomSheet from './BottomSheet';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
+import pethospital from '../../../assets/pet-hospital.png';
+import { FaPhoneAlt, FaHospital } from 'react-icons/fa';
 
 export default function MapMain() {
     const clustererRef = useRef(null);
@@ -135,7 +136,7 @@ export default function MapMain() {
         // 2) Kakao SDK 로드
         const script = document.createElement('script');
         script.src =
-            'https://dapi.kakao.com/v2/maps/sdk.js?appkey=9402031e36074f7a2da9f3094bc383e7&autoload=false&libraries=services,clusterer';
+            'https://dapi.kakao.com/v2/maps/sdk.js?appkey=f7f187089f6a8bc9d9967ce8bfcc67c0&autoload=false&libraries=services,clusterer';
         script.async = true;
         script.onload = () => {
             window.kakao.maps.load(() => {
@@ -709,7 +710,6 @@ export default function MapMain() {
                 maxPercent={snapPoints[snapPoints.length - 1]}
                 onDragEnd={handleDragEnd}
             >
-                {' '}
                 {selectedMarker ? (
                     // 마커 클릭 시 보여줄 내용
                     <div>
@@ -756,7 +756,7 @@ export default function MapMain() {
                             </>
                         )}
                         {selectedMarker.type === 'shelter' && (
-                            <div className="shelter-wrap">
+                            <div className="shelter-select-wrap">
                                 <div className="shelter-title">{selectedMarker.data.shelterName}</div>
                                 <div className="shelter-address">{selectedMarker.data.location}</div>
                                 <div className="shelter-call-number">{selectedMarker.data.callNumber}</div>
@@ -787,12 +787,15 @@ export default function MapMain() {
                                 <hr />
                             </div>
                         )}
-                        // post-count
+
                         {selectedMarker.type === 'hospital' && (
-                            <div className="hospital-wrap">
-                                <div>{selectedMarker.data.name}</div>
-                                <div>{selectedMarker.data.location}</div>
-                                <div>{selectedMarker.data.callNumber}</div>
+                            <div className="hospital-select-wrap">
+                                <div>
+                                    <FaHospital size={24} className="sheet-icon" />
+                                    <div className="sheet-title">{selectedMarker.data.name}</div>
+                                </div>
+                                <div className="sheet-location">{selectedMarker.data.location}</div>
+                                <div className="sheet-call">{selectedMarker.data.callNumber}</div>
                             </div>
                         )}
                     </div>
@@ -887,10 +890,14 @@ export default function MapMain() {
                                     <div
                                         key={`shelter-${index}`}
                                         className="list-wrap"
-                                        onClick={() => {
-                                            navigate('/shelterdetail');
-                                        }}
-                                        // 온클릭 마커 찍히고 나면 지우기
+                                        onClick={() =>
+                                            navigate('/shelterdetail', {
+                                                state: {
+                                                    shelters: shelterAnnouncements,
+                                                    selectedShelter: selectedMarker.data.fullShelter,
+                                                },
+                                            })
+                                        }
                                     >
                                         <div>
                                             <div className={`shelter-wrap`}>
@@ -928,7 +935,7 @@ export default function MapMain() {
                                             </div>
                                         </div>
                                         <div className="list-img">
-                                            <img src={hospital2} alt="hospital" className="sheet-nailimg" />
+                                            <img src={pethospital} alt="hospital" className="sheet-nailimg" />
                                         </div>
                                         <hr />
                                     </div>
