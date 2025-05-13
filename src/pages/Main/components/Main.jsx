@@ -137,7 +137,7 @@ export default function Main() {
                                 />
                                 <div className="pet-text">
                                     <h2>{pet.name}</h2>
-                                    <p>
+                                    <p className="pet-info">
                                         {pet.age}살 / {pet.gender}
                                         <img
                                             src={pet.gender === '남아' ? boy : girl}
@@ -145,7 +145,7 @@ export default function Main() {
                                             className="gender-icon"
                                         />
                                     </p>
-                                    <p>{pet.breed}</p>
+                                    <p className="pet-breed">{pet.breed}</p>
                                 </div>
                             </div>
                             <button

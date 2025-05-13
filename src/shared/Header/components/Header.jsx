@@ -12,7 +12,6 @@ export default function Header() {
     return (
         <header className="main-header">
             <div className="logo-section">
-                <img src={logo} alt="logo" className="logo" />
                 <span className="brand">CatchMe</span>
             </div>
             <div className="icons">

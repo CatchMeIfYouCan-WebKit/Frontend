@@ -8,7 +8,7 @@
     min-height: 100vh;
     padding-bottom: 60px;
     font-family: sans-serif;
-    background: linear-gradient(180deg, rgba(242, 155, 48, 0.1) 0%, rgba(250, 246, 246, 0.06) 100%);
+    background: FAFAFA;
     margin: 0;
     box-sizing: border-box;
 }
@@ -82,7 +82,7 @@
     margin: 0 0px; /* 좌우 간격 */
     padding: 20px;
     width: 88%;
-    border-radius: 16px;
+    border-radius: 8px;
     margin-left: 20px;
     text-align: left;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -351,7 +351,17 @@
     height: 14px;
     vertical-align: middle;
     margin-bottom: 4px;
+    margin-left: 4px;
 }
 .icon-white {
     color: white;
+}
+.pet-breed {
+    color: #8c8c8c !important;
+    font-size: 16px !important;
+    margin-top: 12px !important;
+}
+.pet-info {
+    color: #111111 !important;
+    font-size: 20px !important;
 }
