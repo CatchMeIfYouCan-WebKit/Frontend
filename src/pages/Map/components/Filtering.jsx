@@ -4,14 +4,15 @@ import React, { useState, useMemo } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
 import { useNavigate, useLocation } from 'react-router-dom';
 import blackcircle from '../../../assets/blackcircle.svg';
-import goldcircle from '../../../assets/goldcircle.svg';
+import lightgoldcircle from '../../../assets/lightgoldcircle.svg';
 import silvercircle from '../../../assets/silvercircle.svg';
 import browncircle from '../../../assets/browncircle.svg';
-import redcircle from '../../../assets/redcircle.svg';
+import darkgoldcircle from '../../../assets/darkgoldcircle.svg';
 import whitecircle from '../../../assets/whitecircle.svg';
 import downbtn from '../../../assets/downbtn.svg';
 import BottomSheet from './BottomSheet';
 import X from '../../../assets/X.svg';
+import { FaCheck } from 'react-icons/fa';
 
 export default function Filtering() {
     const navigate = useNavigate();
@@ -253,73 +254,60 @@ export default function Filtering() {
                 <button className="back-button2" onClick={goBack}>
                     <IoIosArrowBack />
                 </button>
-                <div className="header-title">필터링</div>
+                <div className="filtering-title">필터링</div>
             </div>
 
             <section>
-                <div className="report-info">신고정보</div>
-                <label>
-                    실종신고
-                    <input
-                        type="checkbox"
-                        checked={miss}
-                        onChange={() => {
-                            const next = !miss;
-                            setMiss(next);
-                            if (next) {
-                                setShelter(false);
-                                setHospital(false);
-                            }
-                        }}
-                    />
-                </label>
-                <label>
-                    목격신고
-                    <input
-                        type="checkbox"
-                        checked={see}
-                        onChange={() => {
-                            const next = !see;
-                            setSee(next);
-                            if (next) {
-                                setShelter(false);
-                                setHospital(false);
-                            }
-                        }}
-                    />
-                </label>
-                <label>
-                    보호소
-                    <input
-                        type="checkbox"
-                        checked={shelter}
-                        onChange={() => {
-                            const next = !shelter;
-                            setShelter(next);
-                            if (next) {
-                                setMiss(false);
-                                setSee(false);
-                                setHospital(false);
-                            }
-                        }}
-                    />
-                </label>
-                <label>
-                    병원
-                    <input
-                        type="checkbox"
-                        checked={hospital}
-                        onChange={() => {
-                            const next = !hospital;
-                            setHospital(next);
-                            if (next) {
-                                setMiss(false);
-                                setSee(false);
-                                setShelter(false);
-                            }
-                        }}
-                    />
-                </label>
+                <div className="label-wrap">
+                    <div className="tag-title">
+                        마커 필터링 *{' '}
+                        <div className="label-comment">체크 박스를 클릭하면 필터링을 중복으로 적용할 수 있어요.</div>
+                    </div>
+                    <label>
+                        실종신고
+                        <input
+                            type="checkbox"
+                            checked={miss}
+                            onChange={() => {
+                                const next = !miss;
+                                setMiss(next);
+                            }}
+                        />
+                    </label>
+                    <label>
+                        목격신고
+                        <input
+                            type="checkbox"
+                            checked={see}
+                            onChange={() => {
+                                const next = !see;
+                                setSee(next);
+                            }}
+                        />
+                    </label>
+                    <label>
+                        보호소
+                        <input
+                            type="checkbox"
+                            checked={shelter}
+                            onChange={() => {
+                                const next = !shelter;
+                                setShelter(next);
+                            }}
+                        />
+                    </label>
+                    <label>
+                        병원
+                        <input
+                            type="checkbox"
+                            checked={hospital}
+                            onChange={() => {
+                                const next = !hospital;
+                                setHospital(next);
+                            }}
+                        />
+                    </label>
+                </div>
             </section>
 
             <div className="breed">
@@ -337,15 +325,17 @@ export default function Filtering() {
             </div>
 
             <div className="pet-color">
-                <div className="pet-color-title">털색 *</div>
+                <div className="pet-color-title">
+                    털색 *<span className="pet-color-comment">털 색상이 한 가지가 아닌경우 중복 선택 가능합니다.</span>
+                </div>
                 <div className="color-container">
                     {[
                         [blackcircle, '검은색'],
                         [whitecircle, '하얀색'],
                         [silvercircle, '회색'],
                         [browncircle, '브라운'],
-                        [redcircle, '붉은색'],
-                        [goldcircle, '골드'],
+                        [darkgoldcircle, '어두운 골드'],
+                        [lightgoldcircle, '밝은 골드'],
                     ].map(([src, label]) => {
                         const isSelected = selectedColors.includes(label);
                         return (
@@ -355,7 +345,11 @@ export default function Filtering() {
                                 onClick={() => toggleColor(label)}
                             >
                                 <img src={src} alt={label} />
-                                {isSelected && <div className="color-check">✔</div>}
+                                {isSelected && (
+                                    <div className={`color-check ${label === '하얀색' ? 'white-check' : ''}`}>
+                                        <FaCheck />
+                                    </div>
+                                )}
                                 <p className="color-comment">{label}</p>
                             </div>
                         );

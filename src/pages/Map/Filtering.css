@@ -18,14 +18,13 @@
     min-width: 360px;
 }
 
-.header-title {
-    text-align: center;
+.filtering-title {
     font-size: 20px;
     font-style: normal;
     font-weight: 700;
     line-height: 24px;
     letter-spacing: 0.5px;
-    margin: auto;
+    margin-left: 5px;    
 }
 
 .back-button2 {
@@ -60,11 +59,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 14px;
+    font-size: 18px;
     color: #111;
-    font-weight: 400;
+    font-weight: 500;
     line-height: 24px;
-    padding: 4px 0;
+    padding: 8px 0;
     cursor: pointer;
 }
 
@@ -103,8 +102,8 @@
 .pet-color-title {
     text-align: left;
     margin-left: 16px;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 800;
     line-height: 24px;
     letter-spacing: -0.4px;
 }
@@ -131,7 +130,23 @@
     top: 32%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: rgb(21, 0, 255);
+    color: rgb(255, 255, 255);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; /* 클릭 방지 */
+}
+.white-check{
+    position: absolute;
+    top: 32%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgb(0, 0, 0);
     border-radius: 50%;
     width: 24px;
     height: 24px;
@@ -162,12 +177,21 @@
 .breed-title {
     text-align: left;
     margin-left: 16px;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 800;
     line-height: 24px;
     letter-spacing: -0.4px;
     margin-top: 16px;
     margin-bottom: 16px;
+}
+.tag-title {
+    display: flex;
+    text-align: left;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 24px;
+    letter-spacing: -0.4px;
+    margin-bottom: 10px;
 }
 .color-comment {
     padding-top: 8px;
@@ -242,42 +266,11 @@
     color: #fff;
     width: 170px;
     text-align: left;
-    -webkit-text-stroke-width: 0.5px;
-    -webkit-text-stroke-color: #111;
-    font-family: Pretendard;
     font-size: 20px;
     font-style: normal;
-    font-weight: 600;
     line-height: 24px; /* 150% */
-    letter-spacing: -0.4px;
-}
-.bread-input::placeholder {
-    color: #fff; /* placeholder 글자색 */
-    opacity: 1; /* 일부 브라우저는 기본 opacity가 0.5로 줄어들어 보이므로 1로 고정 */
 }
 
-/* WebKit 기반 (Chrome, Safari) */
-.bread-input::-webkit-input-placeholder {
-    color: #fff;
-    opacity: 1;
-}
-
-/* Mozilla Firefox 19+ */
-.bread-input::-moz-placeholder {
-    color: #fff;
-    opacity: 1;
-}
-
-/* Mozilla Firefox 4 – 18 */
-.bread-input:-moz-placeholder {
-    color: #fff;
-    opacity: 1;
-}
-
-/* Internet Explorer 10+ */
-.bread-input:-ms-input-placeholder {
-    color: #fff;
-}
 .bread-X {
     height: 16px;
     width: 16px;
@@ -291,16 +284,35 @@
 }
 
 .bread-name {
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 600;
     line-height: 24px;
-    margin: 10px;
     text-align: left;
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-bottom: 10px;
+    width: 90%;
 }
+
 .selected-color {
     display: inline-block;
     margin: 8px;
     padding: 2px;
     border-radius: 8px;
     width: 60px;
+}
+.label-wrap{
+    padding-top: 20px;
+}
+.label-comment{
+    text-align: left;
+    margin-bottom: 5px;
+    margin-left: 15px;
+    font-size: 0.8rem;
+    color: silver;
+}
+.pet-color-comment{
+    margin-left: 15px;
+    font-size: 0.8rem;
+    color: silver;
 }
