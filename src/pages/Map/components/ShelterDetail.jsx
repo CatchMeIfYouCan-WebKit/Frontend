@@ -5,6 +5,7 @@ import tag from '../../../assets/tag.svg';
 import change from '../../../assets/change.svg';
 import { useNavigate, useLocation } from 'react-router-dom';
 import a from '../../../assets/1.png';
+import { IoIosArrowBack } from 'react-icons/io';
 
 export default function ShelterDetail() {
     const navigate = useNavigate();
@@ -79,8 +80,10 @@ export default function ShelterDetail() {
     }
     return (
         <div className="shelter-detail">
-            <h2 className="title">보호소 동물현황</h2>
-
+            <div className="shelter-detail-header">
+                <IoIosArrowBack size={24} className="back-icon4" onClick={() => navigate(-1)} />
+                <h2 className="header-title4">보호소 동물현황</h2>
+            </div>
             {/* 탭 */}
             <div className="tabs-container">
                 <div className="tabs">
