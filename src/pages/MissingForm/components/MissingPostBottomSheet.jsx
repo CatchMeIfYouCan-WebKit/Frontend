@@ -26,7 +26,9 @@ export default function MissingPostBottomSheet({ isOpen, onClose, pets }) {
         <div className="mbs-overlay" onClick={onClose}>
             <div className="mbs-container" onClick={(e) => e.stopPropagation()}>
                 <div className="mbs-header">
-                    <h2>실종된 반려동물 선택</h2>
+                    <h2>
+                        실종된 반려동물 선택 <span className="required">*</span>
+                    </h2>
                     <button className="mbs-close" onClick={onClose}>
                         ×
                     </button>

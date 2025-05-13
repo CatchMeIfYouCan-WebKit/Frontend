@@ -300,7 +300,7 @@ export default function WitnessPostForm() {
 
             <form className="mpf-form" onSubmit={handleSubmit}>
                 <label>
-                    목격된 동물의 사진&nbsp;&nbsp;
+                    목격된 동물의 사진 <span className="required">*</span> &nbsp;&nbsp;
                     <span style={{ color: '#999', fontSize: '16px' }}>({previewUrls.length}/5)</span>
                 </label>
                 <div className="photo-section">
@@ -353,7 +353,9 @@ export default function WitnessPostForm() {
                     </DragDropContext>
                 </div>
 
-                <label>목격 장소</label>
+                <label>
+                    목격 장소 <span className="required">*</span>
+                </label>
                 <div
                     className="mpf-input mpf-input--select"
                     onClick={() => {
@@ -372,7 +374,9 @@ export default function WitnessPostForm() {
                     {location ? `${location}` : '장소를 선택해주세요'}
                 </div>
 
-                <label>목격 일시</label>
+                <label>
+                    목격 일시 <span className="required">*</span>
+                </label>
                 <div className="react-datepicker__input-container" style={{ position: 'relative' }}>
                     <DatePicker
                         selected={date}
@@ -384,7 +388,9 @@ export default function WitnessPostForm() {
                     />
                 </div>
 
-                <label>목격 당시 상황</label>
+                <label>
+                    목격 당시 상황 <span className="required">*</span>
+                </label>
                 <textarea
                     className="mpf-input"
                     value={desc}

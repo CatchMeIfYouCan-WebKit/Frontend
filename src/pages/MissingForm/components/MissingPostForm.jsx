@@ -127,7 +127,9 @@ export default function MissingPostForm() {
 
                 <form className="mpf-form" onSubmit={(e) => e.preventDefault()}>
                     {/* 날짜 선택 */}
-                    <label>강아지를 언제 잃어버리셨나요?</label>
+                    <label>
+                        강아지를 언제 잃어버리셨나요? <span className="required">*</span>
+                    </label>
                     <DatePicker
                         selected={date}
                         onChange={setDate}
@@ -141,7 +143,9 @@ export default function MissingPostForm() {
 
                     {/* 장소 선택 */}
                     <div className="mpf-form">
-                        <label>강아지를 어디서 잃어버리셨나요?</label>
+                        <label>
+                            강아지를 어디서 잃어버리셨나요? <span className="required">*</span>
+                        </label>
                         <div className="space-box-1">
                             <div className="space-comment">{location ? `${location}` : '장소를 선택해주세요'}</div>
                             <div
@@ -164,7 +168,9 @@ export default function MissingPostForm() {
                     </div>
 
                     {/* 상세 설명 */}
-                    <label>자세한 정보를 작성해주세요</label>
+                    <label>
+                        자세한 정보를 작성해주세요 <span className="required">*</span>
+                    </label>
                     <textarea
                         placeholder={`사람을 잘 따르나요, 아니면 경계하나요?
 (예: 사람을 보면 반갑게 다가감 / 낯선 사람을 보면 숨거나 도망감)
