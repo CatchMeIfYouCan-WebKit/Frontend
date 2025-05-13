@@ -1,0 +1,94 @@
+.spd-container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 16px;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #333;
+  }
+  
+  .spd-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .spd-back {
+    cursor: pointer;
+    color: #555;
+    transition: color 0.2s;
+  }
+  .spd-back:hover {
+    color: #000;
+  }
+  
+  .spd-title {
+    flex: 1;
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-right: 24px; /* 뒤로가기 아이콘 너비만큼 패딩 */
+  }
+  
+  .spd-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .spd-image-wrap {
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 비율 */
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  .spd-image {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  
+  .spd-info-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    padding: 16px;
+  }
+  
+  .spd-info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .spd-info-row:last-child {
+    border-bottom: none;
+  }
+  
+  .spd-info-label {
+    font-weight: 500;
+    color: #666;
+  }
+  
+  .spd-info-value {
+    font-weight: 600;
+    color: #333;
+    text-align: left;
+    max-width: 60%;
+    word-break: break-word;
+  }
+  .spd-delete-btn {
+    background: rgb(255, 255, 255);
+    color: #000000;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-left: auto;
+    font-size: 0.875rem;
+    border: 1px solid black;
+  }

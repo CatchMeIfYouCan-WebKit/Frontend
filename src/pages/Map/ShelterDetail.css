@@ -26,7 +26,7 @@
 /* 2) 실제 버튼 그룹은 왼쪽 40%만 사용 */
 .tabs {
     display: flex;
-    width: 40%;
+    width: 75%;
     /* 필요하면 margin-left 로 위치 조정 가능 */
 }
 
@@ -73,6 +73,29 @@
     font-size: 16px;
     cursor: pointer;
 }
+.filter.applied {
+    background: #8dafd5;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 112, 243, 0.3);
+}
+
+/* 태그 아이콘 */
+.tag-wrap {
+    display: flex;
+    align-items: center;
+    padding: 6px;
+    cursor: pointer;
+    border-radius: 50%;
+}
+.tag-wrap:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* 태그 아이콘 이미지 크기 조정 */
+.tag-wrap img {
+    width: 20px;
+    height: 20px;
+}
 
 .controls {
     display: flex;
@@ -112,6 +135,9 @@
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     transition: transform 0.2s;
+    margin-right: 2px;
+    border-radius: 8px;
+    margin-bottom: 5px;
 }
 
 .animal-card:hover {
@@ -138,4 +164,18 @@
     padding: 9px 7px;
     align-items: center;
     gap: 10px;
+}
+.animal-details {
+    padding: 8px;
+}
+.shelter-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #555;
+}
+.animal-info > div {
+    font-size: 0.5rem;
+    color: #333;
+    margin-bottom: 2px;
 }

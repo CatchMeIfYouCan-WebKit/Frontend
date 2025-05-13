@@ -55,6 +55,7 @@ import AdoptionPostEdit from '../pages/Adoption/components/AdoptionPostEdit';
 
 import MissingLocationSelect from '../pages/MissingForm/components/MissingLocationSelect';
 import WitnessLocationSelect from '../pages/WitnessForm/components/WitnessLocationSelect';
+import ShelterPostDetial from '../pages/Map/components/ShelterPostDetial';
 
 function App() {
     return (
@@ -86,6 +87,10 @@ function App() {
                 {/* 보호소 동물 상세페이지 */}
                 <Route path="/shelterdetail" element={<ShelterDetail />} />
                 <Route path="/shelterdetail/filter" element={<ShelterFilter />} />
+                <Route path="/shelterdetail/:id" element={<ShelterPostDetial />} />
+                <Route path="/shelterdetail/dumy" element={<ShelterPostDetial />} />
+
+
 
                 {/* 입양 게시판 */}
                 <Route path="/adoptionpost" element={<Adoption />} />

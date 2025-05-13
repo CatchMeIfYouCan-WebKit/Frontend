@@ -1,5 +1,5 @@
 // MapMain.jsx
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import Footer from '../../../shared/Footer/Footer';
 import tag from '../../../assets/tag.svg';
 import missing from '../../../assets/missing.svg'; // 실종상태 이미지 1
@@ -7,17 +7,13 @@ import missing2 from '../../../assets/missing2.svg'; // 실종상태 이미지 2
 import sighting from '../../../assets/sighting.svg'; // 목격 이미지
 import sighting2 from '../../../assets/sighting2.svg'; // 목격 이미지2
 import hospital from '../../../assets/hospital.svg';
-import hospital2 from '../../../assets/hospital2.svg';
+import hospital2 from '../../../assets/hospital3.svg';
 import shelter from '../../../assets/shelter.svg';
 import shelter2 from '../../../assets/shelter2.svg';
 import mylocation from '../../../assets/my-location.svg';
-import testdog from '../../../assets/testdog.png';
 import change from '../../../assets/change.svg';
-import customMarkerImg from '../../../assets/custom-marker.png'; // 보호소 마커 이미지
-import dog1 from '../../../assets/민규강아지.jpeg';
-import dog2 from '../../../assets/수완강아지.jpeg';
+import customMarkerImg from '../../../assets/shelter.svg'; // 보호소 마커 이미지
 import { useNavigate } from 'react-router-dom';
-import { TbHomeShield } from 'react-icons/tb';
 import { GoChevronLeft } from 'react-icons/go';
 import { TiDelete } from 'react-icons/ti';
 import '../MapMain.css';
@@ -26,12 +22,34 @@ import { FaMapMarkerAlt } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 
 export default function MapMain() {
+    const clustererRef = useRef(null);
     const mapContainer = useRef(null);
     const mapRef = useRef(null);
     const psRef = useRef(null);
     const markersRef = useRef([]);
     const navigate = useNavigate();
     const location = useLocation();
+
+    //바텀 시트
+    const snapPoints = [0.11, 0.5, 0.87];
+    const [snapIndex, setSnapIndex] = useState(0);
+    const [percent, setPercent] = useState(snapPoints[0]);
+
+    const sheetRef = useRef(null);
+    const handleDragEnd = useCallback(
+        (currentPercent) => {
+            // currentPercent 와 snapPoints 간 차이를 재어 가장 가까운 인덱스 찾기
+            const nearestIndex = snapPoints.reduce((closestIdx, p, idx) => {
+                const prevDiff = Math.abs(snapPoints[closestIdx] - currentPercent);
+                const currDiff = Math.abs(p - currentPercent);
+                return currDiff < prevDiff ? idx : closestIdx;
+            }, 0);
+
+            setSnapIndex(nearestIndex);
+            setPercent(snapPoints[nearestIndex]);
+        },
+        [snapPoints]
+    );
 
     // 마커 상태
     const [selectedMarker, setSelectedMarker] = useState(null);
@@ -117,7 +135,7 @@ export default function MapMain() {
         // 2) Kakao SDK 로드
         const script = document.createElement('script');
         script.src =
-            'https://dapi.kakao.com/v2/maps/sdk.js?appkey=9402031e36074f7a2da9f3094bc383e7&autoload=false&libraries=services';
+            'https://dapi.kakao.com/v2/maps/sdk.js?appkey=9402031e36074f7a2da9f3094bc383e7&autoload=false&libraries=services,clusterer';
         script.async = true;
         script.onload = () => {
             window.kakao.maps.load(() => {
@@ -125,6 +143,14 @@ export default function MapMain() {
                 const map = new kakao.maps.Map(mapContainer.current, {
                     center: new kakao.maps.LatLng(36.1460531, 128.39583),
                     level: 3,
+                });
+                mapRef.current = map;
+
+                // ⇨ 클러스터러 생성
+                clustererRef.current = new kakao.maps.MarkerClusterer({
+                    map, // 클러스터를 표시할 지도
+                    averageCenter: true, // 군집된 마커 중심으로
+                    minLevel: 7, // 이 레벨 이상일 때만 클러스터링
                 });
                 mapRef.current = map;
                 // Places 서비스
@@ -168,6 +194,7 @@ export default function MapMain() {
                     `;
 
                     div.addEventListener('click', () => {
+                        e.stopPropagation(); // 추가
                         setSelectedMarker({
                             type: 'missing',
                             data: {
@@ -190,7 +217,6 @@ export default function MapMain() {
 
                             markersRef.current.push({ type: 'missing', overlay });
                         } else {
-                            console.warn('❌ 주소 변환 실패:', post.missingLocation);
                         }
                         resolve();
                     });
@@ -230,6 +256,7 @@ export default function MapMain() {
                     `;
 
                     div.addEventListener('click', () => {
+                        e.stopPropagation();
                         setSelectedMarker({
                             type: 'sighting',
                             data: {
@@ -252,7 +279,6 @@ export default function MapMain() {
 
                             markersRef.current.push({ type: 'sighting', overlay });
                         } else {
-                            console.warn('❌ 주소 변환 실패 (목격):', post.witnessLocation);
                         }
                         resolve();
                     });
@@ -281,7 +307,7 @@ export default function MapMain() {
             return new Promise((resolve) => {
                 const div = document.createElement('div');
                 div.className = 'custom-marker-div shelter';
-                div.innerHTML = `<img src="${customMarkerImg}" class="custom-marker-img" />`;
+                div.innerHTML = `<img src="${shelter2}" class="custom-marker-img" />`;
 
                 div.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -309,7 +335,6 @@ export default function MapMain() {
 
                         markersRef.current.push({ type: 'shelter', overlay });
                     } else {
-                        console.warn('❌ 주소 변환 실패 (보호소):', shelter.address);
                     }
                     resolve();
                 });
@@ -368,7 +393,6 @@ export default function MapMain() {
 
                         markersRef.current.push({ type: 'hospital', overlay });
                     } else {
-                        console.warn('❌ 주소 변환 실패 (병원):', hospital.address);
                     }
                     resolve();
                 });
@@ -409,7 +433,6 @@ export default function MapMain() {
 
             overlay.setMap(shouldShow ? map : null);
         });
-
     };
 
     // 필터 상태 변경 시마다 마커 보이기/숨기기
@@ -583,26 +606,6 @@ export default function MapMain() {
                             목격
                         </span>
 
-                        {/* 보호소 태그 */}
-                        <span
-                            className={`tag-wrap2 ${shelterFiltering ? 'activeS' : ''}`}
-                            onClick={() => {
-                                if (shelterFiltering) {
-                                    setShelterFiltering(false);
-                                } else {
-                                    setShelterFiltering(true);
-                                    setMissFiltering(false);
-                                    setSeeFiltering(false);
-                                    setHospitalFiltering(false);
-                                    setBreedFiltering(''); // 품종 초기화
-                                    setColorFiltering('');
-                                }
-                            }}
-                        >
-                            <img src={shelterFiltering ? shelter : shelter2} alt="보호소" className="tag-img" />
-                            보호소
-                        </span>
-
                         {/* 병원 태그 */}
                         <span
                             className={`tag-wrap1 ${hospitalFiltering ? 'activeH' : ''}`}
@@ -621,6 +624,25 @@ export default function MapMain() {
                         >
                             <img src={hospitalFiltering ? hospital2 : hospital} alt="병원" className="tag-img" />
                             병원
+                        </span>
+                        {/* 보호소 태그 */}
+                        <span
+                            className={`tag-wrap2 ${shelterFiltering ? 'activeS' : ''}`}
+                            onClick={() => {
+                                if (shelterFiltering) {
+                                    setShelterFiltering(false);
+                                } else {
+                                    setShelterFiltering(true);
+                                    setMissFiltering(false);
+                                    setSeeFiltering(false);
+                                    setHospitalFiltering(false);
+                                    setBreedFiltering(''); // 품종 초기화
+                                    setColorFiltering('');
+                                }
+                            }}
+                        >
+                            <img src={shelterFiltering ? shelter2 : shelter} alt="보호소" className="tag-img" />
+                            보호소
                         </span>
 
                         <span className={breedFiltering == '' ? 'tag-wrap3' : 'tag-wrap3-select'}>품종</span>
@@ -681,7 +703,13 @@ export default function MapMain() {
                 </div>
             )}
 
-            <BottomSheet initialPercent={0.11} maxPercent={0.928} minHeight={100}>
+            <BottomSheet
+                percent={percent}
+                minPercent={snapPoints[0]}
+                maxPercent={snapPoints[snapPoints.length - 1]}
+                onDragEnd={handleDragEnd}
+            >
+                {' '}
                 {selectedMarker ? (
                     // 마커 클릭 시 보여줄 내용
                     <div>
@@ -856,15 +884,22 @@ export default function MapMain() {
                             {/* ✅ 보호소 리스트 */}
                             {shelterFiltering &&
                                 shelterAnnouncements.map((shelter, index) => (
-                                    <div key={`shelter-${index}`} className="list-wrap">
-                                        <div className="list-left">
-                                            <div className="state-shelter">
-                                                <img src={customMarkerImg} alt="shelter" className="sheet-img" />
+                                    <div
+                                        key={`shelter-${index}`}
+                                        className="list-wrap"
+                                        onClick={() => {
+                                            navigate('/shelterdetail');
+                                        }}
+                                        // 온클릭 마커 찍히고 나면 지우기
+                                    >
+                                        <div>
+                                            <div className={`shelter-wrap`}>
+                                                <img src={shelter2} alt="보호소" className="tag-img" />
                                                 보호소
                                             </div>
-                                            <div className="list-location">
-                                                {shelter.address}
-                                                <p>{shelter.shelterName}</p>
+                                            <div className="list-left">
+                                                <div className="state-shelter">{shelter.shelterName}</div>
+                                                <div className="list-location">{shelter.address}</div>
                                             </div>
                                         </div>
                                         <div className="list-img">
@@ -882,14 +917,14 @@ export default function MapMain() {
                             {hospitalFiltering &&
                                 hospitals.map((hospital, index) => (
                                     <div key={`hospital-${index}`} className="list-wrap">
-                                        <div className="list-left">
-                                            <div className="state-hospital">
-                                                <img src={hospital2} alt="hospital" className="sheet-img" />
+                                        <div>
+                                            <div className={`hospital-wrap`}>
+                                                <img src={hospital2} alt="병원" className="tag-img" />
                                                 병원
                                             </div>
-                                            <div className="list-location">
-                                                {hospital.address}
-                                                <p>{hospital.name}</p>
+                                            <div className="list-left">
+                                                <div className="state-hospital">{hospital.name}</div>
+                                                <div className="list-location">{hospital.address}</div>
                                             </div>
                                         </div>
                                         <div className="list-img">
@@ -907,4 +942,3 @@ export default function MapMain() {
         </div>
     );
 }
-//수정본본
