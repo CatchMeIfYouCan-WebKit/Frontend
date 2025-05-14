@@ -188,9 +188,9 @@ export default function MissingPostForm() {
                         onChange={(e) => setDesc(e.target.value)}
                     />
 
-                    <button type="button" className="mpf-submit" onClick={handleSubmit}>
+                    <div type="button" className="mpf-submit" onClick={handleSubmit}>
                         게시글 작성
-                    </button>
+                    </div>
                 </form>
             </div>
         </>
