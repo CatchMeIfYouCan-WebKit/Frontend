@@ -1,8 +1,6 @@
 .shelter-filter {
-    width: 90%;
+    width: 100%;
     background: #fff;
-    border-radius: 8px;
-    padding: 16px;
     font-family: 'Noto Sans KR', sans-serif;
     color: #000000;
 }
@@ -12,6 +10,7 @@
     justify-content: space-between;
     align-items: center;
     color: #000000; /* 주황색 포인트 */
+    margin: 16px;
 }
 
 .sf-header h3 {
@@ -33,7 +32,7 @@ hr {
     margin: 8px 0;
 }
 
-.sf-section{
+.sf-section {
     margin-top: 20px;
     margin-bottom: 40px;
 }
@@ -45,16 +44,17 @@ hr {
     font-size: 1rem;
     font-weight: 500;
     color: #000000;
+    margin: 16px;
 }
 
 .sf-sec-body {
     padding: 8px 0 0 0;
+    margin: 16px;
 }
 
 .sf-search-row {
     display: flex;
     gap: 8px;
-    margin-bottom: 8px;
 }
 
 .sf-search-row input {
@@ -68,9 +68,9 @@ hr {
 .sf-search-row button {
     padding: 6px 12px;
     border: 1px solid #000000;
-    background: #fff;
-    color: #000000;
-    font-size: 0.9rem;
+    color: #ffffff;
+    background: #000000;
+    font-size: 1rem;
     border-radius: 4px;
     cursor: pointer;
 }
@@ -127,7 +127,6 @@ hr {
     color: #000000;
 }
 .sf-autocomplete-list {
-    position: relative;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -136,15 +135,16 @@ hr {
     border: 1px solid #ccc;
     background: #fff;
     z-index: 100;
-    border-radius: 8px;
-  }
-  .sf-autocomplete-list li {
+    border-radius: 4px;
+}
+.sf-autocomplete-list li {
     padding: 8px;
     cursor: pointer;
-  }
-  .sf-autocomplete-list li:hover {
+    text-align: left;
+}
+.sf-autocomplete-list li:hover {
     background: #f0f0f0;
-  }
+}
 .circle {
     width: 32px;
     height: 32px;
@@ -156,11 +156,12 @@ hr {
 .circle.selected {
     border-color: #000000;
 }
-.sf-footer{
-    border: 1px solid black;
-    padding: 5px;
-    border-radius: 8px;
-
+.sf-footer {
+    border-radius: 4px;
+    margin: 16px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #000000;
 }
 .color-check {
     position: absolute;
@@ -178,7 +179,7 @@ hr {
     align-items: center;
     pointer-events: none; /* 클릭 방지 */
 }
-.white-check{
+.white-check {
     position: absolute;
     top: 32%;
     left: 50%;
@@ -193,4 +194,8 @@ hr {
     justify-content: center;
     align-items: center;
     pointer-events: none; /* 클릭 방지 */
+}
+.apply-btn {
+    color: white;
+    font-size: 1.3rem;
 }

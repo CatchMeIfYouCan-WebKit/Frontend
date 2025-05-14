@@ -119,7 +119,7 @@
 }
 
 /* 제출 버튼 */
-.mpf-submit {
+.mpf-form .mpf-submit {
     margin-top: 24px;
     padding: 14px 0;
     background: #000000;

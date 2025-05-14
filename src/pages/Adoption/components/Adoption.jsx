@@ -157,6 +157,7 @@ export default function Adoption() {
 
       <div className="adoption-banner">
         <img src={mark} alt="뱃지" className="banner-badge" />
+        <div>수의사 인증을 받은 마크입니다.</div>
         <div className="banner-pagination">1/4</div>
       </div>
 
