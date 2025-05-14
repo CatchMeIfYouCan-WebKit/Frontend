@@ -12,8 +12,8 @@ import logo from '../../../assets/logo2.png';
 import petImage from '../../../assets/수완강아지.jpeg';
 import plusIcon from '../../../assets/plus.svg';
 import pencil from '../../../assets/ei_pencil.svg';
-import boy from '../../../assets/남아.png';
-import girl from '../../../assets/여아.png';
+import boy from '../../../assets/boy.svg';
+import girl from '../../../assets/girl.svg';
 
 import ChartBox from '../components/ChartBox';
 import reportMissingImage from '../../../assets/실종신고.svg';
@@ -21,7 +21,7 @@ import reportFoundIcon from '../../../assets/목격신고.svg';
 import medicalReservationImage from '../../../assets/진료예약.svg';
 import shelterBoardImage from '../../../assets/보호소게시판.svg';
 import axios from 'axios';
-
+import graph from '../../../assets/graph.svg';
 // 바텀시트 컴포넌트 import
 import MissingPostBottomSheet from '../../MissingForm/components/MissingPostBottomSheet';
 import Header from '../../../shared/Header/components/Header';
@@ -137,15 +137,15 @@ export default function Main() {
                                 />
                                 <div className="pet-text">
                                     <h2>{pet.name}</h2>
-                                    <p>
-                                        {pet.age}살 /{' '}
+                                    <p className="pet-info">
+                                        {pet.age}살 / {pet.gender}
                                         <img
                                             src={pet.gender === '남아' ? boy : girl}
                                             alt={pet.gender}
                                             className="gender-icon"
                                         />
                                     </p>
-                                    <p>{pet.breed}</p>
+                                    <p className="pet-breed">{pet.breed}</p>
                                 </div>
                             </div>
                             <button
@@ -182,7 +182,26 @@ export default function Main() {
 
                 {/* ===== STAT SECTION ===== */}
                 <section className="stat-section">
-                    <ChartBox />
+                    <div className="stat-box-wrapper">
+                        <div className="stat-text-box">
+                            <div className="stat-date">
+                                {new Date().toLocaleDateString('ko-KR', {
+                                    year: 'numeric',
+                                    month: '2-digit',
+                                    day: '2-digit',
+                                    weekday: 'long', // 요일 (예: 월, 화, 수...)
+                                })}
+                            </div>
+
+                            <div className="stat-count">
+                                <strong>251</strong>건
+                            </div>
+                            <div className="stat-sub">오늘 실종 신고 수</div>
+                        </div>
+                        <div className="stat-chart-box">
+                            <img src={graph} alt="통계 그래프" className="stat-chart-image" />
+                        </div>
+                    </div>
                 </section>
 
                 {/* ===== ACTION GRID ===== */}
@@ -194,15 +213,9 @@ export default function Main() {
                                 <div className="action-title">
                                     <span className="red">실종</span> <span className="black">신고</span>
                                 </div>
-                                <div className="action-desc">
-                                    강아지를
-                                    <br />
-                                    잃었다면
-                                    <br />
-                                    바로 신고!
-                                </div>
+                                <div className="action-desc">지금 실종 상태를 알리세요</div>
                             </div>
-                            <img src={reportMissingImage} alt="실종신고" className="action-img" />
+                            <img src={reportMissingImage} alt="실종신고" className="action-img1" />
                         </div>
                     </div>
 
@@ -213,51 +226,22 @@ export default function Main() {
                                 <div className="action-title">
                                     <span className="blue">목격</span> <span className="black">신고</span>
                                 </div>
-                                <div className="action-desc">
-                                    강아지를
-                                    <br />
-                                    발견하면
-                                    <br />
-                                    찰칵!
-                                </div>
+                                <div className="action-desc">목격 정보를 제보해주세요</div>
                             </div>
-                            <img src={reportFoundIcon} alt="목격신고" className="action-img" />
-                        </div>
-                    </div>
-
-                    {/* 진료예약 */}
-                    <div className="action-box tall" onClick={() => navigate('/medical')}>
-                        <div className="action-content">
-                            <div className="action-text">
-                                <div className="action-title">
-                                    <span className="yellow">진료</span> <span className="black">예약</span>
-                                </div>
-                                <div className="action-desc">
-                                    강아지가
-                                    <br />
-                                    아프다면
-                                    <br />
-                                    바로 예약!
-                                </div>
-                            </div>
-                            <img src={medicalReservationImage} alt="진료예약" className="action-img" />
+                            <img src={reportFoundIcon} alt="목격신고" className="action-img2" />
                         </div>
                     </div>
 
                     {/* 보호소게시판 */}
-                    <div className="action-box tall" onClick={() => navigate('/shelter-board')}>
+                    <div className="action-box tall" onClick={() => navigate('/shelterdetail')}>
                         <div className="action-content">
                             <div className="action-text">
                                 <div className="action-title">
                                     <span className="green">보호소</span> <span className="black">게시판</span>
                                 </div>
-                                <div className="action-desc">
-                                    잃어버렸다면
-                                    <br />
-                                    확인!
-                                </div>
+                                <div className="action-desc">보호소에서 관리중인 동물도 확인하세요</div>
                             </div>
-                            <img src={shelterBoardImage} alt="보호소게시판" className="action-img" />
+                            <img src={shelterBoardImage} alt="보호소게시판" className="action-img3" />
                         </div>
                     </div>
                 </section>

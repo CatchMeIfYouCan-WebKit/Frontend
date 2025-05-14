@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import '../../reservation/ReservationPage.css';
 import Footer from '../../../shared/Footer/Footer';
 
-const weekdays = ['월', '화', '수', '목', '금', '토', '일'];
+const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
 const today = new Date();
 
 const times = [
@@ -56,40 +56,44 @@ export default function ReservationFormPage() {
 
     return (
         <div className="reservation-page">
-            <header className="form-header">
-                <button onClick={() => navigate(-1)} className="back-button">
+            <header className="reservation-header">
+                <button onClick={() => navigate(-1)} className="reservation-back-button">
                     ←
                 </button>
                 <h1>진료예약</h1>
             </header>
 
             <main className="reservation-main">
-                {/* 날짜 선택 */}
-                <section className="section">
+                <section className="reservation-section">
                     <h2>날짜 선택</h2>
-                    <div className="date-select-row">
+                    <div className="reservation-date-row">
                         {generateDates().map((item, index) => (
                             <div
                                 key={index}
-                                className={`date-item ${selectedDate === index ? 'active' : ''}`}
+                                className={`reservation-date-item ${selectedDate === index ? 'active' : ''}`}
                                 onClick={() => setSelectedDate(index)}
                             >
-                                <div>{item.day}</div>
-                                <div>{item.date}</div>
-                                {item.isToday && <div className="today-label">오늘</div>}
+                                <div
+                                    className={`reservation-day-text ${
+                                        ['월', '화', '수', '목', '금'].includes(item.day) ? 'weekday-style' : ''
+                                    }`}
+                                >
+                                    {item.day}
+                                </div>
+                                <div className="reservation-day-number">{item.date}</div>
+                                {item.isToday && <div className="reservation-today-label">오늘</div>}
                             </div>
                         ))}
                     </div>
                 </section>
 
-                {/* 시간 선택 */}
-                <section className="section">
+                <section className="reservation-section">
                     <h2>시간 선택</h2>
-                    <div className="time-grid">
+                    <div className="reservation-time-grid">
                         {times.map((time) => (
                             <button
                                 key={time}
-                                className={`time-button ${selectedTime === time ? 'selected' : ''}`}
+                                className={`reservation-time-button ${selectedTime === time ? 'selected' : ''}`}
                                 onClick={() => setSelectedTime(time)}
                             >
                                 {time}
@@ -98,14 +102,13 @@ export default function ReservationFormPage() {
                     </div>
                 </section>
 
-                {/* 진료방법 선택 */}
-                <section className="section">
+                <section className="reservation-section">
                     <h2>진료방법</h2>
-                    <div className="method-buttons">
+                    <div className="reservation-method-buttons">
                         {['대면', '비대면'].map((m) => (
                             <button
                                 key={m}
-                                className={`method-button ${method === m ? 'active' : ''}`}
+                                className={`reservation-method-button ${method === m ? 'active' : ''}`}
                                 onClick={() => setMethod(m)}
                             >
                                 {m}
@@ -113,17 +116,16 @@ export default function ReservationFormPage() {
                         ))}
                     </div>
                     {method === '비대면' && (
-                        <p className="method-note">
+                        <p className="reservation-method-note">
                             비대면의 경우 앱에 등록된 수의사에 한하여 조진 후 이용하실 수 있습니다.
                         </p>
                     )}
                 </section>
 
-                {/* 방문 목적 */}
-                <section className="section">
+                <section className="reservation-section">
                     <h2>방문목적</h2>
                     <textarea
-                        className="purpose-input"
+                        className="reservation-purpose-input"
                         placeholder="예: 예방접종, 피부병 상담 등"
                         value={purpose}
                         onChange={(e) => setPurpose(e.target.value)}

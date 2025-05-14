@@ -72,7 +72,7 @@ export default function FindId() {
     return (
         <div className={`find-id ${fadeOut ? 'fade-out' : ''}`}>
             <header className="find-id-header">
-                <button className="back-button" onClick={goBack}>
+                <button className="back-button11" onClick={goBack}>
                     <IoIosArrowBack />
                 </button>
                 <h1>아이디 찾기</h1>

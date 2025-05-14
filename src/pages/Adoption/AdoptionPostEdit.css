@@ -75,7 +75,7 @@
   .ape-submit {
     width: 100%;
     padding: 12px;
-    background: #f29b30;
+    background: #000000;
     color: #fff;
     font-size: 16px;
     font-weight: 600;
@@ -86,7 +86,7 @@
   }
   
   .ape-submit:hover {
-    background: #e07b0b;
+    background: #000000;
   }
   .ape-location-btn {
     display: inline-block;

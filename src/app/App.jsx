@@ -51,6 +51,7 @@ import PostDetail from '../pages/Adoption/components/PostDetail';
 
 import ChatRoom from '../pages/Chat/components/ChatRoom';
 import ChatRoomTest from '../pages/Chat/components/ChatRoomTest';
+import ChatList from '../pages/ChatList/components/ChatList';
 import AdoptionPostEdit from '../pages/Adoption/components/AdoptionPostEdit';
 
 import MissingLocationSelect from '../pages/MissingForm/components/MissingLocationSelect';
@@ -138,6 +139,7 @@ function App() {
                 {/* ✅ 실시간 채팅방 */}
                 <Route path="/chat/:type/:relatedId" element={<ChatRoom />} />
                 <Route path="/chat/test" element={<ChatRoomTest />} />
+                <Route path="/chatlist" element={<ChatList />} />
 
                 <Route path="/medical" element={<MedicalPage />} />
                 <Route path="/reservation" element={<ReservationPage />} />

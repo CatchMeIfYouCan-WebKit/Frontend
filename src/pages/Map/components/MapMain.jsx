@@ -194,11 +194,12 @@ export default function MapMain() {
                         <div class="marker-label">실종</div>
                     `;
 
-                    div.addEventListener('click', () => {
-                        e.stopPropagation(); // 추가
+                    div.addEventListener('click', (e) => {
+                        e.stopPropagation();
                         setSelectedMarker({
                             type: 'missing',
                             data: {
+                                id: post.id,
                                 imageUrl: post.photoUrl,
                                 location: post.missingLocation,
                                 date: new Date(post.missingDatetime).toLocaleString(),
@@ -256,11 +257,12 @@ export default function MapMain() {
                         <div class="marker-label">목격</div>
                     `;
 
-                    div.addEventListener('click', () => {
+                    div.addEventListener('click', (e) => {
                         e.stopPropagation();
                         setSelectedMarker({
                             type: 'sighting',
                             data: {
+                                id: post.id,
                                 imageUrl: post.photoUrl,
                                 location: post.witnessLocation,
                                 date: new Date(post.witnessDatetime).toLocaleString(),
@@ -559,9 +561,7 @@ export default function MapMain() {
                                 <TiDelete size={24} style={{ color: 'gray' }} />
                             </button>
                         )}
-                        <div className="location-wrap" onClick={moveToMyLocation}>
-                            <img src={mylocation} alt="내 위치" className="location-img" />
-                        </div>
+
                         <button
                             className="input-icon-button"
                             type="button"
@@ -586,11 +586,9 @@ export default function MapMain() {
                             className={`tag-wrap1 ${missFiltering ? 'activeM' : ''}`}
                             onClick={() => {
                                 setMissFiltering((prev) => !prev);
-                                setShelterFiltering(false);
-                                setHospitalFiltering(false);
                             }}
                         >
-                            <img src={missFiltering ? missing2 : missing} alt="실종" className="tag-img" />
+                            <img src={missFiltering ? missing2 : missing} alt="실종" className="tag-img1" />
                             실종
                         </span>
 
@@ -599,11 +597,9 @@ export default function MapMain() {
                             className={`tag-wrap1 ${seeFiltering ? 'activeW' : ''}`}
                             onClick={() => {
                                 setSeeFiltering((prev) => !prev);
-                                setShelterFiltering(false);
-                                setHospitalFiltering(false);
                             }}
                         >
-                            <img src={seeFiltering ? sighting2 : sighting} alt="목격" className="tag-img" />
+                            <img src={seeFiltering ? sighting2 : sighting} alt="목격" className="tag-img1" />
                             목격
                         </span>
 
@@ -615,15 +611,10 @@ export default function MapMain() {
                                     setHospitalFiltering(false);
                                 } else {
                                     setHospitalFiltering(true);
-                                    setMissFiltering(false);
-                                    setSeeFiltering(false);
-                                    setShelterFiltering(false);
-                                    setBreedFiltering(''); // 품종 초기화
-                                    setColorFiltering('');
                                 }
                             }}
                         >
-                            <img src={hospitalFiltering ? hospital2 : hospital} alt="병원" className="tag-img" />
+                            <img src={hospitalFiltering ? hospital2 : hospital} alt="병원" className="tag-img1" />
                             병원
                         </span>
                         {/* 보호소 태그 */}
@@ -634,20 +625,15 @@ export default function MapMain() {
                                     setShelterFiltering(false);
                                 } else {
                                     setShelterFiltering(true);
-                                    setMissFiltering(false);
-                                    setSeeFiltering(false);
-                                    setHospitalFiltering(false);
-                                    setBreedFiltering(''); // 품종 초기화
-                                    setColorFiltering('');
                                 }
                             }}
                         >
                             <img src={shelterFiltering ? shelter2 : shelter} alt="보호소" className="tag-img" />
                             보호소
                         </span>
-
-                        <span className={breedFiltering == '' ? 'tag-wrap3' : 'tag-wrap3-select'}>품종</span>
-                        <span className={colorFiltering == '' ? 'tag-wrap3' : 'tag-wrap3-select'}>털색</span>
+                        <span className="location-wrap" onClick={moveToMyLocation}>
+                            <img src={mylocation} alt="내 위치" className="location-img" />
+                        </span>
                     </div>
                 </form>
             ) : (
@@ -714,7 +700,14 @@ export default function MapMain() {
                     // 마커 클릭 시 보여줄 내용
                     <div>
                         {selectedMarker.type === 'missing' && (
-                            <div className="list-wrap" onClick={() => navigate('')}>
+                            <div
+                                className="list-wrap"
+                                onClick={() =>
+                                    navigate(`/missingpostDetail/${selectedMarker.data.id}`, {
+                                        state: { post: selectedMarker.data },
+                                    })
+                                }
+                            >
                                 <div className="list-left">
                                     <div className="state">
                                         <img src={missing2} alt="missing2" className="sheet-img" />
@@ -733,7 +726,14 @@ export default function MapMain() {
                         )}
                         {selectedMarker.type === 'sighting' && (
                             <>
-                                <div className="list-wrap">
+                                <div
+                                    className="list-wrap"
+                                    onClick={() =>
+                                        navigate(`/witnesspostDetail/${selectedMarker.data.id}`, {
+                                            state: { postId: selectedMarker.data.id },
+                                        })
+                                    }
+                                >
                                     <div className="list-left">
                                         <div className="state-find">
                                             <img src={missing2} alt="missing2" className="sheet-img" />
@@ -756,46 +756,57 @@ export default function MapMain() {
                             </>
                         )}
                         {selectedMarker.type === 'shelter' && (
-                            <div className="shelter-select-wrap">
-                                <div className="shelter-title">{selectedMarker.data.shelterName}</div>
-                                <div className="shelter-address">{selectedMarker.data.location}</div>
-                                <div className="shelter-call-number">{selectedMarker.data.callNumber}</div>
-                                <hr />
-                                <div
-                                    className="view-detail"
-                                    onClick={() =>
-                                        navigate('/shelterdetail', {
-                                            state: {
-                                                shelters: shelterAnnouncements,
-                                                selectedShelter: selectedMarker.data.fullShelter,
-                                            },
-                                        })
-                                    }
-                                >
-                                    상세보기
+                            <div
+                                className="list-wrap"
+                                onClick={() =>
+                                    navigate('/shelterdetail', {
+                                        state: {
+                                            shelters: shelterAnnouncements,
+                                            selectedShelter: selectedMarker.data.fullShelter, // ← 여기
+                                        },
+                                    })
+                                }
+                            >
+                                <div>
+                                    <div className="shelter-wrap">
+                                        <img src={shelter2} alt="보호소" className="tag-img" />
+                                        보호소
+                                    </div>
+                                    <div className="list-left">
+                                        <div className="state-shelter">
+                                            {selectedMarker.data.fullShelter.shelterName}
+                                        </div>
+                                        <div className="list-location">{selectedMarker.data.fullShelter.address}</div>
+                                    </div>
                                 </div>
-                                <div className="shelter-images">
-                                    {selectedMarker.data.imageUrl.slice(0, 4).map((url, idx) => (
-                                        <img
-                                            key={idx}
-                                            src={url}
-                                            alt={`보호소 사진 ${idx + 1}`}
-                                            className="shelter-img"
-                                        />
-                                    ))}
+                                <div className="list-img">
+                                    <img
+                                        src={
+                                            selectedMarker.data.fullShelter.animalSummaries?.[0]?.imageUrl ?? defaultImg
+                                        }
+                                        alt="animal"
+                                        className="sheet-nailimg"
+                                    />
                                 </div>
-                                <hr />
                             </div>
                         )}
-
+                        {/* 여기 보호소 정보가 백엔드에서 응답을 어떻게 주는지 모르겠는데 응답에 맞춰서 추가 */}
                         {selectedMarker.type === 'hospital' && (
-                            <div className="hospital-select-wrap">
+                            <div className="list-wrap">
                                 <div>
-                                    <FaHospital size={24} className="sheet-icon" />
-                                    <div className="sheet-title">{selectedMarker.data.name}</div>
+                                    <div className="hospital-wrap">
+                                        <img src={hospital2} alt="병원" className="tag-img" />
+                                        병원
+                                    </div>
+                                    <div className="list-left">
+                                        <div className="state-hospital">{selectedMarker.data.name}</div>
+                                        <div className="list-location">{selectedMarker.data.location}</div>
+                                        <div className="list-location">수완이형 여기에 병원 전화번호 넣어주세요</div>
+                                    </div>
                                 </div>
-                                <div className="sheet-location">{selectedMarker.data.location}</div>
-                                <div className="sheet-call">{selectedMarker.data.callNumber}</div>
+                                <div className="list-img">
+                                    <img src={selectedMarker.data.imageUrl} alt="hospital" className="sheet-nailimg" />
+                                </div>
                             </div>
                         )}
                     </div>
@@ -894,7 +905,7 @@ export default function MapMain() {
                                             navigate('/shelterdetail', {
                                                 state: {
                                                     shelters: shelterAnnouncements,
-                                                    selectedShelter: selectedMarker.data.fullShelter,
+                                                    selectedShelter: shelter,
                                                 },
                                             })
                                         }
@@ -932,6 +943,9 @@ export default function MapMain() {
                                             <div className="list-left">
                                                 <div className="state-hospital">{hospital.name}</div>
                                                 <div className="list-location">{hospital.address}</div>
+                                                <div className="list-location">
+                                                    수완이형 여기에 병원 전화번호 넣어주세요
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="list-img">

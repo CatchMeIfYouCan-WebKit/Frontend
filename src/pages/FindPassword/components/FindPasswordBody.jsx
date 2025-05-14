@@ -28,7 +28,7 @@ export default function FindPasswordBody({ onSendCode, onCheckCode }) {
                 onChange={(e) => setCode(e.target.value)}
             />
 
-            <p className="info-text">
+            <p className="info-text22">
                 인증번호가 도착하지 않았을 경우
                 <br />
                 인증 요청 버튼을 다시 눌러주세요

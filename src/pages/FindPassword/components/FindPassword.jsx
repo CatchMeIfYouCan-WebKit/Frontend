@@ -111,7 +111,7 @@ export default function FindPassword() {
     return (
         <div className={`find-password ${fadeOut ? 'fade-out' : ''}`}>
             <header className="find-password-header">
-                <button className="back-button" onClick={goBack}>
+                <button className="back-button55" onClick={goBack}>
                     <IoIosArrowBack />
                 </button>
                 <h1>비밀번호 찾기</h1>

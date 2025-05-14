@@ -53,9 +53,9 @@
     width: 100% !important;
     height: 60px !important;
     padding: 14px 18px;
-    border: 2px solid transparent;
+    border: 1px solid #111111; /* ✅ 여기만 수정 */
     border-radius: 8px;
-    background-color: #f7d6ae;
+    background-color: #fff;
     font-size: 20px;
     outline: none;
     margin-bottom: 10px;
@@ -63,8 +63,8 @@
 }
 
 .login-input:focus {
-    border-color: #f4a261;
-    box-shadow: 0 0 0 2px rgba(244, 162, 97, 0.3);
+    border-color: #111111;
+    box-shadow: 0 0 0 2px #111111;
 }
 
 /* 7. 버튼 래퍼 */
@@ -79,7 +79,7 @@
     width: 100% !important; /* 폼 너비 꽉 채우기 */
     max-width: 100% !important; /* 혹시 있을 max-width 제한 제거 */
     height: 60px !important;
-    background-color: #e07a3f;
+    background-color: #111111 !important;
     color: white;
     border: none;
     border-radius: 8px;
@@ -97,11 +97,11 @@
 }
 
 .login-button:hover:not(:disabled) {
-    background-color: #d96b2e;
+    background-color: #111111;
 }
 
 .login-button:active:not(:disabled) {
-    background-color: #c55a1e;
+    background-color: #111111;
     transform: scale(0.98);
 }
 
@@ -116,7 +116,7 @@
     width: 20px;
     height: 20px;
     border: 3px solid white;
-    border-top: 3px solid #f4a261;
+    border-top: 3px solid #111111;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -148,6 +148,6 @@
 }
 
 .link-button:hover {
-    color: #e07a3f;
+    color: #111111;
     text-decoration: underline;
 }

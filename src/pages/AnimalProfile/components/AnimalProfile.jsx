@@ -12,6 +12,13 @@ import checkOn from '../../../assets/checkOn.svg';
 import checkOff from '../../../assets/checkOff.svg';
 import x from '../../../assets/x.svg';
 import axios from 'axios';
+import blackcircle from '../../../assets/blackcircle.svg';
+import lightgoldcircle from '../../../assets/lightgoldcircle.svg';
+import silvercircle from '../../../assets/silvercircle.svg';
+import browncircle from '../../../assets/browncircle.svg';
+import darkgoldcircle from '../../../assets/darkgoldcircle.svg';
+import whitecircle from '../../../assets/whitecircle.svg';
+import { FaCheck } from 'react-icons/fa';
 
 const prioritizedBreeds = [
     '선택안함',
@@ -178,6 +185,8 @@ const otherBreeds = [
     '해리어',
 ];
 const allBreeds = [...prioritizedBreeds, ...otherBreeds.sort((a, b) => a.localeCompare(b, 'ko'))];
+
+
 
 const colorMap = {
     검은색: '#000000',
@@ -579,20 +588,34 @@ export default function AnimalProfile() {
 
                 <div className="form-group color-group">
                     <label>
-                        털색 <span className="required">*</span>
+                        털색 <span className="required">*</span><span className="pet-color-comment">털 색상이 한 가지가 아닌경우 중복 선택 가능합니다.</span>
                     </label>
-                    <div className="color-options">
-                        {colorList.map((color) => (
-                            <div
-                                key={color}
-                                className="color-option"
-                                onClick={() => toggleColor(color)}
-                                style={{ opacity: selectedColors.includes(color) ? 0.5 : 1 }}
-                            >
-                                <div className="color-circle" style={{ backgroundColor: colorMap[color] }}></div>
-                                <span>{color}</span>
-                            </div>
-                        ))}
+                    <div className="color-container">
+                        {[
+                            [blackcircle, '검은색'],
+                            [whitecircle, '하얀색'],
+                            [silvercircle, '회색'],
+                            [browncircle, '브라운'],
+                            [darkgoldcircle, '어두운 골드'],
+                            [lightgoldcircle, '밝은 골드'],
+                        ].map(([src, label]) => {
+                            const isSelected = selectedColors.includes(label);
+                            return (
+                                <div
+                                    className={`color-item ${isSelected ? 'selected' : ''}`}
+                                    key={label}
+                                    onClick={() => toggleColor(label)}
+                                >
+                                    <img src={src} alt={label} />
+                                    {isSelected && (
+                                        <div className={`color-check ${label === '하얀색' ? 'white-check' : ''}`}>
+                                            <FaCheck />
+                                        </div>
+                                    )}
+                                    <p className="color-comment">{label}</p>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
 
@@ -644,7 +667,7 @@ export default function AnimalProfile() {
 
                 <div className="form-group weight-input-group">
                     <label>
-                        몸무게 <span className="required">*</span>
+                        몸무게 <span className="required">*</span><span className="pet-color-comment">kg으로 입력해주세요.</span>
                     </label>
                     <div className="weight-wrapper">
                         <input

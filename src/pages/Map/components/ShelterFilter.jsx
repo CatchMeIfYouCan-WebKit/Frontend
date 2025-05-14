@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import '../ShelterFilter.css';
 import { IoIosArrowDown, IoIosArrowUp, IoIosCheckmark } from 'react-icons/io';
 import { useNavigate, useLocation } from 'react-router-dom';
+import blackcircle from '../../../assets/blackcircle.svg';
+import lightgoldcircle from '../../../assets/lightgoldcircle.svg';
+import silvercircle from '../../../assets/silvercircle.svg';
+import browncircle from '../../../assets/browncircle.svg';
+import darkgoldcircle from '../../../assets/darkgoldcircle.svg';
+import whitecircle from '../../../assets/whitecircle.svg';
+import { FaCheck } from 'react-icons/fa';
 
 const breedsMock = [
     { id: 1, ko: '말티즈', en: 'Maltese' },
@@ -190,6 +197,10 @@ export default function ShelterFilter() {
     const [openColor, setOpenColor] = useState(true);
     const [openGender, setOpenGender] = useState(true);
 
+    const toggleColor = (color) => {
+        setSelectedColors((prev) => (prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]));
+    };
+
     // 필터 상태
     const [shelterQuery, setShelterQuery] = useState('');
     const [breedQuery, setBreedQuery] = useState('');
@@ -283,7 +294,9 @@ export default function ShelterFilter() {
             {/* 여기에 보호소 백엔드 이름 전부다 받아와서 자동완성 기능추가  */}
             <div className="sf-section">
                 <div className="sf-sec-header" onClick={() => setOpenShelter((o) => !o)}>
-                    <span>보호소</span>
+                    <span>
+                        보호소* <span className="pet-color-comment">보호소 이름으로 검색</span>
+                    </span>
                     {openShelter ? <IoIosArrowUp /> : <IoIosArrowDown />}
                 </div>
                 {openShelter && (
@@ -322,7 +335,9 @@ export default function ShelterFilter() {
             {/* 품종 */}
             <div className="sf-section">
                 <div className="sf-sec-header" onClick={() => setOpenBreed((o) => !o)}>
-                    <span>강아지 품종</span>
+                    <span>
+                        강아지 품종* <span className="pet-color-comment">품종은 한 개만 선택 가능 합니다.</span>
+                    </span>
                     {openBreed ? <IoIosArrowUp /> : <IoIosArrowDown />}
                 </div>
                 {openBreed && (
@@ -363,8 +378,16 @@ export default function ShelterFilter() {
                                         <label>
                                             <input
                                                 type="checkbox"
-                                                checked={selectedBreeds.includes(b.ko)}
-                                                onChange={() => toggleItem(b.ko, selectedBreeds, setSelectedBreeds)}
+                                                name="breed" 
+                                                value={b.ko}
+                                                checked={selectedBreeds[0] === b.ko}
+                                                onChange={() => {
+                                                    if (selectedBreeds[0] === b.ko) {
+                                                        setSelectedBreeds([]);
+                                                    } else {
+                                                        setSelectedBreeds([b.ko]);
+                                                    }
+                                                }} 
                                             />
                                             <span className="ko">{b.ko}</span>
                                             <span className="en">{b.en}</span>
@@ -379,7 +402,7 @@ export default function ShelterFilter() {
             {/* 성별 */}
             <div className="sf-section">
                 <div className="sf-sec-header" onClick={() => setOpenGender((o) => !o)}>
-                    <span>성별</span>
+                    <span>성별* <span className="pet-color-comment">성별을 선택해 주세요.</span></span>
                     {openGender ? <IoIosArrowUp /> : <IoIosArrowDown />}
                 </div>
                 {openGender && (
@@ -406,33 +429,39 @@ export default function ShelterFilter() {
             {/* 털색 */}
             <div className="sf-section">
                 <div className="sf-sec-header" onClick={() => setOpenColor((o) => !o)}>
-                    <span>털색</span>
+                    <span>
+                        털색*{' '}
+                        <span className="pet-color-comment">털 색상이 한 가지가 아닌경우 중복 선택 가능합니다.</span>
+                    </span>
                     {openColor ? <IoIosArrowUp /> : <IoIosArrowDown />}
                 </div>
                 {openColor && (
-                    <div className="sf-sec-body">
-                        <ul className="sf-color-list">
-                            {colors.map((c) => (
-                                <li key={c.id} className="sf-color-item">
-                                    <button
-                                        className="circle"
-                                        style={{ backgroundColor: c.hex }}
-                                        onClick={() => toggleItem(c.id, selectedColors, setSelectedColors)}
-                                    >
-                                        {selectedColors.includes(c.id) && (
-                                            <IoIosCheckmark
-                                                style={{
-                                                    color: 'blue',
-                                                    fontSize: '2em',
-                                                    verticalAlign: 'middle',
-                                                }}
-                                            />
-                                        )}
-                                    </button>
-                                    <span>{c.label}</span>
-                                </li>
-                            ))}
-                        </ul>
+                    <div className="color-container">
+                        {[
+                            [blackcircle, '검은색'],
+                            [whitecircle, '하얀색'],
+                            [silvercircle, '회색'],
+                            [browncircle, '브라운'],
+                            [darkgoldcircle, '어두운 골드'],
+                            [lightgoldcircle, '밝은 골드'],
+                        ].map(([src, label]) => {
+                            const isSelected = selectedColors.includes(label);
+                            return (
+                                <div
+                                    className={`color-item ${isSelected ? 'selected' : ''}`}
+                                    key={label}
+                                    onClick={() => toggleColor(label)}
+                                >
+                                    <img src={src} alt={label} />
+                                    {isSelected && (
+                                        <div className={`color-check ${label === '하얀색' ? 'white-check' : ''}`}>
+                                            <FaCheck />
+                                        </div>
+                                    )}
+                                    <p className="color-comment">{label}</p>
+                                </div>
+                            );
+                        })}
                     </div>
                 )}
             </div>

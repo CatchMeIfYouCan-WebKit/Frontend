@@ -21,14 +21,13 @@
     top: 10px;
     left: 50%;
     transform: translateX(-50%);
-    width: 90%;
+    width: 100%;
     max-width: 500px;
     z-index: 10;
 }
 
 /* 검색창 + 아이콘 감싸는 래퍼 */
 .search-input-wrapper {
-    position: relative;
     width: 100%;
     height: 60px;
     display: flex;
@@ -39,12 +38,18 @@
 .search-input {
     width: 100%;
     height: 55px;
-    padding: 0 0px 0 64px;
+    padding: 0 0px 0 20px;
     border: 1px solid #ccc;
-    border-radius: 12px;
-    font-size: 15px;
+    border-radius: 6px;
+    font-size: 16px;
     outline: none;
     box-sizing: border-box;
+    margin: auto;
+    margin-left: 12px;
+    margin-right: 12px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* 입력창에 지우기 버튼 공간 확보 */
@@ -55,8 +60,8 @@
 /* 검색창 오른쪽 버튼 (아이콘) */
 .input-icon-button {
     position: absolute;
-    top: 50%;
-    right: 12px;
+    top: 30%;
+    right: 34px;
     transform: translateY(-50%);
     background: none;
     border: none;
@@ -67,8 +72,22 @@
 /* 지우기(X) 버튼 스타일 */
 .clear-button {
     position: absolute;
-    top: 50%;
-    right: 40px;
+    top: 31%;
+    right: 60px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+.search-overlay-content .clear-button {
+    position: absolute;
+    top: 4%;
+    right: 20px;
     transform: translateY(-50%);
     background: none;
     border: none;
@@ -94,13 +113,16 @@
     align-items: center;
     padding: 2px 0;
     gap: 1px;
-    margin-top: 7px;
+    margin-left: 12px;
+    margin-right: 13px;
+    height: 40px;
+    justify-content: flex-start; /* 왼쪽 정렬 */
 }
 .hospital-wrap {
     align-items: center;
     border: 1px solid #d9d9d9;
-    border-radius: 10px;
-    padding: 3px 10px;
+    border-radius: 4px;
+    padding: 3px 5px;
     font-size: 16px;
     height: 35px;
     width: 80px;
@@ -108,61 +130,70 @@
     margin-bottom: 10px;
     backdrop-filter: blur(7.5px);
     color: white;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 .shelter-wrap {
     align-items: center;
     border: 1px solid #d9d9d9;
-    border-radius: 10px;
-    padding: 3px 10px;
+    border-radius: 4px;
+    padding: 3px 5px;
     font-size: 16px;
     height: 35px;
-    width: 90px;
+    width: 80px;
     background: #f29b30;
-    margin-bottom: 10px;
     backdrop-filter: blur(7.5px);
     color: white;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
-.tag-wrap1,
-.tag-wrap2,
-.tag-wrap3 {
+.tag-wrap1 {
     display: flex;
     align-items: center;
     border: 1px solid #d9d9d9;
-    border-radius: 10px;
+    border-radius: 4px;
     background: linear-gradient(106deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.8));
     padding: 6px 10px;
     font-size: 16px;
     cursor: pointer;
     height: 40px;
+    width: 80px;
+    margin-right: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-.tag-wrap1 {
-    width: 90px;
-}
-.tag-wrap2 {
-    width: 110px;
-}
+.tag-wrap2,
 .tag-wrap3 {
-    width: 60px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    background: linear-gradient(106deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.8));
+    padding: 6px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    height: 40px;
+    width: 90px;
+    margin-right: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.tag-img {
-    width: 18px;
-    height: 18px;
+.tag-img1 {
+    width: 20px;
+    height: 20px;
     margin-right: 6px;
     border-radius: 4px;
-    object-fit: contain;
 }
-
-/* 현재 위치 버튼 */
-.location-wrap {
-    position: absolute;
-    top: 115px;
-    right: 0px;
+.tag-img {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    margin-left: 1px;
 }
 
 .location-img {
-    width: 42px;
-    height: 42px;
+    width: 41px;
     cursor: pointer;
 }
 
@@ -181,59 +212,43 @@
 }
 
 .search-overlay-content {
-    width: 90%;
-    min-width: 480px;
+    width: 100%;
     min-height: 100%;
     background: white;
-    padding: 16px;
-    border-radius: 4px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
     pointer-events: auto;
 }
 
 /* 오버레이 검색창 + 버튼 */
 .search-overlay-content .search-input-wrapper {
-    display: flex;
-    margin-bottom: 12px;
     align-items: center;
+padding-left: 22px;
+    background-color: #ffffff;
+    height: 55px;
+    width: 92.5%;
+    margin-top: 13px;
+    border-radius: 4px;
+    margin-left: 25px;
+    margin-right: 14px;
 }
 
-.back-button {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
+.search-overlay-content .search-input {
+    flex: 1; /* 남은 공간을 모두 차지 */
+    height: 55px;
+    padding: 0 12px; /* 내부 여백 */
+    font-size: 16px;
+    outline: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0; /* wrapper에서 flex로 간격 관리하므로 마진 제거 */
+}
+
+.search-overlay-content .back-button {
+    left: 10px; /* wrapper 패딩만큼 왼쪽에 위치 */
     background: none;
     border: none;
-    padding: 0;
-    margin: 0;
     cursor: pointer;
-    z-index: 20;
-    line-height: 0;
-}
-.back-button * {
-    border: none !important;
-    box-shadow: none !important;
-    background: none !important;
-}
-
-.search-overlay-content .search-input.with-clear {
-    padding-right: 72px;
-}
-
-.search-overlay-content .clear-button {
-    position: absolute;
-    top: 50%;
-    right: 12px;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     z-index: 10;
+    top: 20px;
 }
 
 /* 오버레이 자동완성 리스트 */
@@ -317,12 +332,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px;
     background: #ffffff;
-    border-radius: 12px;
+    border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
     transition: box-shadow 0.2s ease, transform 0.2s ease;
     margin-bottom: 5px;
+    border: 1px solid rgb(219, 219, 219);
 }
 
 .state {
@@ -330,29 +345,35 @@
     align-items: center;
     justify-content: center;
     background-color: red;
-    border-radius: 8px;
-    width: 60px;
-    margin-bottom: 12px;
-    color: white;
-    font-weight: 600;
+    border-radius: 4px;
+    width: 70px;
+    margin-bottom: 10px;
+    margin-top: 10x;
+    margin-bottom: 10px;
+    color: rgb(255, 255, 255);
+    font-weight: 500;
     padding: 4px 0; /* 높이 조절용 */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 .state-find {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     background-color: #4b75ff;
-    border-radius: 8px;
-    width: 60px;
-    margin-bottom: 12px;
+    border-radius: 4px;
+    width: 70px;
+    margin-bottom: 10px;
+    margin-top: 10x;
+    margin-bottom: 10px;
     color: white;
-    font-weight: 600;
+    font-weight: 400;
     padding: 4px 0; /* 높이 조절용 */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 /* 아이콘 약간 아래 정렬 보정 */
 .sheet-img {
-    width: 18px;
+    width: 20px;
     margin-right: 4px;
     border-radius: 8px;
     /* margin-bottom 제거 */
@@ -366,24 +387,25 @@
 
 /* 3) 가운데 텍스트 영역이 남은 공간 채우도록 */
 .list-location {
-    font-size: 0.875rem;
-    color: #666;
-    word-break: keep-all;
+    font-size: 1rem;
+    color: #000000;
+    font-size: 12px;
 }
 .list-location p {
     margin: 4px 0 0;
     color: #666;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 /* 4) 오른쪽 썸네일은 크기 고정, flex-shrink 방지 */
 .list-img {
-    width: 90px;
-    height: 90px;
-    border-radius: 8px;
+    width: 95px;
+    height: 95px;
+    border-radius: 4px;
     overflow: hidden;
     flex-shrink: 0;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    margin-right: 10px;
 }
 .sheet-nailimg {
     width: 100%;
@@ -393,8 +415,11 @@
 }
 .list-left {
     text-align: left;
-    width: 330px;
+    width: 320px;
     flex: 1;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .main-header {
@@ -417,30 +442,35 @@
     background: #d92b2b;
     backdrop-filter: blur(7.5px);
     color: white;
+    font-weight: 500;
 }
 .tag-wrap1.activeW {
     background: #4b75ff;
     backdrop-filter: blur(7.5px);
     color: white;
+    font-weight: 500;
 }
 .tag-wrap2.activeS {
     background: #f29b30;
+    font-weight: 500;
 
     backdrop-filter: blur(7.5px);
     color: white;
 }
 .tag-wrap1.activeH {
     background: #1eb32f;
+    font-weight: 500;
 
     backdrop-filter: blur(7.5px);
     color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .list-header {
     display: flex;
     justify-content: space-between; /* 좌측·우측 끝으로 */
     align-items: center;
-    padding: 0 16px; /* 좌우 여백 */
+    padding: 0 2px; /* 좌우 여백 */
     margin-bottom: 12px; /* 아래 요소와 간격 */
 }
 
@@ -648,6 +678,5 @@
     color: #333;
 }
 /*  */
-.shelter-select-wrap{
-    
+.shelter-select-wrap {
 }
