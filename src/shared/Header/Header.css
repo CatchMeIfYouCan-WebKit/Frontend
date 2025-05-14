@@ -6,7 +6,7 @@
     align-items: center;
     padding: 5px 20px;
     border-bottom: 1px solid #eee;
-    background: #111111;
+    background: #31363f;
 }
 
 .logo-section {
@@ -22,7 +22,7 @@
 }
 
 .brand {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
     color: #ffffff;
 }

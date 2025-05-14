@@ -1,7 +1,3 @@
-/* ────────────────────────────────────────────────────────────────────────── */
-/* RESERVATION FORM PAGE */
-/* ────────────────────────────────────────────────────────────────────────── */
-
 .reservation-page {
     display: flex;
     flex-direction: column;
@@ -9,38 +5,49 @@
     background-color: #ffffff;
     font-family: Pretendard;
     box-sizing: border-box;
+    overflow-y: auto;
+    -ms-overflow-style: none; /* IE, Edge */
+    scrollbar-width: none; /* Firefox */
 }
-
-.form-header {
+.reservation-page::-webkit-scrollbar {
+    display: none;
+}
+/* 헤더 */
+.reservation-header {
     display: flex;
     align-items: center;
-    padding: 16px;
+    padding: 16px 16px 4px 16px;
     gap: 12px;
     border-bottom: 1px solid #ddd;
     font-size: 20px;
     font-weight: bold;
 }
 
-.back-button {
+.reservation-back-button {
     background: none;
     border: none;
     font-size: 24px;
     cursor: pointer;
 }
 
+/* 메인 */
 .reservation-main {
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
-    padding-bottom: 100px; /* footer 높이만큼 */
+    padding: 16px 20px 100px 20px;
 }
 
-.section {
+/* 공통 섹션 */
+.reservation-section {
     margin-bottom: 24px;
 }
 
-/* 날짜 선택 스타일 */
-.date-select-row {
+.reservation-section:first-of-type {
+    margin-top: 12px;
+}
+
+/* 날짜 선택 */
+.reservation-date-row {
     display: flex;
     justify-content: space-between;
     margin-top: 12px;
@@ -48,7 +55,7 @@
     gap: 12px;
 }
 
-.date-item {
+.reservation-date-item {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -57,37 +64,59 @@
     font-weight: 600;
 }
 
-.date-item div:nth-child(2) {
-    margin-top: 6px;
-    width: 36px;
-    height: 36px;
-    line-height: 36px;
-    border-radius: 50%;
-    background-color: #f4f4f4;
-    text-align: center;
-    color: #333;
+.reservation-day-text {
+    margin-bottom: 6px;
 }
 
-.date-item.active div:nth-child(2) {
+.weekday-style {
+    color: #fff;
+    text-align: center;
+    -webkit-text-stroke-width: 0.5px;
+    -webkit-text-stroke-color: #111;
+    font-family: Pretendard;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0.3px;
+}
+
+/* 날짜 원형 숫자 */
+.reservation-day-number {
+    width: 48px;
+    height: 48px;
+    line-height: 44px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    text-align: center;
+    color: #333;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.reservation-date-item.active .reservation-day-number {
     background-color: black;
     color: white;
 }
 
-.today-label {
-    margin-top: 4px;
-    font-size: 10px;
-    color: #888;
+.reservation-today-label {
+    font-weight: 700;
+    margin-top: 8px;
+    font-size: 14px;
+    color: #767676;
 }
 
-/* 시간 선택 스타일 */
-.time-grid {
+/* 시간 선택 */
+.reservation-time-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
     margin-top: 12px;
 }
 
-.time-button {
+.reservation-time-button {
     padding: 14px 0;
     background: #f4f4f4;
     border: none;
@@ -98,20 +127,20 @@
     text-align: center;
 }
 
-.time-button.selected {
+.reservation-time-button.selected {
     background-color: black;
     color: white;
     font-weight: bold;
 }
 
-/* 진료방법 선택 스타일 */
-.method-buttons {
+/* 진료방법 */
+.reservation-method-buttons {
     display: flex;
     gap: 12px;
     margin-top: 12px;
 }
 
-.method-button {
+.reservation-method-button {
     flex: 1;
     padding: 14px 0;
     border: 2px solid #ddd;
@@ -123,19 +152,19 @@
     text-align: center;
 }
 
-.method-button.active {
-    border-color: #111111;
-    color: #111111;
+.reservation-method-button.active {
+    border-color: #111;
+    color: #111;
 }
 
-.method-note {
+.reservation-method-note {
     font-size: 12px;
     color: #666;
     margin-top: 8px;
 }
 
-/* 방문 목적 텍스트 박스 */
-.purpose-input {
+/* 방문 목적 */
+.reservation-purpose-input {
     width: 100%;
     min-height: 80px;
     border: 1px solid #ccc;
@@ -146,7 +175,7 @@
     margin-top: 12px;
 }
 
-/* 하단 예약 버튼 */
+/* 예약 버튼 */
 .reservation-footer {
     position: fixed;
     bottom: 0;
