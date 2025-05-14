@@ -186,7 +186,7 @@ const prioritizedBreeds = [
 ];
 
 export default function AdoptionPost() {
-<<<<<<< HEAD
+// <<<<<<< HEAD
     const { state } = useLocation(); // 📍 라우팅 state에서 petData 가져오기
     const navigate = useNavigate();
     const initialized = useRef(false); // 🌀 중복 초기화 방지용 ref
@@ -221,20 +221,20 @@ export default function AdoptionPost() {
     const [birthDate, setBirthDate] = useState(petData.birth ? new Date(petData.birth) : null);
     const [weight, setWeight] = useState(petData.weight || '');
     const [regNumber, setRegNumber] = useState(petData.registrationNumber || '');
-=======
-    const [petName, setPetName] = useState('');
-    const [selectedBreed, setSelectedBreed] = useState('');
-    const [isSheetOpen, setIsSheetOpen] = useState(false);
-    const [search, setSearch] = useState('');
+// =======
+//     const [petName, setPetName] = useState('');
+//     const [selectedBreed, setSelectedBreed] = useState('');
+//     const [isSheetOpen, setIsSheetOpen] = useState(false);
+//     const [search, setSearch] = useState('');
 
-    const [selectedColors, setSelectedColors] = useState([]);
+//     const [selectedColors, setSelectedColors] = useState([]);
 
-    const [gender, setGender] = useState('');
-    const [neutered, setNeutered] = useState(false);
-    const [birthDate, setBirthDate] = useState(null);
-    const [weight, setWeight] = useState('');
-    const [regNumber, setRegNumber] = useState('');
->>>>>>> 00cb71d8ec8a449f25e8da3e72b1cba1e48df464
+//     const [gender, setGender] = useState('');
+//     const [neutered, setNeutered] = useState(false);
+//     const [birthDate, setBirthDate] = useState(null);
+//     const [weight, setWeight] = useState('');
+//     const [regNumber, setRegNumber] = useState('');
+// >>>>>>> 00cb71d8ec8a449f25e8da3e72b1cba1e48df464
     const [phone, setPhone] = useState('');
     const [isRegSheetOpen, setIsRegSheetOpen] = useState(false);
     const [isVerified, setIsVerified] = useState(false);
@@ -412,7 +412,7 @@ export default function AdoptionPost() {
                             const isSelected = selectedColors.includes(label);
                             return (
                                 <div
-<<<<<<< HEAD
+// <<<<<<< HEAD
                                     key={c.value}
                                     className="color-box"
                                     onClick={() => {
@@ -428,7 +428,7 @@ export default function AdoptionPost() {
                                         {isSelected && <span className="color-check2">✔</span>}
                                     </span>
                                     <span className="color-label">{c.label}</span>
-=======
+{/* =======
                                     key={label}
                                     className={`color-item ${isSelected ? 'selected' : ''}`}
                                     onClick={() => toggleColor(label)}
@@ -440,7 +440,7 @@ export default function AdoptionPost() {
                                         </div>
                                     )}
                                     <p className="color-comment">{label}</p>
->>>>>>> 00cb71d8ec8a449f25e8da3e72b1cba1e48df464
+>>>>>>> 00cb71d8ec8a449f25e8da3e72b1cba1e48df464 */}
                                 </div>
                             );
                         })}
@@ -551,22 +551,22 @@ export default function AdoptionPost() {
                         };
                         console.log('🟢 넘겨주는 post:', post);
                         navigate('/adoptionpost/add/details', {
-<<<<<<< HEAD
+// <<<<<<< HEAD
                             state: { post, },
-=======
-                            state: {
-                                petName,
-                                breed: selectedBreed,
-                                colors: selectedColors, // 선택된 털색 배열
-                                gender,
-                                neutered,
-                                birthDate, // Date 객체
-                                weight,
-                                registrationNo: regNumber,
-                                phone,
-                                isVerified,
-                            },
->>>>>>> 00cb71d8ec8a449f25e8da3e72b1cba1e48df464
+// =======
+//                             state: {
+//                                 petName,
+//                                 breed: selectedBreed,
+//                                 colors: selectedColors, // 선택된 털색 배열
+//                                 gender,
+//                                 neutered,
+//                                 birthDate, // Date 객체
+//                                 weight,
+//                                 registrationNo: regNumber,
+//                                 phone,
+//                                 isVerified,
+//                             },
+// >>>>>>> 00cb71d8ec8a449f25e8da3e72b1cba1e48df464
                         });
                     }}
                 >
