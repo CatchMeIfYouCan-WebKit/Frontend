@@ -8,10 +8,36 @@ import mark from '../../../assets/mark.svg';
 import tag from '../../../assets/tag.svg';
 import Header from '../../../shared/Header/components/Header';
 import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
+import AdoptionFilterSheet from './AdoptionFilterSheet';
+
+function getTimeAgo(createdAt) {
+  const now = new Date();
+  const created = new Date(createdAt);
+  const diffMs = now - created;
+  const diffSec = Math.floor(diffMs / 1000);
+  const diffMin = Math.floor(diffSec / 60);
+  const diffHour = Math.floor(diffMin / 60);
+  const diffDay = Math.floor(diffHour / 24);
+
+  if (diffSec < 60) return '방금 전';
+  if (diffMin < 60) return `${diffMin}분 전`;
+  if (diffHour < 24) return `${diffHour}시간 전`;
+  return `${diffDay}일 전`;
+}
 
 export default function Adoption() {
   const navigate = useNavigate();
   const { state } = useLocation();
+
+  //필터 상태
+  const [filter, setFilter] = useState({
+    region: '',
+    age: '',
+    breed: '',
+    color: ''
+  });
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
 
   // FAB & BottomSheet 상태
   const [fabOpen, setFabOpen] = useState(false);
@@ -21,18 +47,65 @@ export default function Adoption() {
   // 게시글 주소 매핑
   const [addresses, setAddresses] = useState({});
 
-  // 더미 기본 게시글
-  const defaultPosts = Array.from({ length: 9 }).map((_, i) => ({
-    id: i,
-    image: testdog,
-    title: '비숑 분양합니다',
-    breed: '골든 리트리버',
-    birth: '2025년 1월 생',
-    gender: '남아',
-    location: '37.5665,126.9780', // 좌표 문자열
-    timeAgo: '7일 전',
-  }));
-  const [posts, setPosts] = useState(defaultPosts);
+  const [posts, setPosts] = useState([]);
+
+  //필터로 불러오기
+  useEffect(() => {
+    const query = new URLSearchParams();
+
+    if (filter.region) query.append('region', filter.region);
+    if (filter.age) query.append('age', filter.age);
+    if (filter.breed) query.append('breed', filter.breed);
+    if (filter.color) query.append('color', filter.color);
+
+    axios.get(`/api/adopt/filter?${query.toString()}`)
+      .then(res => {
+        const adoptPosts = res.data.map(post => {
+          const createdAt = post.createdAt || new Date();
+
+          return {
+            // 프론트에서 바로 쓸 필드들
+            id: post.id,
+            image: post.photoPath
+              ? `http://localhost:8080${post.photoPath}`
+              : '',
+            title: post.title,
+            breed: post.breed || post.pet?.breed || '품종 정보 없음',
+            birth: post.dateOfBirth || post.pet?.dateOfBirth || '생일 정보 없음',
+            gender: post.gender || post.pet?.gender || '성별 정보 없음',
+            location: post.adoptLocation || '',
+            timeAgo: getTimeAgo(createdAt),
+
+            // ✅ 전체 응답 데이터 그대로 포함
+            comments: post.comments,
+            vetVerified: post.vetVerified,
+            createdAt: post.createdAt,
+            updatedAt: post.updatedAt,
+            status: post.status,
+            latitude: post.latitude,
+            longitude: post.longitude,
+            pet: post.pet,
+            photoPaths: post.photoPaths,
+            name: post.name,
+            coatColor: post.coatColor,
+            isNeutered: post.isNeutered,
+            age: post.age,
+            weight: post.weight,
+            registrationNumber: post.registrationNumber,
+
+            // ✅ member도 꼭 포함
+            member: post.member || null,
+          };
+        });
+
+        setPosts(adoptPosts);
+      })
+      .catch(err => {
+        console.error('필터 적용 중 오류:', err);
+      });
+
+  }, [filter]);
+
 
   // 새 게시글이 넘어오면 앞에 추가
   useEffect(() => {
@@ -44,48 +117,39 @@ export default function Adoption() {
     }
   }, [state?.newPost]);
 
-  // 더미 반려동물 목록 (BottomSheet)
-  const pets = Array.from({ length: 5 }).map((_, i) => ({
-    id: i,
-    image: testdog,
-    name: '멍멍이',
-    breed: '비숑',
-    birth: '2025년 1월 생',
-    gender: '남아',
-  }));
+  // 반려동물 목록 (BottomSheet)
+  const [pets, setPets] = useState([]);
 
-  // 카카오 SDK 로드 & 주소 변환
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src =
-      'https://dapi.kakao.com/v2/maps/sdk.js?appkey=9402031e36074f7a2da9f3094bc383e7&libraries=services&autoload=false';
-    script.async = true;
-    document.head.appendChild(script);
+    const token = localStorage.getItem('accessToken'); // JWT 토큰 가져오기
+    if (!token) return;
 
-    script.onload = () => {
-      window.kakao.maps.load(() => {
-        const geocoder = new window.kakao.maps.services.Geocoder();
-        posts.forEach(p => {
-          const match = p.location.match(/([-\d.]+)\s*,\s*([-\d.]+)/);
-          if (!match) return;
-          const lat = parseFloat(match[1]);
-          const lng = parseFloat(match[2]);
-          geocoder.coord2Address(lng, lat, (result, status) => {
-            if (status === window.kakao.maps.services.Status.OK && result[0]) {
-              setAddresses(prev => ({
-                ...prev,
-                [p.id]: result[0].address.address_name,
-              }));
-            }
-          });
-        });
+    axios.get('/api/animal-profile/all', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(res => {
+        const petList = res.data.map(p => ({
+          id: p.id,
+          image: `http://localhost:8080${p.photoPath}`,
+          name: p.name,
+          breed: p.breed,
+          birth: p.dateOfBirth,
+          gender: p.gender,
+          coatColor: p.coatColor,
+          isNeutered: p.isNeutered,
+          age: p.age, // ✅ 이거 추가!
+          weight: p.weight,
+          registrationNumber: p.registrationNumber,
+        }));
+
+        setPets(petList);
+      })
+      .catch(err => {
+        console.error('펫 정보 불러오기 실패:', err);
       });
-    };
-
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, [posts]);
+  }, []);
 
   return (
     <div className="adoption-page">
@@ -98,15 +162,26 @@ export default function Adoption() {
 
       <div className="adoption-header">
         <div className="filters">
-          <div className="filter">지역</div>
-          <div className="filter">나이</div>
-          <div className="filter">품종</div>
-          <div className="filter">색상</div>
-          <div className="filter-tag">
+          <div className={`filter ${filter.region ? 'active-filter' : ''}`}>
+            {filter.region?.trim() || '지역'}
+          </div>
+          <div className={`filter ${filter.age ? 'active-filter' : ''}`}>
+            {filter.age?.toString().trim() || '나이'}
+          </div>
+          <div className={`filter ${filter.breed ? 'active-filter' : ''}`}>
+            {filter.breed?.trim() || '품종'}
+          </div>
+          <div className={`filter ${filter.color ? 'active-filter' : ''}`}>
+            {filter.color?.trim() || '색상'}
+          </div>
+
+          <div className="filter-tag" onClick={() => setFilterSheetOpen(true)}>
             <img src={tag} alt="필터" />
           </div>
         </div>
       </div>
+
+
 
       {/* 게시글 리스트: 스크롤로 전체 표시 */}
       <div className="post-list">
@@ -116,11 +191,15 @@ export default function Adoption() {
             className="post-card"
             onClick={() =>
               navigate(`/adoptionpost/${p.id}`, {
-                state: { post: p, ownerName: '한민규' },
+                state: {
+                  post: p, // ✅ 전체 게시글 객체 하나만 넘김
+                },
               })
             }
+
+
           >
-            <img src={p.image} alt={p.title} className="post-img" />
+            <img src={p.image || ''} alt={p.title} className="post-img" />
             <div className="post-info">
               <div className="post-title">
                 {p.title}
@@ -135,7 +214,7 @@ export default function Adoption() {
               </div>
               <div className="post-footer">
                 <span className="post-location">
-                  {addresses[p.id] || '위치 정보 없음'}
+                  {p.location || '위치 정보 없음'}
                 </span>{' '}
                 <span className="post-time">{p.timeAgo}</span>
                 <button className="comment-btn">
@@ -208,11 +287,13 @@ export default function Adoption() {
           <button
             className="sheet-confirm"
             disabled={selectedPet === null}
-            onClick={() =>
+            onClick={() => {
+              const selected = pets.find(p => p.id === selectedPet);
               navigate('/adoptionpost/add', {
-                state: { petId: selectedPet },
-              })
-            }
+                state: { petId: selectedPet, petData: selected },
+              });
+            }}
+
           >
             확인
           </button>
@@ -220,6 +301,16 @@ export default function Adoption() {
       )}
 
       <Footer />
+      {filterSheetOpen && (
+        <AdoptionFilterSheet
+          initFilter={filter}
+          onApply={(newFilter) => {
+            setFilter(newFilter);
+            setFilterSheetOpen(false);
+          }}
+          onClose={() => setFilterSheetOpen(false)}
+        />
+      )}
     </div>
   );
 }

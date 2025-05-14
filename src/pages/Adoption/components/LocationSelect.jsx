@@ -68,16 +68,31 @@ export default function LocationSelect() {
 
     const handleConfirm = () => {
         if (!selectedPos) return;
-        // 뒤로 돌아가면서 latitude/longitude 전달
-        navigate('/adoptionpost/add/details', {
-            replace: true,
-            state: {
-                ...location.state,
-                latitude: selectedPos.lat,
-                longitude: selectedPos.lng,
-            },
+
+        const geocoder = new window.kakao.maps.services.Geocoder();
+
+        geocoder.coord2Address(selectedPos.lng, selectedPos.lat, (result, status) => {
+            if (status === window.kakao.maps.services.Status.OK) {
+                const address = result[0].address.address_name;
+
+                // 📦 RegisterPost로 주소, 위도, 경도 모두 전달
+                navigate('/adoptionpost/add/details', {
+                    replace: true,
+                    state: {
+                        ...location.state,
+                        post: {
+                            ...location.state.post,
+                            adopt_location: address, // 🏠 주소 텍스트
+                            latitude: selectedPos.lat,
+                            longitude: selectedPos.lng,
+                        },
+                    },
+                });
+            }
         });
     };
+
+
 
     return (
         <div className="location-select">

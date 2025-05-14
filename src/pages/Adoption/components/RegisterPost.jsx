@@ -1,31 +1,47 @@
 // src/pages/RegisterPost.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
 import '../RegisterPost.css'; // 적절히 경로 수정
 import rightside from '../../../assets/rightside.svg';
 import fallbackImage from '../../../assets/testdog.png'; // ← add this
+import axios from 'axios';
 
 export default function RegisterPost() {
     const navigate = useNavigate();
     const { state } = useLocation();
+    const post = state?.post || {};
+
+    useEffect(() => {
+    }, [post]);
+    useEffect(() => {
+        console.log('📦 RegisterPost로 되돌아왔을 때 post:', post);
+    }, [post]);
     const {
+        userId,
         petName,
         breed,
         colors,
         gender,
         neutered,
-        birthDate,
+        birth,
         weight,
         registrationNo,
-        phone,
         isVerified,
-        photoUrl, // 만약 이미지 URL을 넘겨주셨다면
+        images = [],
         latitude,
         longitude,
-        description: initDesc,
-    } = state || {};
-    const [description, setDescription] = useState(initDesc || '');
+        comments = '',       // ✅ description 역할
+        title = '',          // ✅ 제목 필드
+        petId = null,        // ✅ 필요 시 저장
+        adopt_location = '', // ✅ 위치 텍스트
+        status = '분양중',   // ✅ 분양 상태
+    } = post;
+
+
+    const [description, setDescription] = useState(comments);
+    const [postTitle, setPostTitle] = useState(title || (breed ? `${breed} 분양합니다` : ''));
+
 
     return (
         <div className="register-post">
@@ -37,8 +53,8 @@ export default function RegisterPost() {
             </header>
 
             <section className="rp-pet-info">
-                {photoUrl ? (
-                    <img src={photoUrl} alt={petName} className="rp-pet-avatar" />
+                {images?.[0] ? (
+                    <img src={images[0].url} alt={petName} className="rp-pet-avatar" />
                 ) : (
                     <div className="rp-pet-avatar--placeholder" />
                 )}
@@ -48,6 +64,7 @@ export default function RegisterPost() {
                 </div>
             </section>
 
+
             <form className="rp-form" onSubmit={(e) => e.preventDefault()}>
                 <div className="rp-form-group">
                     <label className="label-title">제목</label>
@@ -55,8 +72,10 @@ export default function RegisterPost() {
                         type="text"
                         className="rp-input"
                         placeholder="제목을 입력하세요"
-                        defaultValue={breed ? `${breed} 분양합니다` : ''}
+                        value={postTitle}
+                        onChange={(e) => setPostTitle(e.target.value)} // ✅ 타이핑할 때마다 저장
                     />
+
                 </div>
 
                 <div className="rp-form-group">
@@ -80,59 +99,81 @@ export default function RegisterPost() {
                             onClick={() =>
                                 navigate('/adoptionpost/add/select-location', {
                                     state: {
-                                        ...state,
-                                        description,
+                                        post: {
+                                            ...post,
+                                            title: postTitle,
+                                            comments: description, // ✅ description을 post.comments로 덮어쓰기
+                                        },
                                     },
                                 })
                             }
                         >
                             <img src={rightside} alt=">" />
                         </div>
+
                     </div>
                 </div>
 
                 <button
                     type="button"
                     className="rp-submit-btn"
-                    onClick={() => {
-                        // 1) 새 포스트 객체 생성
-                        const newPost = {
-                            id: Date.now(), // 여기 아이디 자동증가로 ㄱㄱ
-                            user_id: '', // 유저 아이디 여기에 들어가게
-                            image: photoUrl || fallbackImage, // 이미지
-                            title: breed ? `${breed} 분양합니다` : '제목 없음', // 제목
-                            description, // 이게 코멘트임
-                            breed, // 픔종
-                            birth: birthDate // 태어난 날
-                                ? birthDate.toLocaleDateString('ko-KR', {
-                                      year: 'numeric',
-                                      month: 'numeric',
-                                      day: 'numeric',
-                                  })
-                                : '미정',
-                            gender, // 성별
-                            petName, // 동물 이름
-                            colors, // 색상
-                            weight, // 몸무게
-                            neutered, // 중성화 여부
-                            registrationNo, // 동물 등록 번호
-                            // 위치
-                            location:
-                                latitude != null && longitude != null
-                                    ? `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`
-                                    : '미정',
-                            timeAgo: '방금 전', // 여기는 현재 시간 - 글 작성 시간 해서 보여주면됨
-                        };
+                    onClick={async () => {
+                        const adoptData = {
+                            userId,
+                            petId,
+                            name: petName,
+                            breed,
+                            coatColor: colors.join('+'),
+                            gender,
+                            isNeutered: neutered,
+                            dateOfBirth: birth,
+                            weight: parseFloat(weight),
+                            registrationNumber: registrationNo,
+                            title: postTitle,
+                            vetVerified: isVerified,
+                            comments: description,
+                            adoptLocation: adopt_location,
+                            latitude,
+                            longitude,
+                            status,
+                            photoPath: images
+                              .filter(img => !img.file)
+                              .map(img => {
+                                const url = img.url;
+                                const base = 'http://localhost:8080';
+                                return url.startsWith(base) ? url.replace(base, '') : url;
+                              })
+                              .join(','),
+                          };
+                          
 
-                        // 2) /adoptionpost 로 이동하며 newPost 전송
-                        navigate('/adoptionpost', {
-                            state: { newPost },
-                            replace: true,
+                        // ✅ FormData 생성
+                        const formData = new FormData();
+                        formData.append('adopt', JSON.stringify(adoptData));
+
+                        // ✅ 이미지가 파일로 존재할 경우만 추가
+                        images.forEach(img => {
+                            if (img.file) {
+                                formData.append('files', img.file);
+                            }
                         });
+
+                        try {
+                            await axios.post('http://localhost:8080/api/adopt', formData, {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data'
+                                }
+                            });
+                            navigate('/adoptionpost');
+                        } catch (error) {
+                            console.error('❌ 입양 등록 실패:', error);
+                            alert('입양글 등록에 실패했습니다.');
+                        }
                     }}
                 >
                     게시글 작성
                 </button>
+
             </form>
         </div>
     );
