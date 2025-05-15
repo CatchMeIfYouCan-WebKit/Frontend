@@ -70,10 +70,9 @@ export default function ShelterDetail() {
     return (
         <div className="shelter-detail">
             <div className="shelter-detail-header">
-                <IoIosArrowBack size={36} className="back-icon4" onClick={() => navigate('main')} />
+                <IoIosArrowBack size={36} className="back-icon4" onClick={() => navigate('/main')} />
                 <h2 className="header-title4">보호소 동물현황</h2>
             </div>
-
 
             {/* 필터 요약 */}
             <div className="filters">
