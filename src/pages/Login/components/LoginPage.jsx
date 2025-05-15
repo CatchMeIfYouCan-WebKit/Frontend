@@ -102,7 +102,6 @@ const LoginPage = () => {
                     </div>
                 </form>
 
-
                 <div className="login-links">
                     <span className="link-button" onClick={() => handleNavigate('/signup')}>
                         회원가입

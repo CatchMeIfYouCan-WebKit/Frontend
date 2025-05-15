@@ -6,18 +6,14 @@ import { useNavigate } from 'react-router-dom';
 import '../MyPage.css';
 import user from '../../../assets/users.svg';
 import option from '../../../assets/options.svg';
+import BackHeader from '../../../shared/BackHeader/components/BackHeader';
 
 export default function MyPage() {
     const navigate = useNavigate();
 
     return (
         <div className="my-page">
-            <header className="my-page-header">
-                <button className="back-button" onClick={() => window.history.back()}>
-                    <IoIosArrowBack size={24} />
-                </button>
-                <h1>마이페이지</h1>
-            </header>
+            <BackHeader title="마이페이지" />
 
             <section className="profile-section">
                 <div className="avatar-wrapper">

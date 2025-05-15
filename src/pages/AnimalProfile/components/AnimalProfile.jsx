@@ -19,7 +19,7 @@ import browncircle from '../../../assets/browncircle.svg';
 import darkgoldcircle from '../../../assets/darkgoldcircle.svg';
 import whitecircle from '../../../assets/whitecircle.svg';
 import { FaCheck } from 'react-icons/fa';
-
+import BackHeader from '../../../shared/BackHeader/components/BackHeader';
 const prioritizedBreeds = [
     '선택안함',
     '믹스견',
@@ -185,8 +185,6 @@ const otherBreeds = [
     '해리어',
 ];
 const allBreeds = [...prioritizedBreeds, ...otherBreeds.sort((a, b) => a.localeCompare(b, 'ko'))];
-
-
 
 const colorMap = {
     검은색: '#000000',
@@ -523,12 +521,7 @@ export default function AnimalProfile() {
 
     return (
         <div className="animal-profile">
-            <header className="animal-profile-header">
-                <button className="back-button" onClick={() => window.history.back()}>
-                    <IoIosArrowBack />
-                </button>
-                <h1>강아지 프로필 등록</h1>
-            </header>
+            <BackHeader title="강아지 프로필 등록" />
 
             <div className="animal-profile-content">
                 <div className="form-group photo-group">
@@ -588,7 +581,8 @@ export default function AnimalProfile() {
 
                 <div className="form-group color-group">
                     <label>
-                        털색 <span className="required">*</span><span className="pet-color-comment">털 색상이 한 가지가 아닌경우 중복 선택 가능합니다.</span>
+                        털색 <span className="required">*</span>
+                        <span className="pet-color-comment">털 색상이 한 가지가 아닌경우 중복 선택 가능합니다.</span>
                     </label>
                     <div className="color-container">
                         {[
@@ -667,7 +661,8 @@ export default function AnimalProfile() {
 
                 <div className="form-group weight-input-group">
                     <label>
-                        몸무게 <span className="required">*</span><span className="pet-color-comment">kg으로 입력해주세요.</span>
+                        몸무게 <span className="required">*</span>
+                        <span className="pet-color-comment">kg으로 입력해주세요.</span>
                     </label>
                     <div className="weight-wrapper">
                         <input

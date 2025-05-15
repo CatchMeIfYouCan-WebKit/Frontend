@@ -10,7 +10,7 @@
 /* 2. 최상위 컨테이너 */
 .login-container {
     min-height: 90vh;
-    background-color: #fff;
+    background-color: #fafafa;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -24,19 +24,19 @@
 
 /* 3. 중앙 래퍼 */
 .login-wrapper {
-    width: 360px; /* 고정 너비 360px */
+    width: 428px; /* 고정 너비 360px */
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 auto;
+    /* margin: 0 auto; */
 }
 
 /* 4. 로고 */
 .login-logo {
-    width: 300px;
-    height: 300px;
+    width: 220px;
+    height: 220px;
     object-fit: contain;
-    margin-bottom: 40px;
+    margin-bottom: 24px;
 }
 
 /* 5. 폼 */
@@ -52,19 +52,19 @@
 .login-input {
     width: 100% !important;
     height: 60px !important;
-    padding: 14px 18px;
-    border: 1px solid #111111; /* ✅ 여기만 수정 */
+    padding: 16px 16px;
+    border: 1px solid #d9d9d9; /* ✅ 여기만 수정 */
     border-radius: 8px;
-    background-color: #fff;
+    background-color: #fafafa;
     font-size: 20px;
     outline: none;
     margin-bottom: 10px;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    letter-spacing: -0.4px;
 }
 
 .login-input:focus {
     border-color: #111111;
-    box-shadow: 0 0 0 2px #111111;
+    border: 1px solid #111111;
 }
 
 /* 7. 버튼 래퍼 */
@@ -133,8 +133,8 @@
 /* 10. 링크 */
 .login-links {
     margin-top: 24px;
-    font-size: 20px;
-    color: #555;
+    font-size: 16px;
+    color: #111111;
     white-space: nowrap;
     text-align: center;
 }
@@ -142,9 +142,9 @@
 .link-button {
     cursor: pointer;
     margin: 0 6px;
-    color: #000;
-    text-decoration: none;
+    color: #555555;
     transition: color 0.2s;
+    font-weight: normal;
 }
 
 .link-button:hover {
