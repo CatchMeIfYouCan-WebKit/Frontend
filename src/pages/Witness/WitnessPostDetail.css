@@ -261,10 +261,35 @@
     margin-left: 15px;
 }
 
+/* 원댓글 */
 .witness-comment {
     display: flex;
     align-items: flex-start;
     margin-bottom: 16px;
+}
+
+/* 대댓글 */
+.reply-comment {
+    position: relative;
+    background-color: #eee;
+    border-radius: 15px;
+    padding: 10px;
+    margin: 0 30px 16px 60px; /* 위 오른 아래 왼 */
+}
+
+.reply-comment::before {
+    content: 'ㄴ';
+    position: absolute;
+    left: -30px;
+    top: 12px; /* 원하는 위치로 조정 */
+    color: #000;
+    font-size: 16px;
+}
+
+/* 대댓글 등록 시 */
+.reply-input {
+    background-color: #b66;
+    padding: 5px;
 }
 
 .witness-comment-profile-circle {
@@ -287,6 +312,7 @@
     margin-bottom: 4px;
 }
 
+/* 댓글 작성자 */
 .witness-comment-author {
     font-weight: bold;
     color: #333;
@@ -294,6 +320,11 @@
     text-align: left;
     margin-top: 10px;
     margin-left: 15px;
+}
+
+/* 글 작성자(글쓴이) */
+.witness-comment-author-writer {
+    color: #33d;
 }
 
 .witness-comment-text {
@@ -322,12 +353,6 @@
     background-color: rgba(219, 219, 219, 0.5);
     outline: none;
     font-size: 14px;
-}
-.witness-comment-input::placeholder {
-    padding-top: 10px; /* 위 공간 확보 */
-
-    font-size: 16px; /* 원하는 크기로 조절 */
-    color: #888; /* 필요하면 색상도 조정 */
 }
 
 .witness-submit-btn {

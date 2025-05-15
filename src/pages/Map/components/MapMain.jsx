@@ -61,7 +61,7 @@ export default function MapMain() {
     const [shelters, setShelters] = useState([]);
 
     //  바텀 시트
-    const snapPoints = [0.3, 0., 0.87];
+    const snapPoints = [0.3, 0, 0.87];
     const [snapIndex, setSnapIndex] = useState(1);
     const [percent, setPercent] = useState(snapPoints[0]);
     const isFullyOpen = percent >= snapPoints[2];
@@ -758,7 +758,6 @@ export default function MapMain() {
     useEffect(() => {
         applyInitialMarkerFilter();
     }, [isMissing, isWitness, isShelter, isHospital]);
-
     // ==================================================================================== useEffect 종료
     // ==================================================================================== 렌더링 시작
     console.log('현재 percent 값:', percent);
@@ -1077,6 +1076,8 @@ export default function MapMain() {
                                                         {post.missingLocation}
                                                         <p>{new Date(post.missingDatetime).toLocaleString()}</p>
                                                     </div>
+                                                    {/* 댓글 개수 */}
+                                                    <div>{`댓글 ${post.commentCount}개`}</div>
                                                 </div>
                                                 <div className="list-img">
                                                     <img
@@ -1113,6 +1114,8 @@ export default function MapMain() {
                                                         {post.witnessLocation}
                                                         <p>{new Date(post.witnessDatetime).toLocaleString()}</p>
                                                     </div>
+                                                    {/* 댓글 개수 */}
+                                                    <div>{`댓글 ${post.commentCount}개`}</div>
                                                 </div>
                                                 <div className="list-img">
                                                     <img

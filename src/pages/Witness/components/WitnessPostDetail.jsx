@@ -11,44 +11,29 @@ import axios from 'axios';
 
 export default function WitnessPostDetail() {
     const navigate = useNavigate();
+    const mapRef = useRef(null);
+
     const { id } = useParams();
     const [post, setPost] = useState(null);
     const [fadeOut, setFadeOut] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [commentInput, setCommentInput] = useState('');
-    const [commentList, setCommentList] = useState([
-        {
-            author: '조진혁',
-            date: '2025년 10월 21일',
-            content: '빨리 찾았으면 좋겠네요!',
-        },
-    ]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [commentInput, setCommentInput] = useState('');
+    const [replyTargetId, setReplyTargetId] = useState(null);
+    const [replyInput, setReplyInput] = useState('');
+    const [commentList, setCommentList] = useState([]);
+
+    const post2 = { images: [testdog, testdog, testdog] };
 
     const goBack = () => {
         setFadeOut(true);
         setTimeout(() => navigate(-1), 400);
     };
 
-    const post2 = { images: [testdog, testdog, testdog] };
-
     const handleScroll = (e) => {
         const scrollLeft = e.target.scrollLeft;
         const width = e.target.offsetWidth;
         setCurrentImageIndex(Math.round(scrollLeft / width));
-    };
-
-    const handleCommentSubmit = () => {
-        if (!commentInput.trim()) return;
-
-        const newComment = {
-            author: '익명',
-            date: new Date().toISOString().split('T')[0],
-            content: commentInput,
-        };
-
-        setCommentList((prev) => [...prev, newComment]);
-        setCommentInput('');
     };
 
     const getImageUrl = (path) => {
@@ -58,9 +43,88 @@ export default function WitnessPostDetail() {
         return `http://${host}:${port}${path}`;
     };
 
+    // 현재 사용자의 id 가져오기
+    function getCurrentUserId() {
+        const token = localStorage.getItem('accessToken');
+        console.log('토큰:', token);
+
+        if (!token) {
+            console.warn('토큰이 없습니다.');
+            return;
+        }
+
+        try {
+            const payloadBase64 = token.split('.')[1];
+            const payloadJson = atob(payloadBase64);
+            const payload = JSON.parse(payloadJson);
+
+            return payload.id; // 바로 id만 반환
+        } catch (err) {
+            console.error('토큰 파싱 에러:', err);
+            return null;
+        }
+    }
+
+    // API : 댓글 등록
+    const handleCommentSubmit = async () => {
+        if (!commentInput.trim()) return;
+
+        try {
+            await axios.post('/api/comments', {
+                postId: Number(id), // 게시글 ID
+                userId: getCurrentUserId(), // 현재 로그인된 사용자 ID 동적 할당
+                content: commentInput,
+            });
+
+            console.log('✅ 댓글 작성 성공'); // 성공 로그 추가
+            setCommentInput('');
+
+            // 댓글 다시 조회
+            const response = await axios.get(`/api/comments/post/${id}`);
+            const sortedComments = response.data.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+            setCommentList(sortedComments);
+        } catch (err) {
+            console.error('댓글 작성 실패:', err.response?.data?.error || err.message);
+        }
+    };
+
+    // API : 대댓글 등록
+    const handleReplySubmit = async (parentCommentId) => {
+        if (!replyInput.trim()) return;
+
+        try {
+            await axios.post('/api/comments', {
+                postId: Number(id),
+                userId: getCurrentUserId(),
+                content: replyInput,
+                parentCommentId: parentCommentId,
+            });
+
+            console.log('대댓글 작성 성공');
+
+            setReplyInput('');
+            setReplyTargetId(null); // 입력창 닫기
+
+            // 댓글 목록 새로고침
+            const response = await axios.get(`/api/comments/post/${id}`);
+            const sortedComments = response.data.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+            setCommentList(sortedComments);
+        } catch (err) {
+            console.error('대댓글 작성 실패:', err.response?.data?.error || err.message);
+        }
+    };
+
+    // 대댓글 추가 버튼
+    const handleReplyClick = (commentId) => {
+        setReplyTargetId((prevId) => (prevId === commentId ? null : commentId));
+    };
+
+    // ?분 전
     const calculateTimeAgo = (createdAt) => {
         const now = new Date();
-        const createdDate = new Date(createdAt);
+        const isoDateStr = createdAt.replace(' ', 'T') + '+09:00';
+        const createdDate = new Date(isoDateStr);
+
         const diffMs = now - createdDate;
         const diffMinutes = Math.floor(diffMs / (1000 * 60));
         const diffHours = Math.floor(diffMinutes / 60);
@@ -72,8 +136,36 @@ export default function WitnessPostDetail() {
         return `${diffDays}일 전`;
     };
 
-    // ✅ 지도 관련
-    const mapRef = useRef(null);
+    // 날짜 변환
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+    }
+    // ======================================================================================== useEffect
+    // API : 목격 게시글
+    useEffect(() => {
+        axios
+            .get(`/api/posts/witness/${id}`)
+            .then((response) => setPost(response.data))
+            .catch((err) => console.error('Error loading post:', err));
+    }, [id]);
+
+    // API : 댓글 조회
+    useEffect(() => {
+        const fetchComments = async () => {
+            try {
+                const response = await axios.get(`/api/comments/post/${id}`);
+                setCommentList(response.data);
+                console.log('댓글 목록 조회 성공: ', response.data);
+            } catch (err) {
+                console.error('댓글 목록 조회 실패: ', err.response?.data?.error || err.message);
+            }
+        };
+
+        fetchComments();
+    }, [id]);
+
+    // 지도 로드
     useEffect(() => {
         if (!post?.witnessLocation) return;
 
@@ -109,13 +201,6 @@ export default function WitnessPostDetail() {
             document.head.removeChild(script);
         };
     }, [post]);
-
-    useEffect(() => {
-        axios
-            .get(`/api/posts/witness/${id}`)
-            .then((response) => setPost(response.data))
-            .catch((err) => console.error('Error loading post:', err));
-    }, [id]);
 
     if (!post) return <div>Loading...</div>;
 
@@ -229,32 +314,82 @@ export default function WitnessPostDetail() {
                     ))}
                 </div>
 
-                {/* ✅ 댓글 */}
+                {/* ✅ 댓글 섹션 */}
                 <div className="witness-comment-section">
                     <div className="witness-comment-count">댓글 {commentList.length}개</div>
-                    {commentList.map((cmt, idx) => (
-                        <div className="witness-comment" key={idx}>
-                            <img src={user} alt="댓글 작성자" className="witness-comment-profile-circle" />
-                            <div className="witness-comment-content">
-                                <div className="witness-comment-meta">
-                                    <span className="witness-comment-author">{cmt.author}</span>
-                                    <span className="witness-comment-date">{cmt.date}</span>
+                    {commentList
+                        .filter((comment) => !comment.parentCommentId)
+                        .map((parent, idx) => (
+                            <React.Fragment key={idx}>
+                                {/* 부모 댓글 */}
+                                <div
+                                    className={`witness-comment ${replyTargetId === parent.id ? 'reply-input' : ''}`}
+                                    onClick={() => handleReplyClick(parent.id)}
+                                >
+                                    <img src={user} alt="작성자" className="witness-comment-profile-circle" />
+                                    <div className="witness-comment-content">
+                                        <div className="witness-comment-meta">
+                                            <span className="witness-comment-author">
+                                                {parent.nickname}
+                                                {parent.userId === post.userId && (
+                                                    <span className="witness-comment-author-writer"> (글쓴이)</span>
+                                                )}
+                                            </span>
+                                            <span className="witness-comment-date">{formatDate(parent.createdAt)}</span>
+                                            <span className="witness-comment-date">
+                                                ({calculateTimeAgo(parent.createdAt)})
+                                            </span>
+                                        </div>
+                                        <div className="witness-comment-text">{parent.content}</div>
+                                    </div>
                                 </div>
-                                <div className="witness-comment-text">{cmt.content}</div>
-                            </div>
-                        </div>
-                    ))}
+
+                                {/* 대댓글 */}
+                                {commentList
+                                    .filter((comment) => comment.parentCommentId === parent.id)
+                                    .map((child, cIdx) => (
+                                        <div key={`child-${cIdx}`} className="witness-comment reply-comment">
+                                            <img src={user} alt="작성자" className="witness-comment-profile-circle" />
+                                            <div className="witness-comment-content">
+                                                <div className="witness-comment-meta">
+                                                    <span className="witness-comment-author">
+                                                        {child.nickname}
+                                                        {child.userId === post.userId && (
+                                                            <span className="witness-comment-author-writer">
+                                                                {' '}
+                                                                (글쓴이)
+                                                            </span>
+                                                        )}
+                                                    </span>
+                                                    <span className="witness-comment-date">
+                                                        {formatDate(child.createdAt)}
+                                                    </span>
+                                                    <span className="witness-comment-date">
+                                                        ({calculateTimeAgo(child.createdAt)})
+                                                    </span>
+                                                </div>
+                                                <div className="witness-comment-text">{child.content}</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                            </React.Fragment>
+                        ))}
                 </div>
 
                 <div className="witness-comment-input-box">
                     <input
                         type="text"
-                        placeholder="댓글을 작성해주세요"
+                        placeholder={replyTargetId ? '답글을 입력하세요' : '댓글을 작성해주세요'}
                         className="witness-comment-input"
-                        value={commentInput}
-                        onChange={(e) => setCommentInput(e.target.value)}
+                        value={replyTargetId ? replyInput : commentInput}
+                        onChange={(e) =>
+                            replyTargetId ? setReplyInput(e.target.value) : setCommentInput(e.target.value)
+                        }
                     />
-                    <button className="witness-submit-btn" onClick={handleCommentSubmit}>
+                    <button
+                        className="witness-submit-btn"
+                        onClick={() => (replyTargetId ? handleReplySubmit(replyTargetId) : handleCommentSubmit())}
+                    >
                         <img src={send} alt="send" className="witness-send-image" />
                     </button>
                 </div>
