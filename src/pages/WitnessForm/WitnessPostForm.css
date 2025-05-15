@@ -1,48 +1,44 @@
-.mpf-container {
-    width: 100vw;
-    height: 100dvh;
-    padding: 16px;
+.mpf-containers {
+    width: 100%;
+    height: 100%;
     box-sizing: border-box;
-    background: #fff;
+    background: #ffffff;
     overflow-y: auto;
 }
 
 /* Header 스타일: MissingForm 기준으로 통일 */
-.missing-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 24px;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 4px;
-    background-color: #fff;
-    position: relative;
-    width: 100vw; /* ✅ 추가 */
-    margin-left: calc(-1 * 16px); /* ✅ container padding만큼 좌우 보정 */
+.missing-headers{
+    width: 100%;
+    height: 73px;
 }
 
-.missing-header .back-button {
+.missing-headers .back-button {
     position: absolute;
-    left: 24px;
+    left: 10px;
     background: none;
     border: none;
     font-size: 36px;
     cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    top: 8px;
 }
 
-.missing-header h1 {
-    font-weight: 700;
+.missing-headers h1 {
+    font-weight: 600;
     text-align: center;
-    margin: 0 auto;
+    padding-top: 25px;
     flex: 1;
-    font-size: 20px;
+    font-size: 25px !important;
 }
 
 /* 폼 전체 */
-.mpf-form {
+.mpf-containers .mpf-form {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    width: 95%;
+    padding-left: 5%;
 }
 
 /* ── 라벨 스타일 ── */
@@ -58,7 +54,7 @@
 /* ── 입력 필드 공통 ── */
 .mpf-form input,
 .mpf-form textarea,
-.mpf-form .mpf-input {
+.mpf-containers .mpf-form .mpf-input {
     padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 6px;
@@ -68,6 +64,7 @@
     box-sizing: border-box;
     margin-bottom: 20px;
     margin-top: 12px;
+    color: #8c8c8c;
 }
 
 /* 텍스트 입력창 */
@@ -96,9 +93,9 @@
 }
 
 /* 제출 버튼 */
-.mpf-submit {
+.mpf-containers .mpf-submit {
     margin-top: 8px;
-    background: #f29b30;
+    background: #000000;
     color: #fff;
     height: 50px;
     border: none;
@@ -106,6 +103,7 @@
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
+    left: 3.2%;
 }
 
 /* DatePicker 아이콘 */

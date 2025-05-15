@@ -115,7 +115,8 @@
     padding: 2px 0;
     gap: 1px;
     margin-left: 12px;
-    margin-right: 13px;
+    margin-right: 12px;
+    margin-top: 8px;
     height: 40px;
     justify-content: flex-start; /* 왼쪽 정렬 */
 }
@@ -133,7 +134,7 @@
     color: white;
     margin-left: 10px;
     margin-bottom: 10px;
-    margin-top: 10px;
+    margin-top: 25px;
 }
 .shelter-wrap {
     align-items: center;
@@ -148,7 +149,7 @@
     color: white;
     margin-left: 10px;
     margin-bottom: 10px;
-    margin-top: 10px;
+    margin-top: 25px;
 }
 .tag-wrap1 {
     display: flex;
@@ -162,7 +163,7 @@
     height: 40px;
     width: 80px;
     margin-right: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.4);
 }
 .tag-wrap2,
 .tag-wrap3 {
@@ -177,7 +178,7 @@
     height: 40px;
     width: 90px;
     margin-right: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .tag-img1 {
@@ -223,7 +224,7 @@
 /* 오버레이 검색창 + 버튼 */
 .search-overlay-content .search-input-wrapper {
     align-items: center;
-padding-left: 22px;
+    padding-left: 22px;
     background-color: #ffffff;
     height: 55px;
     width: 92.5%;
@@ -339,6 +340,7 @@ padding-left: 22px;
     transition: box-shadow 0.2s ease, transform 0.2s ease;
     margin-bottom: 5px;
     border: 1px solid rgb(219, 219, 219);
+    height: 125px;
 }
 
 .state {
@@ -348,8 +350,7 @@ padding-left: 22px;
     background-color: red;
     border-radius: 4px;
     width: 70px;
-    margin-bottom: 10px;
-    margin-top: 10x;
+    margin-top: -10px;
     margin-bottom: 10px;
     color: rgb(255, 255, 255);
     font-weight: 500;
@@ -363,8 +364,7 @@ padding-left: 22px;
     background-color: #4b75ff;
     border-radius: 4px;
     width: 70px;
-    margin-bottom: 10px;
-    margin-top: 10x;
+    margin-top: -10px;
     margin-bottom: 10px;
     color: white;
     font-weight: 400;
@@ -390,12 +390,13 @@ padding-left: 22px;
 .list-location {
     font-size: 1rem;
     color: #000000;
-    font-size: 12px;
+    font-size: 16px;
 }
+
 .list-location p {
     margin: 4px 0 0;
     color: #666;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 /* 4) 오른쪽 썸네일은 크기 고정, flex-shrink 방지 */
@@ -440,30 +441,32 @@ padding-left: 22px;
 /* 활성화 상태 */
 .tag-wrap1.active,
 .tag-wrap1.activeM {
-    background: #d92b2b;
+    background: #ffffff;
     backdrop-filter: blur(7.5px);
-    color: white;
+    color: rgb(0, 0, 0);
     font-weight: 500;
+    border: 1px solid black;
 }
 .tag-wrap1.activeW {
-    background: #4b75ff;
+    background: #ffffff;
     backdrop-filter: blur(7.5px);
-    color: white;
+    color: rgb(0, 0, 0);
     font-weight: 500;
+    border: 1px solid black;
 }
 .tag-wrap2.activeS {
-    background: #f29b30;
+    background: #ffffff;
     font-weight: 500;
-
+    border: 1px solid black;
     backdrop-filter: blur(7.5px);
-    color: white;
+    color: rgb(0, 0, 0);
 }
 .tag-wrap1.activeH {
-    background: #1eb32f;
+    background: #ffffff;
     font-weight: 500;
-
+    border: 1px solid black;
     backdrop-filter: blur(7.5px);
-    color: white;
+    color: rgb(0, 0, 0);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 

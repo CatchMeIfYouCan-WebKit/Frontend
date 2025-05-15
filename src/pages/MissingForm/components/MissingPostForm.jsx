@@ -109,19 +109,18 @@ export default function MissingPostForm() {
 
     return (
         <>
-            <header className="missing-header">
-                <button className="back-button" onClick={() => navigate(-1)}>
-                    <IoIosArrowBack />
-                </button>
+            <div className="missingpost-header">
+                <div className="Hback-button" onClick={() => navigate('/main')}>
+                    <IoIosArrowBack size={36}/>
+                </div>
                 <h1>실종게시글 작성</h1>
-            </header>
+            </div>
 
             <div className="mpf-container">
                 {pet && (
                     <div className="mpf-pet-row">
                         <img src={getImageUrl(pet.photoPath)} alt={pet.name} className="mpf-pet-img" />
                         <span className="mpf-pet-name">{pet.name}</span>
-                        <img src={verifion} alt="verified" className="mpf-pet-check" />
                     </div>
                 )}
 

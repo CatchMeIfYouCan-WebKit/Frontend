@@ -290,8 +290,8 @@ export default function WitnessPostForm() {
     };
 
     return (
-        <div className="mpf-container">
-            <header className="missing-header">
+        <div className="mpf-containers">
+            <header className="missing-headers">
                 <button className="back-button" onClick={() => navigate(-1)}>
                     <IoIosArrowBack />
                 </button>
