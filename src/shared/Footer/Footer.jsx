@@ -17,11 +17,10 @@ export default function Footer() {
     const currentPath = location.pathname;
 
     const navItems = [
+        { path: '/main', label: '홈', icon: Home, activeIcon: HomeActive },
         { path: '/mapmain', label: '지도', icon: Map, activeIcon: MapActive },
         { path: '/adoptionpost', label: '입양', icon: Adoption, activeIcon: AdoptionActive },
-        { path: '/main', label: '홈', icon: Home, activeIcon: HomeActive },
         { path: '/chatlist', label: '채팅', icon: Chat, activeIcon: ChatActive },
-        { path: '/medical', label: '진료', icon: Medical, activeIcon: MedicalActive },
     ];
 
     return (

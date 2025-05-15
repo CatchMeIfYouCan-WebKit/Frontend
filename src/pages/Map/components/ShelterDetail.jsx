@@ -6,15 +6,17 @@ import change from '../../../assets/change.svg';
 import { useNavigate, useLocation } from 'react-router-dom';
 import a from '../../../assets/1.png';
 import { IoIosArrowBack } from 'react-icons/io';
+import axios from 'axios';
 
 export default function ShelterDetail() {
     const navigate = useNavigate();
     const location = useLocation();
 
+    // 백엔드 api 요청
+    const [shelters, setShelters] = useState([]);
+
     // 부모에서 넘겨받은 데이터
     const selectedShelter = location.state?.selectedShelter ?? null;
-    const filteredAnimals = location.state?.filteredAnimals ?? [];
-    const prevTab = location.state?.currentTab;
 
     // 필터 선택값
     const initialShelterFilters = location.state?.selectedShelters ?? [];
@@ -46,38 +48,25 @@ export default function ShelterDetail() {
         });
     };
 
-    // 렌더링할 동물 리스트: filteredAnimals 있으면 해당 배열, 없으면 selectedShelter 하나만
-    const baseList = filteredAnimals.length > 0 ? filteredAnimals : selectedShelter ? [selectedShelter] : [];
-
-    const animals = baseList
-        .flatMap((shelter) =>
-            (shelter.animalSummaries || []).map((animal) => ({
-                ...animal,
-                shelterName: shelter.shelterName,
-                imageUrl: (animal.imageUrl?.split(';')[0] || '').trim(),
-            }))
-        )
-        .filter((animal) => {
-            const matchTab = activeTab === 'adopted' ? animal.status === '입양대기' : animal.status === '실종';
-            const matchGender = initialGenderFilters.length === 0 || initialGenderFilters.includes(animal.gender);
-            return matchTab && matchGender;
-        })
-        .sort((a, b) => {
-            const ta = new Date(a.createdAt).getTime();
-            const tb = new Date(b.createdAt).getTime();
-            return listChange ? tb - ta : ta - tb;
-        });
-
-    // 동물 정보가 없을 때 콘솔에 메시지 출력
-    useEffect(() => {
-        if (animals.length === 0) {
-            console.log('동물 정보가 없습니다.');
-        }
-    }, [animals]);
     const TRUNCATE_LEN = 4;
     function truncateLabel(label) {
         return label.length > TRUNCATE_LEN ? `${label.slice(0, TRUNCATE_LEN - 1)}...` : label;
     }
+
+    // ============================================================================== useEffect 시작
+    // 데이터 호출 (컴포넌트 렌더링 시 한 번만 호출)
+    useEffect(() => {
+        axios
+            .get('/api/map/shelter-missing')
+            .then((res) => {
+                console.log('백엔드 응답: ', res.data);
+                res.data.forEach((item, index) => {});
+                setShelters(res.data); // 바로 응답 데이터를 저장
+            })
+            .catch((err) => console.error('[API] 보호소 API 요청 실패:', err));
+    }, []);
+    // ============================================================================== useEffect 종료
+
     return (
         <div className="shelter-detail">
             <div className="shelter-detail-header">
@@ -109,9 +98,11 @@ export default function ShelterDetail() {
                 </div>
             </div>
 
-            {/* 게시글 개수 & 정렬 */}
+            {/* 게시글 개수 & 날짜 정렬 */}
             <div className="list-header">
-                <div className="post-count">{animals.length}개의 게시글</div>
+                <div className="post-count">
+                    {shelters.length > 0 ? `${shelters.length}개의 게시글` : '0개의 게시글'}
+                </div>
                 <div
                     className={`sort-toggle ${!listChange ? 'reversed' : ''}`}
                     onClick={() => setListChange((p) => !p)}
@@ -123,90 +114,35 @@ export default function ShelterDetail() {
 
             {/* 동물 카드 그리드 */}
             <div className="animal-grid">
-                {animals.map((animal, i) => (
+                {shelters.map((shelter, i) => (
                     <div
                         key={i}
                         className="animal-card"
                         onClick={() =>
-                            navigate('/animaldetail', {
-                                state: { animal, shelterName: animal.shelterName },
+                            navigate(`/shelterdetail/${shelter.id}`, {
+                                state: { shelter },
                             })
                         }
                     >
-                        <img src={animal.imageUrl} alt={animal.breed} className="animal-img" />
+                        <img
+                            src={shelter.imageUrl}
+                            alt={shelter.breed}
+                            className="animal-img"
+                            onError={(e) => {
+                                console.log('이미지 로드 실패:', shelter.imageUrl);
+                                e.target.src = a; // 대체 이미지
+                            }}
+                        />
                         <div className="animal-details">
-                            <div className="shelter-name">{animal.shelterName}</div>
+                            <div className="shelter-name">{shelter.shelterName}</div>
                             <div className="animal-info">
-                                <div>
-                                    품종: {animal.breed} | 색상: {animal.coatColor}
-                                </div>
-                                <div>성별: {animal.gender}</div>
+                                <div>품종: {shelter.breed}</div>
+                                <div>색상: {shelter.coatColor}</div>
+                                <div>성별: {shelter.gender}</div>
                             </div>
                         </div>
                     </div>
                 ))}
-
-                {/* 더미데이터 */}
-                <div
-                    className="animal-card"
-                    onClick={() => {
-                        navigate('/shelterdetail/dumy');
-                    }}
-                >
-                    <img src={a} alt="더미 강아지" className="animal-img" />
-                    <div className="animal-details">
-                        <div className="shelter-name">금오 보호소</div>
-                        <div className="animal-info">
-                            <div>품종: 말티즈 | 색상: 화이트</div>
-                            <div>성별: 암컷</div>
-                        </div>
-                    </div>
-                </div>
-                <div
-                    className="animal-card"
-                    onClick={() => {
-                        navigate('/shelterdetail/dumy');
-                    }}
-                >
-                    <img src={a} alt="더미 강아지" className="animal-img" />
-                    <div className="animal-details">
-                        <div className="shelter-name">구포 보호소</div>
-                        <div className="animal-info">
-                            <div>품종: 말티즈 | 색상: 화이트</div>
-                            <div>성별: 암컷</div>
-                        </div>
-                    </div>
-                </div>
-                <div
-                    className="animal-card"
-                    onClick={() => {
-                        navigate('/shelterdetail/dumy');
-                    }}
-                >
-                    <img src={a} alt="더미 강아지" className="animal-img" />
-                    <div className="animal-details">
-                        <div className="shelter-name">구미대 보호소</div>
-                        <div className="animal-info">
-                            <div>품종: 말티즈 | 색상: 화이트</div>
-                            <div>성별: 암컷</div>
-                        </div>
-                    </div>
-                </div>
-                <div
-                    className="animal-card"
-                    onClick={() => {
-                        navigate('/shelterdetail/dumy');
-                    }}
-                >
-                    <img src={a} alt="더미 강아지" className="animal-img" />
-                    <div className="animal-details">
-                        <div className="shelter-name">금오공대 보호소</div>
-                        <div className="animal-info">
-                            <div>품종: 말티즈 | 색상: 화이트</div>
-                            <div>성별: 암컷</div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     );

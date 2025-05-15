@@ -1,26 +1,22 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
 import '../ShelterPostDetail.css';
 import placeholder from '../../../assets/1.png';
 
 export default function ShelterPostDetail() {
     const navigate = useNavigate();
-    // location.state 에서 post 정보 받아온다고 가정
-    const { state } = useLocation();
-    const data = state?.animal ?? {
-        imageUrl: placeholder,
-        shelterName: '금오 보호소',
-        breed: '말티즈',
-        coatColor: '화이트',
-        gender: '암컷',
-        neutered: '예',
-        features: '2개월.겁이 많아요..그래도 목욕하고 구충제도 먹고 잘 참아줘서 고마워~입양가자!!!(공고중입양가능)',
-        shelterPhone: '010-1234-5678',
-    };
+    const { id } = useParams();
+    const location = useLocation();
+    const shelter = location.state?.shelter;
 
-    const currentUser = state?.currentUser;
+    console.log('넘어온 id:', id);
+    console.log('넘어온 데이터:', shelter);
+
+    const currentUser = shelter.currentUser;
+
     const isAdmin = currentUser?.role === 'admin';
+
     const handleDelete = () => {
         if (window.confirm('정말 이 게시글을 삭제하시겠습니까?')) {
             // TODO: 실제 삭제 API 호출
@@ -34,7 +30,7 @@ export default function ShelterPostDetail() {
             <header className="spd-header">
                 <IoIosArrowBack size={24} className="spd-back" onClick={() => navigate(-1)} />
                 <h1 className="spd-title">상세 정보</h1>
-                {isAdmin || ( /* 나중에 &&기호로 수정 ㄱㄱ */
+                {isAdmin /* 나중에 &&기호로 수정 ㄱㄱ */ || (
                     <button className="spd-delete-btn" onClick={handleDelete}>
                         삭제
                     </button>
@@ -44,8 +40,10 @@ export default function ShelterPostDetail() {
             <div className="spd-body">
                 <div className="spd-image-wrap">
                     <img
-                        src={data.imageUrl}
-                        alt={data.breed}
+                        src={shelter.imageUrl ? encodeURI(shelter.imageUrl) : placeholder}
+                        // src={encodeURI(shelter.imageUrl)}
+                        // src={shelter.imageUrl}
+                        alt={shelter.breed}
                         className="spd-image"
                         onError={(e) => {
                             e.currentTarget.src = placeholder;
@@ -56,31 +54,35 @@ export default function ShelterPostDetail() {
                 <div className="spd-info-card">
                     <div className="spd-info-row">
                         <span className="spd-info-label">보호소 이름</span>
-                        <span className="spd-info-value">{data.shelterName}</span>
+                        <span className="spd-info-value">{shelter.shelterName}</span>
                     </div>
                     <div className="spd-info-row">
                         <span className="spd-info-label">품종</span>
-                        <span className="spd-info-value">{data.breed}</span>
+                        <span className="spd-info-value">{shelter.breed}</span>
                     </div>
                     <div className="spd-info-row">
                         <span className="spd-info-label">색상</span>
-                        <span className="spd-info-value">{data.coatColor}</span>
+                        <span className="spd-info-value">{shelter.coatColor}</span>
                     </div>
                     <div className="spd-info-row">
                         <span className="spd-info-label">성별</span>
-                        <span className="spd-info-value">{data.gender}</span>
+                        <span className="spd-info-value">{shelter.gender}</span>
                     </div>
                     <div className="spd-info-row">
                         <span className="spd-info-label">중성화 여부</span>
-                        <span className="spd-info-value">{data.neutered}</span>
+                        <span className="spd-info-value">{shelter.neutered}</span>
                     </div>
                     <div className="spd-info-row">
                         <span className="spd-info-label">특징</span>
-                        <span className="spd-info-value">{data.features}</span>
+                        <span className="spd-info-value">{shelter.characteristics}</span>
                     </div>
                     <div className="spd-info-row">
-                        <span className="spd-info-label">보호소 번호</span>
-                        <span className="spd-info-value">{data.shelterPhone}</span>
+                        <span className="spd-info-label">보호소 위치</span>
+                        <span className="spd-info-value">{shelter.address}</span>
+                    </div>
+                    <div className="spd-info-row">
+                        <span className="spd-info-label">전화번호</span>
+                        <span className="spd-info-value">{shelter.phone}</span>
                     </div>
                 </div>
             </div>

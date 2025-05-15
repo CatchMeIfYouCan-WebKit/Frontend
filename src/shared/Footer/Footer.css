@@ -23,7 +23,7 @@
     flex-direction: column;
     align-items: center;
     font-size: 16px;
-    color: #d9d9d9;
+    color: #8c8c8c;
     text-decoration: none;
 }
 
@@ -35,5 +35,5 @@
 
 .Footer-item p.active {
     color: #111111;
-    font-weight: bold;
+    font-weight: normal !important;
 }

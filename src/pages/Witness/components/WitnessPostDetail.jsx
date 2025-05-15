@@ -51,7 +51,6 @@ export default function WitnessPostDetail() {
         setCommentInput('');
     };
 
-    // 사진 불러오기
     const getImageUrl = (path) => {
         if (!path) return '/default-image.png';
         const host = window.location.hostname;
@@ -59,11 +58,9 @@ export default function WitnessPostDetail() {
         return `http://${host}:${port}${path}`;
     };
 
-    // ?일 전 계산
     const calculateTimeAgo = (createdAt) => {
         const now = new Date();
         const createdDate = new Date(createdAt);
-
         const diffMs = now - createdDate;
         const diffMinutes = Math.floor(diffMs / (1000 * 60));
         const diffHours = Math.floor(diffMinutes / 60);
@@ -190,6 +187,35 @@ export default function WitnessPostDetail() {
                     ))}
                 </div>
 
+                <div className="witness-detail-info">
+                    <div className="witness-date-row">
+                        <img src={calender} alt="calender" className="witness-calender-image" />
+                        {new Date(post.witnessDatetime).toLocaleString('ko-KR', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: 'numeric',
+                            minute: 'numeric',
+                            hour12: true,
+                        })}
+                        <span className={`witness-post-type ${post.postType === 'missing' ? 'missing' : 'witness'}`}>
+                            {post.postType === 'missing' ? '실종' : '목격'}
+                        </span>
+                    </div>
+                    <div className="witness-location-row">
+                        <img src={location} alt="location" className="witness-location-image" />
+                        {post.witnessLocation}
+                    </div>
+                    <p className="witness-description">{post.detailDescription}</p>
+                </div>
+
+                {/* ✅ 지도 */}
+                <div className="witness-map-section">
+                    <div ref={mapRef} className="witness-map-image" />
+                </div>
+                <p className="witness-similar-info-text">목격된 아이와 닮은 실종정보에요!</p>
+
+                {/* ✅ 슬라이더를 댓글 바로 위로 이동 */}
                 <div className="witness-thumbnail-slider">
                     {post2.images.map((img, idx) => (
                         <div className="witness-thumbnail-card" key={idx}>
@@ -203,31 +229,7 @@ export default function WitnessPostDetail() {
                     ))}
                 </div>
 
-                <div className="witness-detail-info">
-                    <div className="witness-date-row">
-                        <img src={calender} alt="calender" className="witness-calender-image" />{' '}
-                        {new Date(post.witnessDatetime).toLocaleString('ko-KR', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                            hour: 'numeric',
-                            minute: 'numeric',
-                            hour12: true,
-                        })}{' '}
-                        {post.postType === 'missing' ? '실종' : '목격'}{' '}
-                    </div>
-                    <div className="witness-location-row">
-                        <img src={location} alt="location" className="witness-location-image" />
-                        {post.witnessLocation}
-                    </div>
-                    <p className="witness-description">{post.detailDescription}</p>
-                </div>
-
-                {/* ✅ 지도 적용 */}
-                <div className="witness-map-section">
-                    <div ref={mapRef} className="witness-map-image" />
-                </div>
-
+                {/* ✅ 댓글 */}
                 <div className="witness-comment-section">
                     <div className="witness-comment-count">댓글 {commentList.length}개</div>
                     {commentList.map((cmt, idx) => (
