@@ -223,7 +223,7 @@
 /* 오버레이 검색창 + 버튼 */
 .search-overlay-content .search-input-wrapper {
     align-items: center;
-padding-left: 22px;
+    padding-left: 22px;
     background-color: #ffffff;
     height: 55px;
     width: 92.5%;
@@ -677,7 +677,4 @@ padding-left: 22px;
     gap: 6px;
     font-size: 0.9rem;
     color: #333;
-}
-/*  */
-.shelter-select-wrap {
 }

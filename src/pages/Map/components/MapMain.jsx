@@ -61,9 +61,9 @@ export default function MapMain() {
     const [shelters, setShelters] = useState([]);
 
     //  바텀 시트
-    const snapPoints = [0.11, 0.5, 0.87];
-    const [snapIndex, setSnapIndex] = useState(0);
-    const [percent, setPercent] = useState(snapPoints[0.1]);
+    const snapPoints = [0.3, 0.5, 0.87];
+    const [snapIndex, setSnapIndex] = useState(1);
+    const [percent, setPercent] = useState(snapPoints[0]);
     // ==================================================================================== useState 종료
     // ==================================================================================== useRef 시작
     // 지도 관련
@@ -199,13 +199,6 @@ export default function MapMain() {
 
     // 지도에 표시할 마커 적용
     const applyInitialMarkerFilter = () => {
-        console.log('초기 필터 상태:', {
-            missFiltering: isMissing,
-            seeFiltering: isWitness,
-            shelterFiltering: isShelter,
-            hospitalFiltering: isHospital,
-        });
-
         const map = mapRef.current;
         if (!map) return;
 
@@ -214,24 +207,15 @@ export default function MapMain() {
         const initShelter = location.state?.shelterFiltering ?? isShelter;
         const initHospital = location.state?.hospitalFiltering ?? isHospital;
 
-        console.log('[Filter] 마커 필터 적용 시작', {
-            실종: initMiss,
-            목격: initSee,
-            보호소: initShelter,
-            병원: initHospital,
-        });
-
         markersRef.current.forEach(({ type, overlay }) => {
             const shouldShow =
                 (type === 'missing' && initMiss) ||
-                (type === 'sighting' && initSee) ||
+                (type === 'witness' && initSee) ||
                 (type === 'shelter' && initShelter) ||
                 (type === 'hospital' && initHospital);
 
             overlay.setMap(shouldShow ? map : null);
-            // console.log(`[Filter] 마커 타입: ${type} → ${shouldShow ? '표시' : '숨김'}`);
         });
-        // console.log('[Filter] 마커 필터 적용 완료');
     };
     // ==================================================================================== 로직함수 종료
     // ==================================================================================== useEffect 시작
@@ -271,7 +255,7 @@ export default function MapMain() {
                     ...adoptionRes.data.map((item) => ({ ...item, type: 'adoption' })),
                     ...missingRes.data.map((item) => ({ ...item, type: 'missing' })),
                 ];
-                console.log('[API] 보호소 전체 데이터 응답:', mergedData);
+                // console.log('[API] 보호소 전체 데이터 응답:', mergedData);
                 setShelters(mergedData);
             })
             .catch((err) => console.error('[API] 보호소 API 요청 실패:', err));
@@ -280,7 +264,7 @@ export default function MapMain() {
         axios
             .get('/api/map/hospital')
             .then(({ data }) => {
-                console.log('[API] 병원 데이터 응답:', data);
+                // console.log('[API] 병원 데이터 응답:', data);
                 setHospitals(data);
             })
             .catch((err) => console.error('[API] 병원 API 요청 실패:', err));
@@ -298,17 +282,9 @@ export default function MapMain() {
                 const map = new kakao.maps.Map(mapContainerRef.current, {
                     // 디폴트 위치 : 금오공대
                     center: new kakao.maps.LatLng(36.1460531, 128.39583),
-                    // 디폴트 위치 : 서울시청
-                    // center: new kakao.maps.LatLng(37.5665, 126.978),
-                    level: 3,
+                    level: 4,
                 });
                 mapRef.current = map;
-
-                clustererRef.current = new kakao.maps.MarkerClusterer({
-                    map,
-                    averageCenter: true,
-                    minLevel: 4,
-                });
 
                 psRef.current = new kakao.maps.services.Places();
 
@@ -318,32 +294,90 @@ export default function MapMain() {
 
                 applyInitialMarkerFilter();
 
+                clustererRef.current = new kakao.maps.MarkerClusterer({
+                    map,
+                    averageCenter: true,
+                    minLevel: 8,
+                    calculator: [10, 20, 30], // 원하는 구간(1-10, 11-20, 21-30, 31-)
+                    styles: [
+                        {
+                            width: '30px',
+                            height: '30px',
+                            background: '#4CAF50',
+                            lineHeight: '30px',
+                            borderRadius: '15px',
+                        },
+                        {
+                            width: '40px',
+                            height: '40px',
+                            background: '#2196F3',
+                            lineHeight: '40px',
+                            borderRadius: '20px',
+                        },
+                        {
+                            width: '50px',
+                            height: '50px',
+                            background: '#FFD600',
+                            lineHeight: '50px',
+                            borderRadius: '25px',
+                        },
+                        {
+                            width: '60px',
+                            height: '60px',
+                            background: '#FF3B30',
+                            lineHeight: '60px',
+                            borderRadius: '30px',
+                        },
+                    ],
+                });
+
+                // 클러스터링 실행 (모든 마커를 클러스터러에 등록)
+                clustererRef.current.addMarkers(markersRef.current.map(({ overlay }) => overlay));
+
                 kakao.maps.event.addListener(map, 'zoom_changed', () => {
                     const level = map.getLevel();
                     console.log('현재 줌 레벨:', level);
 
+                    clustererRef.current?.clear(); // 클러스터러 비우고
+
                     markersRef.current.forEach(({ type, overlay }) => {
                         const shouldShow =
                             (type === 'missing' && isMissing) ||
-                            (type === 'sighting' && isWitness) ||
+                            (type === 'witness' && isWitness) ||
                             (type === 'shelter' && isShelter) ||
                             (type === 'hospital' && isHospital);
 
-                        if (level > 6) {
-                            overlay.setMap(null); // 줌 아웃 → 모두 숨김
+                        if (level > 7) {
+                            // 마커는 숨기고 클러스터만 표시
+                            markersRef.current.forEach(({ overlay }) => overlay.setMap(null));
+                            clustererRef.current?.addMarkers(markersRef.current.map(({ overlay }) => overlay));
                         } else {
-                            overlay.setMap(shouldShow ? map : null); // 줌 인 → 필터된 마커만 표시
+                            // 마커 표시 + 클러스터 적용
+                            markersRef.current.forEach(({ overlay }) => overlay.setMap(map));
+                            clustererRef.current?.addMarkers(markersRef.current.map(({ overlay }) => overlay));
                         }
                     });
                 });
 
                 // 지도 생성 후 현재 줌 레벨에 맞게, 마커 표시 여부 즉시 적용
                 const currentLevel = map.getLevel();
-                if (currentLevel > 2) {
-                    markersRef.current.forEach(({ overlay }) => overlay.setMap(null));
-                } else {
-                    markersRef.current.forEach(({ overlay }) => overlay.setMap(map));
-                }
+
+                markersRef.current.forEach(({ type, overlay }) => {
+                    const shouldShow =
+                        (type === 'missing' && isMissing) ||
+                        (type === 'witness' && isWitness) ||
+                        (type === 'shelter' && isShelter) ||
+                        (type === 'hospital' && isHospital);
+
+                    if (currentLevel > 2) {
+                        overlay.setMap(null);
+                    } else {
+                        overlay.setMap(shouldShow ? map : null);
+                    }
+                });
+
+                setSnapIndex(1);
+                setPercent(snapPoints[1]);
             });
         };
 
@@ -358,7 +392,7 @@ export default function MapMain() {
     // 1. 실종 마커
     useEffect(() => {
         if (!mapRef.current || missingPosts.length === 0) return;
-        console.log('[Marker] 실종 마커 생성 시작. 게시글 수:', missingPosts.length);
+        // console.log('[Marker] 실종 마커 생성 시작. 게시글 수:', missingPosts.length);
 
         // 기존 실종 마커 제거
         const removeExistingMarkers = () => {
@@ -426,7 +460,7 @@ export default function MapMain() {
     // 2. 목격 마커
     useEffect(() => {
         if (!mapRef.current || witnessPosts.length === 0) return;
-        console.log('[Marker] 목격 마커 생성 시작. 게시글 수:', witnessPosts.length);
+        // console.log('[Marker] 목격 마커 생성 시작. 게시글 수:', witnessPosts.length);
 
         // 기존 목격 마커 제거
         const removeExistingMarkers = () => {
@@ -456,7 +490,7 @@ export default function MapMain() {
                 div.addEventListener('click', (e) => {
                     e.stopPropagation();
                     setActiveMarker({
-                        type: 'sighting',
+                        type: 'witness',
                         data: {
                             id: post.id,
                             imageUrl: imageUrl,
@@ -511,21 +545,18 @@ export default function MapMain() {
         const sortedHospitals = hospitals.slice().sort((a, b) => {
             const aInView = isInView(a.latitude, a.longitude);
             const bInView = isInView(b.latitude, b.longitude);
-            return bInView - aInView; // 화면 안에 있는 병원 우선 처리
+            return bInView - aInView;
         });
 
-        // 기존 병원 마커 제거
-        const removeExistingMarkers = () => {
-            markersRef.current = markersRef.current.filter(({ type, overlay }) => {
-                if (type === 'hospital') {
-                    overlay.setMap(null); // 지도에서 제거
-                    return false;
-                }
-                return true;
-            });
-        };
+        // 기존 마커 제거
+        markersRef.current = markersRef.current.filter(({ type, overlay }) => {
+            if (type === 'hospital') {
+                overlay.setMap(null);
+                return false;
+            }
+            return true;
+        });
 
-        // 새 병원 마커 생성
         const createHospitalMarker = (hospital) => {
             const exists = markersRef.current.some(({ type, id }) => type === 'hospital' && id === hospital.id);
             if (exists) return;
@@ -552,7 +583,7 @@ export default function MapMain() {
                 const overlay = new kakao.maps.CustomOverlay({
                     position: coords,
                     content: div,
-                    map: isHospital ? mapRef.current : null,
+                    map: isHospital ? mapRef.current : null, // 최초 표시 여부 결정
                     yAnchor: 1,
                     clickable: true,
                 });
@@ -561,10 +592,8 @@ export default function MapMain() {
             }
         };
 
-        // 나눠서 처리
         const processChunk = () => {
             const end = Math.min(index + chunkSize, sortedHospitals.length);
-
             for (; index < end; index++) {
                 createHospitalMarker(sortedHospitals[index]);
             }
@@ -576,21 +605,9 @@ export default function MapMain() {
             }
         };
 
-        // 기존 마커 제거 후 새 마커 생성 시작
-        removeExistingMarkers();
+        // 마커 생성 시작
         processChunk();
-    }, [hospitals, mapRef.current]);
-
-    // 병원 마커 토글
-    useEffect(() => {
-        if (!mapRef.current) return;
-
-        markersRef.current.forEach(({ type, overlay }) => {
-            if (type === 'hospital') {
-                overlay.setMap(isHospital ? mapRef.current : null);
-            }
-        });
-    }, [isHospital]);
+    }, [hospitals, mapRef.current, isHospital]);
 
     // 4. 보호소 마커
     useEffect(() => {
@@ -614,17 +631,14 @@ export default function MapMain() {
         });
 
         // 기존 보호소 마커 제거
-        const removeExistingMarkers = () => {
-            markersRef.current = markersRef.current.filter(({ type, overlay }) => {
-                if (type === 'shelter') {
-                    overlay.setMap(null);
-                    return false;
-                }
-                return true;
-            });
-        };
+        markersRef.current = markersRef.current.filter(({ type, overlay }) => {
+            if (type === 'shelter') {
+                overlay.setMap(null);
+                return false;
+            }
+            return true;
+        });
 
-        // 새 보호소 마커 생성
         const createShelterMarker = (shelter) => {
             const exists = markersRef.current.some(({ type, id }) => type === 'shelter' && id === shelter.shelterName);
             if (exists) return;
@@ -659,7 +673,7 @@ export default function MapMain() {
                 const overlay = new kakao.maps.CustomOverlay({
                     position: coords,
                     content: div,
-                    map: isShelter ? mapRef.current : null,
+                    map: isShelter ? mapRef.current : null, // 필터 상태에 따라 표시 여부 결정
                     yAnchor: 1,
                     clickable: true,
                 });
@@ -668,7 +682,6 @@ export default function MapMain() {
             }
         };
 
-        // 나눠서 처리
         const processChunk = () => {
             const end = Math.min(index + chunkSize, sortedShelters.length);
 
@@ -683,21 +696,9 @@ export default function MapMain() {
             }
         };
 
-        // 기존 마커 제거 후 새 마커 생성
-        removeExistingMarkers();
+        // 새 마커 생성
         processChunk();
-    }, [shelters, mapRef.current]);
-
-    // 보호소 마커 토글 유지
-    useEffect(() => {
-        if (!mapRef.current) return;
-
-        markersRef.current.forEach(({ type, overlay }) => {
-            if (type === 'shelter') {
-                overlay.setMap(isShelter ? mapRef.current : null);
-            }
-        });
-    }, [isShelter]);
+    }, [shelters, mapRef.current, isShelter]);
 
     // 마커 로드
     useEffect(() => {
@@ -712,17 +713,17 @@ export default function MapMain() {
 
     // 필터 상태 변경 시마다 마커 보이기/숨기기
     useEffect(() => {
-        // console.log('[Filter] 마커 표시 상태 변경', {
-        //     실종: isMissing,
-        //     목격: isWitness,
-        //     보호소: isShelter,
-        //     병원: isHospital,
-        // });
+        console.log('[Filter] 마커 표시 상태 변경', {
+            실종: isMissing,
+            목격: isWitness,
+            보호소: isShelter,
+            병원: isHospital,
+        });
 
         markersRef.current.forEach(({ type, overlay }) => {
             const shouldShow =
                 (type === 'missing' && isMissing) ||
-                (type === 'sighting' && isWitness) ||
+                (type === 'witness' && isWitness) ||
                 (type === 'shelter' && isShelter) ||
                 (type === 'hospital' && isHospital);
             overlay.setMap(shouldShow ? mapRef.current : null);
@@ -748,14 +749,7 @@ export default function MapMain() {
             setBreedFilter(breedFiltering);
             setColorFilter(colorFiltering);
 
-            console.log('[Filter] 필터 상태 설정:', {
-                missFiltering,
-                seeFiltering,
-                shelterFiltering,
-                hospitalFiltering,
-                breedFiltering,
-                colorFiltering,
-            });
+            applyInitialMarkerFilter();
         }
     }, [location.state]);
 
@@ -765,6 +759,8 @@ export default function MapMain() {
 
     // ==================================================================================== useEffect 종료
     // ==================================================================================== 렌더링 시작
+    console.log('현재 percent 값:', percent);
+
     return (
         <div className="mappage-container">
             {/* 지도 */}
@@ -814,7 +810,6 @@ export default function MapMain() {
                             className={`tag-wrap1 ${isMissing ? 'activeM' : ''}`}
                             onClick={() => {
                                 setIsMissing((prev) => !prev);
-                                applyInitialMarkerFilter(); // ✅ 필터 즉시 적용
                             }}
                         >
                             <img src={isMissing ? missing2 : missing} alt="실종" className="tag-img1" />
@@ -826,7 +821,6 @@ export default function MapMain() {
                             className={`tag-wrap1 ${isWitness ? 'activeW' : ''}`}
                             onClick={() => {
                                 setIsWitness((prev) => !prev);
-                                applyInitialMarkerFilter(); // ✅ 필터 즉시 적용
                             }}
                         >
                             <img src={isWitness ? sighting2 : sighting} alt="목격" className="tag-img1" />
@@ -910,8 +904,8 @@ export default function MapMain() {
 
             <BottomSheet
                 percent={percent}
-                minPercent={snapPoints[0.1]}
-                maxPercent={snapPoints[snapPoints.length - 1]}
+                minPercent={snapPoints[1]}
+                maxPercent={snapPoints[2]}
                 onDragEnd={handleDragEnd}
             >
                 {activeMarker ? (
@@ -948,7 +942,7 @@ export default function MapMain() {
                             </div>
                         )}
                         {/* 2.2. 목격 마커 선택 */}
-                        {activeMarker.type === 'sighting' && (
+                        {activeMarker.type === 'witness' && (
                             <>
                                 <div
                                     className="list-wrap"
