@@ -70,20 +70,10 @@ export default function ShelterDetail() {
     return (
         <div className="shelter-detail">
             <div className="shelter-detail-header">
-                <IoIosArrowBack size={24} className="back-icon4" onClick={() => navigate(-1)} />
+                <IoIosArrowBack size={36} className="back-icon4" onClick={() => navigate(-1)} />
                 <h2 className="header-title4">보호소 동물현황</h2>
             </div>
-            {/* 탭 */}
-            <div className="tabs-container">
-                <div className="tabs">
-                    <button
-                        className={activeTab === 'lost' ? 'tab active' : 'tab'}
-                        onClick={() => setActiveTab('lost')}
-                    >
-                        가족을 찾는 친구들
-                    </button>
-                </div>
-            </div>
+
 
             {/* 필터 요약 */}
             <div className="filters">
