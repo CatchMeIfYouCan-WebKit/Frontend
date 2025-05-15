@@ -1,0 +1,29 @@
+.back-header {
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    align-self: flex-start; /* ← 요게 핵심! */
+    padding: 16px 0px;
+}
+
+.back-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    margin-left: 16px; /* ← 정확히 왼쪽 여백 줌 */
+}
+
+.back-icon {
+    width: 16px;
+    height: 24px;
+    display: block;
+}
+
+.back-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #31363f;
+    margin-top: 2px;
+}

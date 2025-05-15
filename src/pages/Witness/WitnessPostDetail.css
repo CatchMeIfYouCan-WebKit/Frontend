@@ -373,3 +373,31 @@
     margin: 0 auto;
     border-radius: 12px;
 }
+.witness-similar-info-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: #444;
+    margin: 24px 16px 8px;
+    text-align: left;
+}
+.witness-post-type {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-left: 8px;
+    line-height: 1;
+}
+
+/* 실종: 빨간색 뱃지 */
+.witness-post-type.missing {
+    background-color: #ff4d4f; /* 진한 빨강 */
+    color: white;
+}
+
+/* 목격: 회색 뱃지 (참고용) */
+.witness-post-type.witness {
+    background-color: #4b75ff;
+    color: white;
+}

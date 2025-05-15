@@ -6,7 +6,7 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background: #fafafa;
+    background: rgba(240, 250, 255, 0.2);
     overflow: hidden;
     box-sizing: border-box;
 }
@@ -247,7 +247,7 @@
 .stat-chart-box {
     flex: 1;
     background-color: white;
-    border-radius: 16px;
+    border-radius: 6px;
     padding: 16px;
     border: 1px #d9d9d9 solid;
     /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */

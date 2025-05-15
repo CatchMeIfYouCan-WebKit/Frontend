@@ -19,7 +19,7 @@ import browncircle from '../../../assets/browncircle.svg';
 import darkgoldcircle from '../../../assets/darkgoldcircle.svg';
 import whitecircle from '../../../assets/whitecircle.svg';
 import { FaCheck } from 'react-icons/fa';
-
+import BackHeader from '../../../shared/BackHeader/components/BackHeader';
 const prioritizedBreeds = [
     '선택안함',
     '믹스견',
@@ -521,12 +521,7 @@ export default function AnimalProfile() {
 
     return (
         <div className="animal-profile">
-            <header className="animal-profile-header">
-                <button className="back-button" onClick={() => window.history.back()}>
-                    <IoIosArrowBack />
-                </button>
-                <h1>강아지 프로필 등록</h1>
-            </header>
+            <BackHeader title="강아지 프로필 등록" />
 
             <div className="animal-profile-content">
                 <div className="form-group photo-group">

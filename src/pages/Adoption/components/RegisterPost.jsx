@@ -127,7 +127,7 @@ export default function RegisterPost() {
                             gender,
                             isNeutered: neutered,
                             dateOfBirth: birth,
-                            weight: parseFloat(weight),
+                            weight: isNaN(parseFloat(weight)) ? null : parseFloat(weight),
                             registrationNumber: registrationNo,
                             title: postTitle,
                             vetVerified: isVerified,
@@ -137,42 +137,34 @@ export default function RegisterPost() {
                             longitude,
                             status,
                             photoPath: images
-                              .filter(img => !img.file)
-                              .map(img => {
-                                const url = img.url;
-                                const base = 'http://localhost:8080';
-                                return url.startsWith(base) ? url.replace(base, '') : url;
-                              })
-                              .join(','),
-                          };
-                          
-
-                        // ✅ FormData 생성
-                        const formData = new FormData();
-                        formData.append('adopt', JSON.stringify(adoptData));
-
-                        // ✅ 이미지가 파일로 존재할 경우만 추가
-                        images.forEach(img => {
-                            if (img.file) {
-                                formData.append('files', img.file);
-                            }
-                        });
+                                .map(img => {
+                                    const url = img.url;
+                                    const base = 'http://localhost:8080';
+                                    return url.startsWith(base) ? url.replace(base, '') : url;
+                                })
+                                .join(','),
+                        };
 
                         try {
-                            await axios.post('http://localhost:8080/api/adopt', formData, {
+                            await axios.post('http://10.0.2.2:8080/api/adopt', adoptData, {
                                 headers: {
-                                    'Content-Type': 'multipart/form-data'
-                                }
+                                    'Content-Type': 'application/json',
+                                },
                             });
                             navigate('/adoptionpost');
                         } catch (error) {
-                            console.error('❌ 입양 등록 실패:', error);
-                            alert('입양글 등록에 실패했습니다.');
-                        }
+                            const message =
+                              error.response?.data?.message || error.response?.data || error.message || '알 수 없는 오류';
+                            console.error('❌ 입양 등록 실패:', message); // 혹시 콘솔 되면 확인
+                            alert('입양 등록 실패\n\n' + JSON.stringify(error.response?.data || error));
+
+                          }
+                          
                     }}
                 >
                     게시글 작성
                 </button>
+
 
             </form>
         </div>

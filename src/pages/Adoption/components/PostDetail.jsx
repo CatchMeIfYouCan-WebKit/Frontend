@@ -85,6 +85,7 @@ export default function PostDetail() {
         longitude,
     } = post || {};
 
+
     // 색상 한글 변환
     const COLOR_LABELS = {
         black: '검은색',
@@ -94,9 +95,18 @@ export default function PostDetail() {
         red: '붉은색',
         gold: '골드',
     };
-    const displayColors = Array.isArray(colors)
-        ? colors.map((c) => COLOR_LABELS[c] || c).join(', ')
-        : COLOR_LABELS[colors] || colors;
+    // ✅ 색상 한글 매핑 또는 그대로 출력
+    const rawColors = colors || post.coatColor || post.pet?.coatColor || '';
+
+    const displayColors = Array.isArray(rawColors)
+        ? rawColors.map((c) => COLOR_LABELS[c] || c).join(', ')
+        : rawColors.includes('+') // 다중 색상 처리
+            ? rawColors
+                .split('+')
+                .map((c) => COLOR_LABELS[c.trim()] || c.trim())
+                .join(', ')
+            : COLOR_LABELS[rawColors.trim()] || rawColors.trim();
+
 
     // meetText 파싱
     let mapLat = latitude,
@@ -167,11 +177,40 @@ export default function PostDetail() {
             state: { post },
         });
     };
-    const handleDelete = () => {
-        if (window.confirm('정말 삭제하시겠습니까?')) {
-            // TODO: 삭제 API 호출
+    const handleDelete = async () => {
+        if (!window.confirm('정말 삭제하시겠습니까?')) return;
+    
+        try {
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                alert('로그인이 필요합니다.');
+                return;
+            }
+    
+            const isWeb = typeof window !== 'undefined' && window?.location?.hostname;
+            const baseUrl = isWeb
+                ? `http://${window.location.hostname}:8080`
+                : 'http://10.0.2.2:8080';
+    
+            const deleteUrl = `${baseUrl}/api/adopt/${id}`;
+    
+            await axios.delete(deleteUrl, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+    
+            alert('게시글이 삭제되었습니다.');
+            navigate('/adoptionpost');
+        } catch (error) {
+            console.error('❌ 삭제 실패:', error);
+            alert('게시글 삭제 중 오류가 발생했습니다.');
         }
     };
+    
+    
+    
+    
 
     return (
         <div className="pd-page">
