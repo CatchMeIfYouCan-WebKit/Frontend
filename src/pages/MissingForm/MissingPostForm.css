@@ -120,7 +120,7 @@
 
 /* 제출 버튼 */
 .mpf-form .mpf-submit {
-    margin-top: 24px;
+    position: fixed;
     padding: 14px 0;
     background: #000000;
     color: #fff;
@@ -129,33 +129,45 @@
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
+    bottom: 16px;
+    width: 93.4%;
+    height: 51px;
+
 }
 /* Header: “실종게시글 작성” */
-.missing-header {
+.missingpost-header {
     display: flex;
-    align-items: center;
     justify-content: center;
     padding: 16px 24px;
     border-bottom: 1px solid #eee;
-    background-color: #fff;
     position: relative;
+    min-height: 73px;
+    max-height: 73px;
+    width: 100%;
 }
 
-.missing-header .back-button {
+.missingpost-header .Hback-button {
     position: absolute;
-    left: 24px;
+    left: 10px;
     background: none;
     border: none;
     font-size: 36px;
     cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    top: 8px;
 }
 
-.missing-header h1 {
+.missingpost-header h1 {
     font-weight: 700;
     text-align: center;
     margin: 0 auto;
     flex: 1;
-    font-size: 20px;
+    font-size: 25px;
+    max-width: 200px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 6px;
 }
 .space-box-1 {
     width: 100%;
@@ -169,6 +181,9 @@
 .space-comment {
     width: 50%;
     padding-top: 10px;
+    font-size: 14px;
+    color: #787777;
+    margin-top: 4px;
 }
 .space-side {
     width: 45%;
