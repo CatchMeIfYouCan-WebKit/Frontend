@@ -198,7 +198,9 @@ export default function WitnessPostDetail() {
                             minute: 'numeric',
                             hour12: true,
                         })}
-                        {post.postType === 'missing' ? '실종' : '목격'}
+                        <span className={`witness-post-type ${post.postType === 'missing' ? 'missing' : 'witness'}`}>
+                            {post.postType === 'missing' ? '실종' : '목격'}
+                        </span>
                     </div>
                     <div className="witness-location-row">
                         <img src={location} alt="location" className="witness-location-image" />

@@ -181,8 +181,10 @@ export default function MissingPostDetail() {
                             hour: 'numeric',
                             minute: 'numeric',
                             hour12: true,
-                        })}{' '}
-                        {post.postType === 'missing' ? '실종' : '목격'}{' '}
+                        })}
+                        <span className={`witness-post-type ${post.postType === 'missing' ? 'missing' : 'witness'}`}>
+                            {post.postType === 'missing' ? '실종' : '목격'}
+                        </span>
                     </div>
                     <div className="missing-location-row">
                         <img src={location} alt="location" className="missing-location-image" />
