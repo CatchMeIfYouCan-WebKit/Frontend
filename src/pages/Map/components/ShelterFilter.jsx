@@ -469,9 +469,9 @@ export default function ShelterFilter() {
 
             {/* ── 필터 적용 버튼 */}
             <div className="sf-footer">
-                <button className="apply-btn" onClick={onApplyFilter}>
+                <div className="apply-btn" onClick={onApplyFilter}>
                     필터 적용
-                </button>
+                </div>
             </div>
         </div>
     );

@@ -5,4 +5,5 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    letter-spacing: -0.4px;
 }

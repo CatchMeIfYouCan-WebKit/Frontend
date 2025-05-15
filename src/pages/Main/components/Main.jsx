@@ -215,7 +215,7 @@ export default function Main() {
                                 </div>
                                 <div className="action-desc">지금 실종 상태를 알리세요</div>
                             </div>
-                            <img src={reportMissingImage} alt="실종신고" className="action-img" />
+                            <img src={reportMissingImage} alt="실종신고" className="action-img1" />
                         </div>
                     </div>
 
@@ -228,7 +228,7 @@ export default function Main() {
                                 </div>
                                 <div className="action-desc">목격 정보를 제보해주세요</div>
                             </div>
-                            <img src={reportFoundIcon} alt="목격신고" className="action-img" />
+                            <img src={reportFoundIcon} alt="목격신고" className="action-img2" />
                         </div>
                     </div>
 
@@ -241,7 +241,7 @@ export default function Main() {
                                 </div>
                                 <div className="action-desc">보호소에서 관리중인 동물도 확인하세요</div>
                             </div>
-                            <img src={shelterBoardImage} alt="보호소게시판" className="action-img" />
+                            <img src={shelterBoardImage} alt="보호소게시판" className="action-img3" />
                         </div>
                     </div>
                 </section>

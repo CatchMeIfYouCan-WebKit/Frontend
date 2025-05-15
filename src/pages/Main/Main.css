@@ -24,7 +24,7 @@
 }
 
 .logo-section {
-    margin-top: 10px;
+    margin: 12px 0px 12px 0px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -37,7 +37,6 @@
 }
 
 .brand {
-    font-size: 20px;
     font-weight: bold;
     color: #f4a340;
 }
@@ -45,11 +44,10 @@
 .icons {
     display: flex;
     gap: 16px;
-    margin-right: 10px;
+    margin-right: 0px;
 }
 
 .icon-button {
-    margin-top: 10px;
     background: none;
     border: none;
     font-size: 24px;
@@ -69,7 +67,7 @@
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch; /* iOS 부드러운 스크롤 */
-    margin: 10px 0 10px;
+    margin: 16px 0px 0px;
 }
 
 .pet-card-wrapper::-webkit-scrollbar {
@@ -84,10 +82,11 @@
     margin: 0 0px; /* 좌우 간격 */
     padding: 20px;
     width: 88%;
-    border-radius: 8px;
-    margin-left: 20px;
+    border-radius: 4px;
+    margin-left: 16px;
     text-align: left;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px #d9d9d9 solid;
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
     position: relative;
 }
 
@@ -95,6 +94,7 @@
 .pet-card-wrapper .center {
     justify-content: center;
     align-items: center;
+    margin-right: 16px;
 }
 
 /* “추가하기” 아이콘 사이즈 */
@@ -120,8 +120,8 @@
 }
 
 .edit-button img {
-    width: 35px;
-    height: 35px;
+    width: 28px !important;
+    height: 28px !important;
 }
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -130,19 +130,19 @@
 .pet-info-wrapper {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
 }
 
 .pet-image {
     width: 120px;
     height: 120px;
-    border-radius: 20%;
+    border-radius: 50%;
     object-fit: cover;
     background-color: #f0f0f0;
 }
 
 .pet-text h2 {
-    font-size: 24px;
+    font-size: 24px !important;
     margin: 0 0 8px 10px;
     line-height: 1.2;
     font-weight: bold;
@@ -150,10 +150,10 @@
 }
 
 .pet-text p {
-    font-size: 18px;
+    font-size: 16px !important;
     margin: 2px 0 0 10px;
     line-height: 1.2;
-    color: #888;
+    color: #222831;
 }
 /* ────────────────────────────────────────────────────────────────────────── */
 /* EDIT BUTTON ON PET CARD */
@@ -179,18 +179,18 @@
 .register-button {
     display: block;
     margin: 16px auto 0;
-    padding: 10px;
+    padding: 4px;
     background-color: #eee;
     border: none;
-    border-radius: 8px;
+    border-radius: 4px;
     width: 100%;
-    font-weight: bold;
+    font-weight: 600;
     cursor: pointer;
 }
 
 /* “동물 등록 번호 조회 완료” 버튼 스타일 */
 .register-button.complete {
-    background-color: #111111;
+    background-color: #31363f;
     color: white;
     cursor: default;
 }
@@ -202,8 +202,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 6px;
-    margin: 8px 0;
+    gap: 8px;
+    margin: 4px;
 }
 
 .pet-pagination-dot {
@@ -211,15 +211,16 @@
     height: 8px;
     margin-top: 8px;
     margin-bottom: 8px;
-    background-color: #ccc;
-    border-radius: 50%;
+    background-color: #d9d9d9;
+    border-radius: 2px;
     cursor: pointer;
 }
 
 .pet-pagination-dot.active {
-    background-color: #111111;
-    width: 24px; /* 가로로 길게 */
-    border-radius: 12px; /* 타원형 모양 */
+    background-color: #31363f;
+    width: 20px; /* 가로로 길게 */
+    height: 8px;
+    border-radius: 2px; /* 타원형 모양 */
 }
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -228,9 +229,9 @@
 .stat-section {
     display: flex;
     justify-content: center; /* 가운데 정렬 */
-    padding: 0 20px;
-    margin-bottom: 5px;
-    margin-top: 10px;
+    padding: 0 16px;
+    margin-bottom: 8px;
+    margin-top: 16px;
     height: 20%;
 }
 
@@ -248,36 +249,42 @@
     background-color: white;
     border-radius: 16px;
     padding: 16px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); /* 지우면 보더 사라짐 */
+    border: 1px #d9d9d9 solid;
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+
     text-align: center;
 }
 
 .stat-date {
     font-size: 16px;
     color: #8c8c8c;
-    margin-bottom: px;
-    font-weight: 600;
+    font-weight: 700px;
     text-align: left;
-    margin-bottom: 4px;
+    margin-bottom: 0px;
+    letter-spacing: -0.4px;
 }
 
 .stat-count {
     font-size: 40px;
     font-weight: bold;
-    margin-bottom: -14px;
+    /* margin-bottom: -14px; */
     text-align: center;
+    letter-spacing: -2px;
 }
 
 .stat-count strong {
     color: #111;
     font-size: 80px;
+    letter-spacing: -2px;
 }
 
 .stat-sub {
     text-align: left;
     font-size: 12px;
     color: #8c8c8c;
-    margin-top: -18px;
+    margin-top: -16px;
+    letter-spacing: -0.3px;
+    font-weight: 500px;
 }
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -289,8 +296,8 @@
 .action-grid {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 16px 20px;
+    gap: 0px;
+    padding: 16px 16px;
     margin: 0;
     overflow: hidden;
 }
@@ -309,7 +316,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-size: 15px;
     border: 1px solid #d9d9d9;
     margin-bottom: 14px;
 }
@@ -327,15 +333,14 @@
     flex-direction: column;
     justify-content: flex-start;
     text-align: left;
-    margin-left: 8px;
     flex: 1;
 }
 
 .action-title {
     margin: 0;
     font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 12px;
+    font-weight: bold;
+    margin-bottom: 14px;
     white-space: nowrap;
     align-self: flex-start;
     color: #111111;
@@ -345,15 +350,29 @@
     font-size: 16px;
     line-height: 1.4;
     color: #8c8c8c;
-    font-weight: 600;
+    font-weight: bold;
     min-height: auto;
+    letter-spacing: -0.4px;
 }
 
-.action-img {
-    width: 76px;
-    height: 76px;
+.action-img1 {
+    width: 86px;
+    height: 86px;
+    object-fit: contain;
+    margin: 8px;
+}
+.action-img2 {
+    width: 100px;
+    height: 100px;
     object-fit: contain;
     margin: 0;
+}
+
+.action-img3 {
+    width: 84px;
+    height: 84px;
+    object-fit: contain;
+    margin-right: 8px;
 }
 
 /* 각 텍스트 컬러 */
@@ -414,11 +433,13 @@
     color: white;
 }
 .pet-breed {
-    color: #8c8c8c !important;
-    font-size: 16px !important;
+    color: #222831 !important;
+    font-size: 20px !important;
     margin-top: 12px !important;
+    letter-spacing: -0.4px;
 }
 .pet-info {
-    color: #111111 !important;
+    color: #222831 !important;
     font-size: 20px !important;
+    letter-spacing: -0.4px;
 }

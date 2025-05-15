@@ -4,11 +4,13 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { IoIosArrowBack } from 'react-icons/io';
 import '../AdoptionPostEdit.css';
+import { FaPlus } from 'react-icons/fa';
 
 export default function AdoptionPostEdit() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const { post } = state || {};
+  const fileInputRef = useRef(null);
 
   // 잘못된 접근 방지
   useEffect(() => {
@@ -16,14 +18,23 @@ export default function AdoptionPostEdit() {
   }, [post, navigate]);
 
   // form 상태
-  const [petName, setPetName]   = useState(post?.petName   || '');
-  const [weight, setWeight]     = useState(post?.weight    || '');
-  const [comment, setComment]   = useState(post?.description || '');
-  const [neutered, setNeutered] = useState(post?.neutered   || false);
+  const [petName, setPetName] = useState(post?.name || '');
+  const [weight, setWeight] = useState(post?.weight || '');
+  const [comment, setComment] = useState(post?.description || post?.comments || '');
+  const [neutered, setNeutered] = useState(post?.neutered || false);
 
   // 이미지 상태: 기존 URL 목록, 새로 선택한 File 목록
-  const [existingImages, setExistingImages] = useState(post?.images?.slice() || [post?.image].filter(Boolean));
-  const [newFiles, setNewFiles]             = useState([]);
+  const rawImages = Array.isArray(post?.photoPaths)
+    ? post.photoPaths.map(path =>
+      path.startsWith('http') ? path : `http://localhost:8080${path}`
+    )
+    : typeof post?.image === 'string'
+      ? post.image.split(',').map(img => img.trim()).filter(Boolean)
+      : [];
+
+  const [existingImages, setExistingImages] = useState(rawImages);
+
+  const [newFiles, setNewFiles] = useState([]);
 
   // 이미지 미리보기 URL 목록
   const previews = [
@@ -53,8 +64,8 @@ export default function AdoptionPostEdit() {
   // 지도 & 마커 생략… (이전 코드 그대로)
   const mapRef = useRef(null);
   const markerRef = useRef(null);
-  const [coords, setCoords]   = useState({
-    lat: post?.latitude  ?? 37.5665,
+  const [coords, setCoords] = useState({
+    lat: post?.latitude ?? 37.5665,
     lng: post?.longitude ?? 126.9780,
   });
   const [address, setAddress] = useState('');
@@ -94,7 +105,7 @@ export default function AdoptionPostEdit() {
             }
           });
         };
-        kakao.maps.event.addListener(map, 'click',      e => placeMarker(e.latLng));
+        kakao.maps.event.addListener(map, 'click', e => placeMarker(e.latLng));
         kakao.maps.event.addListener(map, 'rightclick', e => placeMarker(e.latLng));
       });
     };
@@ -103,23 +114,41 @@ export default function AdoptionPostEdit() {
 
   const handleSubmit = async e => {
     e.preventDefault();
+
     const total = existingImages.length + newFiles.length;
     if (total < 1) {
       alert('최소 1개의 이미지를 유지해야 합니다.');
       return;
     }
+
     const formData = new FormData();
-    formData.append('petName', petName);
-    formData.append('weight', weight);
-    formData.append('description', comment);
-    formData.append('neutered', neutered);
-    formData.append('latitude', coords.lat);
-    formData.append('longitude', coords.lng);
+
+    // ✅ adopt JSON 생성
+    const adoptData = {
+      name: petName,
+      weight,
+      comments: comment,
+      isNeutered: neutered,
+      latitude: coords.lat,
+      longitude: coords.lng,
+    };
+
+    // ✅ adopt JSON을 문자열로 첨부
+    formData.append('adopt', JSON.stringify(adoptData));
+
+    // ✅ 기존 이미지 URL도 JSON 배열로 전달 (백엔드에서 @RequestParam 등으로 받도록 구현되어야 함)
     formData.append('keepImages', JSON.stringify(existingImages));
-    newFiles.forEach((file, idx) => formData.append('images', file));
+
+    // ✅ 새 이미지 파일 추가
+    newFiles.forEach(file => {
+      formData.append('files', file);
+    });
+
     try {
-      await axios.put(`/api/posts/${post.id}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+      await axios.put(`/api/adopt/${post.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
       navigate(-1);
     } catch (err) {
@@ -127,6 +156,8 @@ export default function AdoptionPostEdit() {
       alert('수정에 실패했습니다.');
     }
   };
+
+
 
   return (
     <div className="ape-page">
@@ -142,22 +173,43 @@ export default function AdoptionPostEdit() {
         {/* 이미지 업로드 & 미리보기 */}
         <div className="ape-field">
           <label>대표 이미지 (1~4장)</label>
+
+          <div className="profile-pics">
+            {previews.map((p, idx) => (
+              <div
+                key={idx}
+                className="profile-placeholder"
+                onClick={() => handleRemove(idx)}
+              >
+                <img
+                  src={p.src}
+                  alt={`pet-${idx}`}
+                  className="uploaded-image"
+                />
+              </div>
+            ))}
+
+            {[...Array(Math.max(0, 4 - previews.length))].map((_, i) => (
+              <div
+                key={`add-${i}`}
+                className="add-pic"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <FaPlus size={24} />
+              </div>
+            ))}
+          </div>
+
           <input
             type="file"
             accept="image/*"
             multiple
+            hidden
+            ref={fileInputRef}
             onChange={handleFileChange}
-            disabled={existingImages.length + newFiles.length >= 4}
           />
-          <div className="ape-previews">
-            {previews.map((p, idx) => (
-              <div key={idx} className="ape-preview-item">
-                <img src={p.src} alt="" />
-                <button type="button" onClick={() => handleRemove(idx)}>×</button>
-              </div>
-            ))}
-          </div>
         </div>
+
 
         {/* 이름, 몸무게, 중성화, 코멘트 (이전 코드 그대로) */}
         <div className="ape-field">

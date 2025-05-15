@@ -1,5 +1,5 @@
 // src/components/AdoptionPost.jsx
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 
 import '../AdoptionPost.css';
 import { FaCamera, FaPlus } from 'react-icons/fa';
@@ -8,7 +8,7 @@ import X from '../../../assets/X.svg';
 import BottomSheet from '../../Map/components/BottomSheet';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
 import blackcircle from '../../../assets/blackcircle.svg';
 import lightgoldcircle from '../../../assets/lightgoldcircle.svg';
@@ -186,35 +186,102 @@ const prioritizedBreeds = [
 ];
 
 export default function AdoptionPost() {
-    const [petName, setPetName] = useState('');
-    const [selectedBreed, setSelectedBreed] = useState('');
-    const [isSheetOpen, setIsSheetOpen] = useState(false);
-    const [search, setSearch] = useState('');
+// <<<<<<< HEAD
+    const { state } = useLocation(); // 📍 라우팅 state에서 petData 가져오기
+    const navigate = useNavigate();
+    const initialized = useRef(false); // 🌀 중복 초기화 방지용 ref
 
-    const [selectedColors, setSelectedColors] = useState([]);
+    // ✅ 펫 정보 파싱
+    const petData = state?.petData || {};
 
-    const [gender, setGender] = useState('');
-    const [neutered, setNeutered] = useState(false);
-    const [birthDate, setBirthDate] = useState(null);
-    const [weight, setWeight] = useState('');
-    const [regNumber, setRegNumber] = useState('');
+    // ✅ 이미지 리스트 파싱 (,로 구분된 문자열 → 배열)
+    const [uploadedFiles, setUploadedFiles] = useState([]); // 직접 올린 이미지들
+
+    const imageList = uploadedFiles;
+
+
+
+    // ✅ 털색 값 → color value 배열 변환
+    const initialColor = useMemo(() => {
+        const labels = (petData.coatColor || '').split('+');
+        return colorOptions
+            .filter(opt => labels.includes(opt.label))
+            .map(opt => opt.value);
+    }, [petData.coatColor]);
+
+    // ✅ 성별 텍스트 변환
+    const convertGender = (g) => g === '남' ? '남아' : g === '여' ? '여아' : '';
+
+    // ✅ 상태 정의
+    const [petName, setPetName] = useState(petData.name || '');
+    const [selectedBreed, setSelectedBreed] = useState(petData.breed || '');
+    const [color, setColor] = useState(initialColor);
+    const [gender, setGender] = useState(convertGender(petData.gender));
+    const [neutered, setNeutered] = useState(petData.isNeutered || false);
+    const [birthDate, setBirthDate] = useState(petData.birth ? new Date(petData.birth) : null);
+    const [weight, setWeight] = useState(petData.weight || '');
+    const [regNumber, setRegNumber] = useState(petData.registrationNumber || '');
+// =======
+//     const [petName, setPetName] = useState('');
+//     const [selectedBreed, setSelectedBreed] = useState('');
+//     const [isSheetOpen, setIsSheetOpen] = useState(false);
+//     const [search, setSearch] = useState('');
+
+//     const [selectedColors, setSelectedColors] = useState([]);
+
+//     const [gender, setGender] = useState('');
+//     const [neutered, setNeutered] = useState(false);
+//     const [birthDate, setBirthDate] = useState(null);
+//     const [weight, setWeight] = useState('');
+//     const [regNumber, setRegNumber] = useState('');
+// >>>>>>> 00cb71d8ec8a449f25e8da3e72b1cba1e48df464
     const [phone, setPhone] = useState('');
     const [isRegSheetOpen, setIsRegSheetOpen] = useState(false);
     const [isVerified, setIsVerified] = useState(false);
+    const [isSheetOpen, setIsSheetOpen] = useState(false);
+    const [search, setSearch] = useState('');
+    const fileInputRef = useRef(null);
 
-    const navigate = useNavigate();
-
-    // 유효성 체크
+    // ✅ 유효성 검사
     const isPhoneValid = /^010\d{8}$/.test(phone);
     const isRegValid = /^\d{12}$/.test(regNumber);
 
+    // ✅ 품종 리스트 필터링
     const filteredBreeds = useMemo(() => {
         const all = [...prioritizedBreeds, ...otherBreeds.sort((a, b) => a.localeCompare(b, 'ko'))];
-        if (!search.trim()) return all;
-        return all.filter((b) => b.includes(search.trim()));
+        return search.trim() ? all.filter((b) => b.includes(search.trim())) : all;
     }, [search]);
 
-    const toggleSheet = () => setIsSheetOpen((v) => !v);
+    // ✅ 품종 선택 시 BottomSheet 토글
+    const toggleSheet = () => setIsSheetOpen(prev => !prev);
+
+    //이미지 파일 업로드
+    const handleImageUpload = (e) => {
+        const files = Array.from(e.target.files); // 사용자가 고른 File 객체들
+        const newFileObjects = files.map(file => ({
+            file, // 👈 실제 File 객체 저장
+            url: URL.createObjectURL(file) // 👈 미리보기용 blob URL
+        }));
+        setUploadedFiles(prev => [...prev, ...newFileObjects]);
+    };
+    const handleImageDelete = (urlToDelete) => {
+        setUploadedFiles(prev => prev.filter(img => img.url !== urlToDelete));
+    };
+
+    // ✅ 털색 초기화 (한 번만 실행)
+    useEffect(() => {
+        if (petData?.image && uploadedFiles.length === 0) {
+            const petImages = (petData.image || '')
+                .split(',')
+                .filter(url => url.trim() !== '')
+                .map(url => ({
+                    url: url.startsWith('http') ? url : `http://localhost:8080${url}`,
+                    file: null // 서버 이미지라 파일은 없음
+                }));
+            setUploadedFiles(petImages); // ✅ 등록된 이미지도 uploadedFiles에 포함
+        }
+    }, [petData?.image]);
+
 
     const toggleColor = (c) =>
         setSelectedColors((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
@@ -228,16 +295,46 @@ export default function AdoptionPost() {
             </header>
 
             <section className="profile-pics">
-                <div className="profile-placeholder">
-                    <FaCamera size={24} />
-                    <span>사진</span>
-                </div>
-                {[...Array(4)].map((_, i) => (
-                    <div key={i} className="add-pic">
+                {imageList.length > 0 ? (
+                    imageList.map((img, index) => (
+                        <div
+                            key={index}
+                            className="profile-placeholder"
+                            onClick={() => handleImageDelete(img.url)} // ✅ 이미지 클릭 시 삭제
+                        >
+                            <img
+                                src={img.url}
+                                alt={`pet-${index}`}
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover',
+                                    borderRadius: '8px',
+                                    cursor: 'pointer'
+                                }}
+                            />
+                        </div>
+                    ))
+                ) : (
+                    <div className="profile-placeholder">
+                        <FaCamera size={24} />
+                        <span>사진</span>
+                    </div>
+                )}
+
+                {[...Array(Math.max(0, 4 - imageList.length))].map((_, i) => (
+                    <div
+                        key={i}
+                        className="add-pic"
+                        onClick={() => fileInputRef.current?.click()}
+                    >
                         <FaPlus size={24} />
                     </div>
                 ))}
             </section>
+
+
+
 
             <form className="post-form">
                 {/* 반려동물 이름 */}
@@ -315,6 +412,23 @@ export default function AdoptionPost() {
                             const isSelected = selectedColors.includes(label);
                             return (
                                 <div
+// <<<<<<< HEAD
+                                    key={c.value}
+                                    className="color-box"
+                                    onClick={() => {
+                                        const newColor = color.includes(c.value)
+                                            ? color.filter((v) => v !== c.value)
+                                            : [...color, c.value];
+
+                                        setColor(newColor);
+                                    }}
+                                >
+
+                                    <span className="dot" style={{ backgroundColor: c.hex }}>
+                                        {isSelected && <span className="color-check2">✔</span>}
+                                    </span>
+                                    <span className="color-label">{c.label}</span>
+{/* =======
                                     key={label}
                                     className={`color-item ${isSelected ? 'selected' : ''}`}
                                     onClick={() => toggleColor(label)}
@@ -326,6 +440,7 @@ export default function AdoptionPost() {
                                         </div>
                                     )}
                                     <p className="color-comment">{label}</p>
+>>>>>>> 00cb71d8ec8a449f25e8da3e72b1cba1e48df464 */}
                                 </div>
                             );
                         })}
@@ -401,24 +516,65 @@ export default function AdoptionPost() {
                     type="button"
                     className="next-btn"
                     onClick={() => {
+                        const token = localStorage.getItem('accessToken');
+                        let userId = null;
+                        if (token) {
+                            try {
+                                const base64Url = token.split('.')[1];
+                                const decodedPayload = JSON.parse(atob(base64Url));
+                                userId = decodedPayload.userId || decodedPayload.id || decodedPayload.sub;
+                            } catch (error) {
+                                console.error('JWT 디코딩 오류:', error);
+                            }
+                        }
+                        const post = {
+                            userId: userId,
+                            petName,
+                            breed: selectedBreed,
+                            colors: color, // 배열
+                            gender,
+                            neutered,
+                            birth: birthDate, // 💡 PostDetail은 birth라고 받음
+                            weight,
+                            registrationNo: regNumber,
+                            petId: petData.id || null,
+                            images: imageList, // 💡 PostDetail에서는 images 배열로 받음
+                            isVerified,
+
+                            // ✅ RegisterPost에서 이어서 사용할 값들
+                            title: '',
+                            comments: '',
+                            adopt_location: '',
+                            latitude: null,
+                            longitude: null,
+                            status: '분양중',
+                        };
+                        console.log('🟢 넘겨주는 post:', post);
                         navigate('/adoptionpost/add/details', {
-                            state: {
-                                petName,
-                                breed: selectedBreed,
-                                colors: selectedColors, // 선택된 털색 배열
-                                gender,
-                                neutered,
-                                birthDate, // Date 객체
-                                weight,
-                                registrationNo: regNumber,
-                                phone,
-                                isVerified,
-                            },
+// <<<<<<< HEAD
+                            state: { post, },
+// =======
+//                             state: {
+//                                 petName,
+//                                 breed: selectedBreed,
+//                                 colors: selectedColors, // 선택된 털색 배열
+//                                 gender,
+//                                 neutered,
+//                                 birthDate, // Date 객체
+//                                 weight,
+//                                 registrationNo: regNumber,
+//                                 phone,
+//                                 isVerified,
+//                             },
+// >>>>>>> 00cb71d8ec8a449f25e8da3e72b1cba1e48df464
                         });
                     }}
                 >
                     다음
                 </button>
+
+
+
 
                 {/* 인증용 BottomSheet → Custom Overlay */}
                 {isRegSheetOpen && (
@@ -475,6 +631,15 @@ export default function AdoptionPost() {
                     </div>
                 )}
             </form>
+
+            <input
+                type="file"
+                accept="image/*"
+                multiple
+                hidden
+                ref={fileInputRef}
+                onChange={handleImageUpload}
+            />
         </div>
     );
 }

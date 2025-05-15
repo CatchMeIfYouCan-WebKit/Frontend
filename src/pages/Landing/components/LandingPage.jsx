@@ -31,7 +31,7 @@ const LandingPage = () => {
 
       <div className="title-wrapper">
         <h1 className="landing-title">
-          Catch Me If You Can
+          Catch Me
         </h1>
       </div>
     </Container>

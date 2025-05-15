@@ -36,6 +36,30 @@ export default function PostDetail() {
             setStatus(post.status);
         }
     }, [post]);
+    const [isOwner, setIsOwner] = useState(false);
+
+    // 게시글 작성자 ID 확인용 콘솔
+    useEffect(() => {
+        const token = localStorage.getItem('accessToken');
+        const writerId = post?.member?.id;
+
+        if (token && writerId) {
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const currentUserId = payload.userId || payload.id || payload.sub;
+
+                console.log('✔️ JWT userId:', currentUserId);
+                console.log('✔️ post.member.id:', writerId);
+
+                if (String(currentUserId) === String(writerId)) {
+                    setIsOwner(true);
+                }
+            } catch (err) {
+                console.error('❌ JWT 디코딩 오류:', err);
+            }
+        }
+    }, [post]);
+
 
     // 이미지 리스트 준비
     const imageList = post ? (Array.isArray(post.images) && post.images.length > 0 ? post.images : [post.image]) : [];
@@ -140,7 +164,7 @@ export default function PostDetail() {
     // 편집/삭제 핸들러
     const handleEdit = () => {
         navigate(`/adoption/post/edit/${id}`, {
-            state: { post, ownerName },
+            state: { post },
         });
     };
     const handleDelete = () => {
@@ -172,14 +196,29 @@ export default function PostDetail() {
                         <FiMoreVertical size={24} onClick={() => setOpen((o) => !o)} style={{ cursor: 'pointer' }} />
                         {open && (
                             <div className="pd-dropdown">
-                                <button className="pd-dropdown-item" onClick={handleEdit}>
+                                <button
+                                    className="pd-dropdown-item"
+                                    onClick={isOwner ? handleEdit : undefined}
+                                    style={{
+                                        cursor: isOwner ? 'pointer' : 'not-allowed',
+                                        opacity: isOwner ? 1 : 0.5,
+                                    }}
+                                >
                                     게시글 수정
                                 </button>
-                                <button className="pd-dropdown-item" onClick={handleDelete}>
+                                <button
+                                    className="pd-dropdown-item"
+                                    onClick={isOwner ? handleDelete : undefined}
+                                    style={{
+                                        cursor: isOwner ? 'pointer' : 'not-allowed',
+                                        opacity: isOwner ? 1 : 0.5,
+                                    }}
+                                >
                                     게시글 삭제
                                 </button>
                             </div>
                         )}
+
                     </div>
                 </header>
 
@@ -243,10 +282,17 @@ export default function PostDetail() {
                     {/* 분양 상태 선택 */}
                     {/* 내 게시글에서만 */}
                     <div className="pd-status-section" ref={statusRef}>
-                        <div className="pd-status-btn" onClick={() => setStatusOpen((o) => !o)}>
+                        <div
+                            className="pd-status-btn"
+                            onClick={() => isOwner && setStatusOpen((o) => !o)}
+                            style={{
+                                cursor: isOwner ? 'pointer' : 'not-allowed',
+                                opacity: isOwner ? 1 : 0.5,
+                            }}
+                        >
                             {status} <FiChevronDown size={16} style={{ marginLeft: 4 }} />
                         </div>
-                        {statusOpen && (
+                        {statusOpen && isOwner && (
                             <div className="pd-status-dropdown">
                                 {['분양중', '분양완료'].map((s) => (
                                     <div
@@ -255,6 +301,7 @@ export default function PostDetail() {
                                         onClick={() => {
                                             setStatus(s);
                                             setStatusOpen(false);
+                                            // TODO: 필요하면 서버에 상태 변경 요청 추가
                                         }}
                                     >
                                         {s}
@@ -263,6 +310,7 @@ export default function PostDetail() {
                             </div>
                         )}
                     </div>
+
                     <div className="pd-description-title">{breed} 분양합니다.</div>
                     <div className="pd-timeago">{timeAgo}</div>
                     <p className="pd-description-text">{description}</p>
