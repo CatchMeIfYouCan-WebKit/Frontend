@@ -9,29 +9,31 @@
     opacity: 1;
     transition: opacity 0.4s ease;
 }
-.filtering-header {
+.filter-page .filtering-header {
     display: flex;
     align-items: center;
     border-bottom: 1px solid #ddd;
     padding-top: 7px;
     padding-bottom: 7px;
     min-width: 360px;
+    height: 67px;
 }
 
-.filtering-title {
-    font-size: 20px;
+.filter-page .filtering-title {
+    font-size: 22px;
     font-style: normal;
     font-weight: 700;
     line-height: 24px;
     letter-spacing: 0.5px;
-    margin-left: 5px;    
+    margin-left: 5px;
 }
 
-.back-button2 {
+.filtering-header .back-button2 {
     border: none;
     font-size: 24px;
     padding: 0;
-    margin-bottom: 7px;
+    margin-bottom: 5px;
+    margin-right: 0px;
     margin-left: 4px;
     cursor: pointer;
 }
@@ -84,10 +86,10 @@
 /* 하단 적용 버튼 */
 .apply-button {
     margin: 16px;
-    width: 328px;
+    width: 450px;
     height: 50px;
     justify-content: center;
-    background-color: #f29b30;
+    background-color: #000000;
     color: #fff;
     font-size: 18px;
     font-weight: 600;
@@ -96,7 +98,7 @@
     letter-spacing: 0.45px;
 }
 .pet-color {
-    margin-bottom: 90px;
+    margin-bottom: 80px;
     margin-top: 16px;
 }
 .pet-color-title {
@@ -141,7 +143,7 @@
     align-items: center;
     pointer-events: none; /* 클릭 방지 */
 }
-.white-check{
+.white-check {
     position: absolute;
     top: 32%;
     left: 50%;
@@ -173,8 +175,64 @@
 
 .breed {
     border-bottom: 1px solid #ddd;
+    padding-bottom: 28px;
 }
+.bread-input-wrap {
+    display: flex;
+    gap: 8px;
+}
+.breed-search {
+    padding: 4px 12px;
+    border: 1px solid #000000;
+    color: #ffffff;
+    background: #000000;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.breed .bread-input {
+    flex: 1;
+    padding: 8px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    margin-left: 15px;
+}
+.bread-input-wrap {
+    position: relative;
+}
+
+/* 자동완성 래퍼를 인풋과 같은 너비로, 바로 아래에 배치 */
+.sug-wrap {
+    position: absolute;
+    left: 3.1%;
+    width: 88.2%;
+    z-index: 1000;
+}
+
+/* 리스트 스타일 초기화 및 고정 높이 */
+.bread-suggestions {
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* 항목 패딩, 왼쪽 정렬, 스크롤 시에도 깔끔하게 */
+.bread-suggestion-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.1s;
+}
+
 .breed-title {
+    display: flex;
     text-align: left;
     margin-left: 16px;
     font-size: 20px;
@@ -254,23 +312,6 @@
     text-align: left;
 }
 
-.bread-search {
-    max-width: 90%;
-    border-radius: 8px;
-    background: rgba(219, 219, 219);
-    padding: 13px 400px 13px 23px;
-    margin-top: 16px;
-}
-.bread-input {
-    background: rgba(219, 219, 219);
-    color: #fff;
-    width: 170px;
-    text-align: left;
-    font-size: 20px;
-    font-style: normal;
-    line-height: 24px; /* 150% */
-}
-
 .bread-X {
     height: 16px;
     width: 16px;
@@ -301,18 +342,45 @@
     border-radius: 8px;
     width: 60px;
 }
-.label-wrap{
+.label-wrap {
     padding-top: 20px;
 }
-.label-comment{
+.label-comment {
     text-align: left;
     margin-bottom: 5px;
     margin-left: 15px;
     font-size: 0.8rem;
     color: silver;
 }
-.pet-color-comment{
+.pet-color-comment {
     margin-left: 15px;
     font-size: 0.8rem;
     color: silver;
+}
+.popular-breeds {
+    /* 한 줄씩 세로로 쌓이도록 flex column */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-left: 10px;
+    margin-top: 6px;
+}
+
+.popular-breed-btn {
+    /* 라벨 안 체크박스+텍스트를 수평 정렬 */
+    display: flex;
+    align-items: center;
+    padding: 1px 5px;
+    text-align: left;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    background: linear-gradient(106deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.8));
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+}
+
+/* 체크박스와 텍스트 간 간격 */
+.popular-breed-btn input {
+    margin-right: 18px;
 }
