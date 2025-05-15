@@ -51,60 +51,50 @@ export default function Adoption() {
 
   //필터로 불러오기
   useEffect(() => {
+    const getImageUrl = (path) => {
+      if (!path) return '';
+      const isMobile = /android/i.test(navigator.userAgent);
+      const base = isMobile ? 'http://10.0.2.2:8080' : `http://${window.location.hostname}:8080`;
+      return path.startsWith('http') ? path : `${base}${path}`;
+    };
+  
+    // ✅ 선언 빠졌던 부분 복구
     const query = new URLSearchParams();
-
+  
     if (filter.region) query.append('region', filter.region);
     if (filter.age) query.append('age', filter.age);
     if (filter.breed) query.append('breed', filter.breed);
     if (filter.color) query.append('color', filter.color);
-
+  
     axios.get(`/api/adopt/filter?${query.toString()}`)
       .then(res => {
-        const adoptPosts = res.data.map(post => {
+        const sortedData = res.data
+          .slice()
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  
+        const adoptPosts = sortedData.map(post => {
           const createdAt = post.createdAt || new Date();
-
           return {
-            // 프론트에서 바로 쓸 필드들
             id: post.id,
-            image: post.photoPath
-              ? `http://localhost:8080${post.photoPath}`
-              : '',
+            image: getImageUrl(post.photoPath),
             title: post.title,
             breed: post.breed || post.pet?.breed || '품종 정보 없음',
             birth: post.dateOfBirth || post.pet?.dateOfBirth || '생일 정보 없음',
             gender: post.gender || post.pet?.gender || '성별 정보 없음',
             location: post.adoptLocation || '',
             timeAgo: getTimeAgo(createdAt),
-
-            // ✅ 전체 응답 데이터 그대로 포함
-            comments: post.comments,
-            vetVerified: post.vetVerified,
-            createdAt: post.createdAt,
-            updatedAt: post.updatedAt,
-            status: post.status,
-            latitude: post.latitude,
-            longitude: post.longitude,
-            pet: post.pet,
-            photoPaths: post.photoPaths,
-            name: post.name,
-            coatColor: post.coatColor,
-            isNeutered: post.isNeutered,
-            age: post.age,
-            weight: post.weight,
-            registrationNumber: post.registrationNumber,
-
-            // ✅ member도 꼭 포함
-            member: post.member || null,
+            ...post, // 전체 데이터도 같이 포함
           };
         });
-
+  
         setPosts(adoptPosts);
       })
       .catch(err => {
         console.error('필터 적용 중 오류:', err);
       });
-
   }, [filter]);
+  
+
 
 
   // 새 게시글이 넘어오면 앞에 추가
@@ -121,35 +111,56 @@ export default function Adoption() {
   const [pets, setPets] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken'); // JWT 토큰 가져오기
+    const token = localStorage.getItem('accessToken');
     if (!token) return;
-
+  
+    const isMobile = /android/i.test(navigator.userAgent);
+    const base = isMobile ? 'http://10.0.2.2:8080' : `http://${window.location.hostname}:8080`;
+  
     axios.get('/api/animal-profile/all', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then(res => {
-        const petList = res.data.map(p => ({
-          id: p.id,
-          image: `http://localhost:8080${p.photoPath}`,
-          name: p.name,
-          breed: p.breed,
-          birth: p.dateOfBirth,
-          gender: p.gender,
-          coatColor: p.coatColor,
-          isNeutered: p.isNeutered,
-          age: p.age, // ✅ 이거 추가!
-          weight: p.weight,
-          registrationNumber: p.registrationNumber,
-        }));
-
+        const petList = res.data.map(p => {
+          let imagePath = '';
+          if (!p.photoPath || p.photoPath.trim() === '') {
+            alert(`❌ [${p.name}]의 photoPath가 없습니다.`);
+          } else {
+            const paths = p.photoPath.split(',').map(s => s.trim()).filter(Boolean);
+            if (paths.length > 0) {
+              const rawPath = paths[0];
+              imagePath = rawPath.startsWith('http')
+                ? rawPath
+                : `${base}${rawPath}`;
+            }
+          }
+  
+          return {
+            id: p.id,
+            image: imagePath,
+            name: p.name,
+            breed: p.breed,
+            birth: p.dateOfBirth,
+            gender: p.gender,
+            coatColor: p.coatColor,
+            isNeutered: p.isNeutered,
+            age: p.age,
+            weight: p.weight,
+            registrationNumber: p.registrationNumber,
+          };
+        });
+  
         setPets(petList);
       })
       .catch(err => {
         console.error('펫 정보 불러오기 실패:', err);
       });
   }, []);
+  
+
+
 
   return (
     <div className="adoption-page">
