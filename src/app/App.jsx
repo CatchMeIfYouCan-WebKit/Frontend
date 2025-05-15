@@ -56,7 +56,7 @@ import AdoptionPostEdit from '../pages/Adoption/components/AdoptionPostEdit';
 
 import MissingLocationSelect from '../pages/MissingForm/components/MissingLocationSelect';
 import WitnessLocationSelect from '../pages/WitnessForm/components/WitnessLocationSelect';
-import ShelterPostDetial from '../pages/Map/components/ShelterPostDetial';
+import ShelterPostDetail from '../pages/Map/components/ShelterPostDetail';
 
 // ***** 👇 진료 페이지 임포트 추가 *****
 // 경로 예시: src/pages/MedicalPage/MedicalPage.jsx
@@ -97,8 +97,8 @@ function App() {
                 {/* 보호소 동물 상세페이지 */}
                 <Route path="/shelterdetail" element={<ShelterDetail />} />
                 <Route path="/shelterdetail/filter" element={<ShelterFilter />} />
-                <Route path="/shelterdetail/:id" element={<ShelterPostDetial />} />
-                <Route path="/shelterdetail/dumy" element={<ShelterPostDetial />} />
+                <Route path="/shelterdetail/:id" element={<ShelterPostDetail />} />
+                <Route path="/shelterdetail/dumy" element={<ShelterPostDetail />} />
 
                 {/* 입양 게시판 */}
                 <Route path="/adoptionpost" element={<Adoption />} />

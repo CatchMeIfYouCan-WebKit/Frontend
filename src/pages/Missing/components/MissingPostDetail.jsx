@@ -80,7 +80,7 @@ export default function MissingPostDetail() {
     useEffect(() => {
         console.log('요청 ID:', id);
         axios
-            .get(`/api/posts/${id}`)
+            .get(`/api/posts/missing/${id}`)
             .then((response) => {
                 console.log('응답 데이터:', response.data);
                 setPost(response.data);

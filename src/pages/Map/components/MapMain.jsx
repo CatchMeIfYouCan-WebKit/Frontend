@@ -1,42 +1,88 @@
 // MapMain.jsx
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import Footer from '../../../shared/Footer/Footer';
-import tag from '../../../assets/tag.svg';
-import missing from '../../../assets/missing.svg'; // 실종상태 이미지 1
-import missing2 from '../../../assets/missing2.svg'; // 실종상태 이미지 2
-import sighting from '../../../assets/sighting.svg'; // 목격 이미지
-import sighting2 from '../../../assets/sighting2.svg'; // 목격 이미지2
+import { useNavigate } from 'react-router-dom';
+import { GoChevronLeft } from 'react-icons/go';
+import { TiDelete } from 'react-icons/ti';
+import { FaMapMarkerAlt } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom';
+import { FaPhoneAlt, FaHospital } from 'react-icons/fa';
+import missing from '../../../assets/missing.svg';
+import missing2 from '../../../assets/missing2.svg';
+import sighting from '../../../assets/sighting.svg';
+import sighting2 from '../../../assets/sighting2.svg';
 import hospital from '../../../assets/hospital.svg';
 import hospital2 from '../../../assets/hospital3.svg';
 import shelter from '../../../assets/shelter.svg';
 import shelter2 from '../../../assets/shelter2.svg';
 import mylocation from '../../../assets/my-location.svg';
+import tag from '../../../assets/tag.svg';
 import change from '../../../assets/change.svg';
-import { useNavigate } from 'react-router-dom';
-import { GoChevronLeft } from 'react-icons/go';
-import { TiDelete } from 'react-icons/ti';
-import '../MapMain.css';
-import BottomSheet from './BottomSheet';
-import { FaMapMarkerAlt } from 'react-icons/fa';
-import { useLocation } from 'react-router-dom';
 import pethospital from '../../../assets/pet-hospital.png';
-import { FaPhoneAlt, FaHospital } from 'react-icons/fa';
+import axios from 'axios';
+import Footer from '../../../shared/Footer/Footer';
+import BottomSheet from './BottomSheet';
+import '../MapMain.css';
 
 export default function MapMain() {
-    const clustererRef = useRef(null);
-    const mapContainer = useRef(null);
-    const mapRef = useRef(null);
-    const psRef = useRef(null);
-    const markersRef = useRef([]);
-    const navigate = useNavigate();
-    const location = useLocation();
+    // ==================================================================================== useState 시작
+    // 검색 상태
+    const [keyword, setKeyword] = useState('');
+    const [places, setPlaces] = useState([]);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
+    const [isSearchMode, setIsSearchMode] = useState(false);
+    const [currentPos, setCurrentPos] = useState(null);
 
-    //바텀 시트
+    // 현재 활성 마커
+    const [activeMarker, setActiveMarker] = useState(null);
+
+    // 마커 상태
+    const [markerStatus, setMarkerStatus] = useState({
+        missing: false,
+        witness: false,
+        shelter: false,
+        hospital: false,
+    });
+
+    // 리스트 상태(최신순, 오래된순)
+    const [isLatest, setIsLatest] = useState(true);
+
+    // 필터 태그 상태
+    const [isMissing, setIsMissing] = useState(true);
+    const [isWitness, setIsWitness] = useState(true);
+    const [isHospital, setIsHospital] = useState(false);
+    const [isShelter, setIsShelter] = useState(false);
+    const [colorFilter, setColorFilter] = useState('');
+    const [breedFilter, setBreedFilter] = useState('');
+
+    // DB에서 받은 데이터 : 실종/목격, 병원, 보호소
+    const [missingPosts, setMissingPosts] = useState([]);
+    const [witnessPosts, setWitnessPosts] = useState([]);
+    const [hospitals, setHospitals] = useState([]);
+    const [shelters, setShelters] = useState([]);
+
+    //  바텀 시트
     const snapPoints = [0.11, 0.5, 0.87];
     const [snapIndex, setSnapIndex] = useState(0);
-    const [percent, setPercent] = useState(snapPoints[0]);
+    const [percent, setPercent] = useState(snapPoints[0.1]);
+    // ==================================================================================== useState 종료
+    // ==================================================================================== useRef 시작
+    // 지도 관련
+    const mapContainerRef = useRef(null);
+    const mapRef = useRef(null);
 
-    const sheetRef = useRef(null);
+    // 마커, 클러스터
+    const markersRef = useRef([]);
+    const clustererRef = useRef(null);
+
+    // 검색
+    const psRef = useRef(null);
+    // ==================================================================================== useRef 종료
+    // ==================================================================================== Router/Navigate 시작
+    const navigate = useNavigate();
+    const location = useLocation();
+    // ==================================================================================== Router/Navigate 종료
+    // ==================================================================================== 핸들러함수 시작
+    // 바텀시트 드래그 종료
     const handleDragEnd = useCallback(
         (currentPercent) => {
             // currentPercent 와 snapPoints 간 차이를 재어 가장 가까운 인덱스 찾기
@@ -52,440 +98,10 @@ export default function MapMain() {
         [snapPoints]
     );
 
-    // 마커 상태
-    const [selectedMarker, setSelectedMarker] = useState(null);
-    const [markerLoadStates, setMarkerLoadStates] = useState({
-        missing: false,
-        witness: false,
-        shelter: false,
-        hospital: false,
-    });
-
-    // 검색 상태
-    const [keyword, setKeyword] = useState('');
-    const [places, setPlaces] = useState([]);
-    const [selectedIndex, setSelectedIndex] = useState(-1);
-    const [isSearchMode, setIsSearchMode] = useState(false);
-    const [currentPos, setCurrentPos] = useState(null);
-
-    // 리스트 최신순 오래된순 상태
-    const [listChange, setListChange] = useState(true);
-
-    // 필터 태그 상태
-    const [missFiltering, setMissFiltering] = useState(true);
-    const [seeFiltering, setSeeFiltering] = useState(true);
-    const [shelterFiltering, setShelterFiltering] = useState(false);
-    const [hospitalFiltering, setHospitalFiltering] = useState(false);
-    const [colorFiltering, setColorFiltering] = useState('');
-    const [breedFiltering, setBreedFiltering] = useState('');
-
-    // DB에서 받아온 게시글
-    const [missingPosts, setMissingPosts] = useState([]);
-    const [witnessPosts, setWitnessPosts] = useState([]);
-    const [hospitals, setHospitals] = useState([]); // 병원 API 결과용
-    const [shelterAnnouncements, setShelterAnnouncements] = useState([]); // 보호소 API 결과용
-    // 1) 마운트 시: 내 위치 조회 + Kakao SDK 로드 + 지도 초기화
-    useEffect(() => {
-        // 1) 내 위치 조회
-        navigator.geolocation?.getCurrentPosition(
-            ({ coords }) => setCurrentPos({ lat: coords.latitude, lng: coords.longitude }),
-            () => console.warn('위치 권한 없음')
-        );
-
-        // 2) 실종 게시글 API 호출
-        fetch('/api/posts/missing/missing-posts')
-            .then((res) => res.json())
-            .then((data) => {
-                if (Array.isArray(data)) {
-                    setMissingPosts(data);
-                } else {
-                    console.warn('실종 API 응답이 배열이 아님:', data);
-                    setMissingPosts([]);
-                }
-            })
-            .catch((err) => console.error('실종 API 에러', err));
-        // 3) 목격 게시글 API 호출
-        fetch('/api/posts/witness/witness-posts')
-            .then((res) => res.json())
-            .then((data) => {
-                if (Array.isArray(data)) {
-                    setWitnessPosts(data);
-                } else {
-                    console.warn('목격 API 응답이 배열이 아님:', data);
-                    setWitnessPosts([]);
-                }
-            })
-            .catch((err) => console.error('목격 API 에러', err));
-
-        // 5) 보호소 공고 API 호출
-        fetch('/api/map/shelters')
-            .then((res) => res.json())
-            .then((data) => {
-                setShelterAnnouncements(data);
-            })
-            .catch((err) => console.error('보호소 API 에러', err));
-
-        // 4) 병원 목록 API 호출
-        fetch('/api/map/hospitals')
-            .then((res) => res.json())
-            .then((data) => {
-                setHospitals(data);
-            })
-            .catch((err) => console.error('병원 API 에러', err));
-
-        // 2) Kakao SDK 로드
-        const script = document.createElement('script');
-        script.src =
-            'https://dapi.kakao.com/v2/maps/sdk.js?appkey=f7f187089f6a8bc9d9967ce8bfcc67c0&autoload=false&libraries=services,clusterer';
-        script.async = true;
-        script.onload = () => {
-            window.kakao.maps.load(() => {
-                const kakao = window.kakao;
-                const map = new kakao.maps.Map(mapContainer.current, {
-                    center: new kakao.maps.LatLng(36.1460531, 128.39583),
-                    level: 3,
-                });
-                mapRef.current = map;
-
-                // ⇨ 클러스터러 생성
-                clustererRef.current = new kakao.maps.MarkerClusterer({
-                    map, // 클러스터를 표시할 지도
-                    averageCenter: true, // 군집된 마커 중심으로
-                    minLevel: 7, // 이 레벨 이상일 때만 클러스터링
-                });
-                mapRef.current = map;
-                // Places 서비스
-                psRef.current = new kakao.maps.services.Places();
-
-                // 기존 선택 해제 (맵 빈 공간 클릭 시)
-                kakao.maps.event.addListener(map, 'click', () => {
-                    setSelectedMarker(null);
-                });
-
-                // 마커 배열 초기화
-                // markersRef.current = [];
-            });
-        };
-        document.head.appendChild(script);
-    }, []);
-
-    //실종 마커 생성
-    useEffect(() => {
-        if (!mapRef.current || missingPosts.length === 0) return;
-
-        markersRef.current = markersRef.current.filter(({ type, overlay }) => {
-            if (type === 'missing') {
-                overlay.setMap(null);
-                return false;
-            }
-            return true;
-        });
-
-        const markerPromises = missingPosts
-            .filter((post) => post.postType === 'missing')
-            .map((post) => {
-                return new Promise((resolve) => {
-                    const div = document.createElement('div');
-                    div.className = 'custom-marker-container missing';
-                    div.innerHTML = `
-                        <div class="marker-circle">
-                            <img src="${post.photoUrl}" class="marker-img" />
-                        </div>
-                        <div class="marker-label">실종</div>
-                    `;
-
-                    div.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        setSelectedMarker({
-                            type: 'missing',
-                            data: {
-                                id: post.id,
-                                imageUrl: post.photoUrl,
-                                location: post.missingLocation,
-                                date: new Date(post.missingDatetime).toLocaleString(),
-                            },
-                        });
-                    });
-
-                    new kakao.maps.services.Geocoder().addressSearch(post.missingLocation, (result, status) => {
-                        if (status === kakao.maps.services.Status.OK) {
-                            const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-                            const overlay = new kakao.maps.CustomOverlay({
-                                position: coords,
-                                content: div,
-                                map: missFiltering ? mapRef.current : null,
-                                yAnchor: 1,
-                            });
-
-                            markersRef.current.push({ type: 'missing', overlay });
-                        } else {
-                        }
-                        resolve();
-                    });
-                });
-            });
-
-        Promise.all(markerPromises).then(() => {
-            setMarkerLoadStates((prev) => ({ ...prev, missing: true }));
-        });
-    }, [missingPosts, mapRef.current]);
-
-    //overlay
-    useEffect(() => {
-        if (!mapRef.current || witnessPosts.length === 0) return;
-
-        // 1. 기존 목격 마커 제거
-        markersRef.current = markersRef.current.filter(({ type, overlay }) => {
-            if (type === 'witness') {
-                overlay.setMap(null);
-                return false;
-            }
-            return true;
-        });
-
-        // 2. 목격 마커 비동기 생성
-        const markerPromises = witnessPosts
-            .filter((post) => post.postType === 'witness') // ✅ 목격 게시글만 필터링
-            .map((post) => {
-                return new Promise((resolve) => {
-                    const div = document.createElement('div');
-                    div.className = 'custom-marker-container sighting'; // ✅ 클래스명도 통일
-                    div.innerHTML = `
-                        <div class="marker-circle">
-                            <img src="${post.photoUrl}" class="marker-img" />
-                        </div>
-                        <div class="marker-label">목격</div>
-                    `;
-
-                    div.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        setSelectedMarker({
-                            type: 'sighting',
-                            data: {
-                                id: post.id,
-                                imageUrl: post.photoUrl,
-                                location: post.witnessLocation,
-                                date: new Date(post.witnessDatetime).toLocaleString(),
-                            },
-                        });
-                    });
-
-                    new kakao.maps.services.Geocoder().addressSearch(post.witnessLocation, (result, status) => {
-                        if (status === kakao.maps.services.Status.OK) {
-                            const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-                            const overlay = new kakao.maps.CustomOverlay({
-                                position: coords,
-                                content: div,
-                                map: seeFiltering ? mapRef.current : null,
-                                yAnchor: 1,
-                            });
-
-                            markersRef.current.push({ type: 'sighting', overlay });
-                        } else {
-                        }
-                        resolve();
-                    });
-                });
-            });
-
-        Promise.all(markerPromises).then(() => {
-            setMarkerLoadStates((prev) => ({ ...prev, witness: true }));
-        });
-    }, [witnessPosts, mapRef.current]);
-
-    useEffect(() => {
-        if (!mapRef.current || shelterAnnouncements.length === 0) return;
-
-        // 1. 기존 보호소 마커 제거
-        markersRef.current = markersRef.current.filter(({ type, overlay }) => {
-            if (type === 'shelter') {
-                overlay.setMap(null);
-                return false;
-            }
-            return true;
-        });
-
-        // 2. 보호소 마커 생성
-        const markerPromises = shelterAnnouncements.map((shelter) => {
-            return new Promise((resolve) => {
-                const div = document.createElement('div');
-                div.className = 'custom-marker-div shelter';
-                div.innerHTML = `<img src="${shelter2}" class="custom-marker-img" />`;
-
-                div.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    setSelectedMarker({
-                        type: 'shelter',
-                        data: {
-                            imageUrl: shelter.animalSummaries.map((a) => a.imageUrl).slice(0, 4), // 최대 4개
-                            shelterName: shelter.shelterName,
-                            location: shelter.address,
-                            callNumber: shelter.phone ?? '전화번호 없음',
-                            fullShelter: shelter,
-                        },
-                    });
-                });
-
-                new kakao.maps.services.Geocoder().addressSearch(shelter.address, (result, status) => {
-                    if (status === kakao.maps.services.Status.OK) {
-                        const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-                        const overlay = new kakao.maps.CustomOverlay({
-                            position: coords,
-                            content: div,
-                            map: shelterFiltering ? mapRef.current : null,
-                            yAnchor: 1,
-                        });
-
-                        markersRef.current.push({ type: 'shelter', overlay });
-                    } else {
-                    }
-                    resolve();
-                });
-            });
-        });
-
-        Promise.all(markerPromises).then(() => {
-            setMarkerLoadStates((prev) => ({ ...prev, shelter: true }));
-        });
-    }, [shelterAnnouncements, mapRef.current]);
-
-    useEffect(() => {
-        if (!mapRef.current || hospitals.length === 0) return;
-
-        // 1. 기존 병원 마커 제거
-        markersRef.current = markersRef.current.filter(({ type, overlay }) => {
-            if (type === 'hospital') {
-                overlay.setMap(null);
-                return false;
-            }
-            return true;
-        });
-
-        // 2. 병원 마커 비동기 생성
-        const markerPromises = hospitals.map((hospital) => {
-            return new Promise((resolve) => {
-                const div = document.createElement('div');
-                div.className = 'custom-marker-div hospital';
-                div.innerHTML = `<img src="${hospital2}" class="custom-marker-img" />`;
-
-                div.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    setSelectedMarker({
-                        type: 'hospital',
-                        data: {
-                            imageUrl: hospital2,
-                            name: hospital.name,
-                            location: hospital.address,
-                            callNumber: hospital.phone ?? '전화번호 없음',
-                        },
-                    });
-                });
-
-                // 괄호 제거해서 Kakao 주소 변환 실패 방지
-                const cleanAddress = hospital.address.replace(/\([^)]*\)/g, '').trim();
-
-                new kakao.maps.services.Geocoder().addressSearch(cleanAddress, (result, status) => {
-                    if (status === kakao.maps.services.Status.OK) {
-                        const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-                        const overlay = new kakao.maps.CustomOverlay({
-                            position: coords,
-                            content: div,
-                            map: hospitalFiltering ? mapRef.current : null,
-                            yAnchor: 1,
-                        });
-
-                        markersRef.current.push({ type: 'hospital', overlay });
-                    } else {
-                    }
-                    resolve();
-                });
-            });
-        });
-
-        Promise.all(markerPromises).then(() => {
-            setMarkerLoadStates((prev) => ({ ...prev, hospital: true }));
-        });
-    }, [hospitals, mapRef.current]);
-
-    useEffect(() => {
-        const allLoaded = Object.values(markerLoadStates).every((v) => v === true);
-
-        if (allLoaded) {
-            applyInitialMarkerFilter();
-
-            // 선택적으로 마커 로드 상태를 초기화하려면 아래 코드 추가:
-            // setMarkerLoadStates({ missing: false, witness: false, shelter: false, hospital: false });
-        }
-    }, [markerLoadStates]);
-    // 마커 표시 여부를 적용하는 함수
-    const applyInitialMarkerFilter = () => {
-        const map = mapRef.current;
-        if (!map) return;
-
-        const initMiss = location.state?.missFiltering ?? missFiltering;
-        const initSee = location.state?.seeFiltering ?? seeFiltering;
-        const initShelter = location.state?.shelterFiltering ?? shelterFiltering;
-        const initHospital = location.state?.hospitalFiltering ?? hospitalFiltering;
-
-        markersRef.current.forEach(({ type, overlay }) => {
-            const shouldShow =
-                (type === 'missing' && initMiss) ||
-                (type === 'sighting' && initSee) ||
-                (type === 'shelter' && initShelter) ||
-                (type === 'hospital' && initHospital);
-
-            overlay.setMap(shouldShow ? map : null);
-        });
-    };
-
-    // 필터 상태 변경 시마다 마커 보이기/숨기기
-    useEffect(() => {
-        markersRef.current.forEach(({ type, overlay }) => {
-            const shouldShow =
-                (type === 'missing' && missFiltering) ||
-                (type === 'sighting' && seeFiltering) ||
-                (type === 'shelter' && shelterFiltering) ||
-                (type === 'hospital' && hospitalFiltering);
-            overlay.setMap(shouldShow ? mapRef.current : null);
-        });
-    }, [missFiltering, seeFiltering, shelterFiltering, hospitalFiltering]);
-
-    // Haversine 거리 계산
-    const getDistance = (lat1, lon1, lat2, lon2) => {
-        const toRad = (d) => (d * Math.PI) / 180;
-        const R = 6371000;
-        const dLat = toRad(lat2 - lat1);
-        const dLon = toRad(lon2 - lon1);
-        const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return Math.round(R * c);
-    };
-
-    // 검색 자동완성
-    const handleChange = (e) => {
-        const v = e.target.value;
-        setKeyword(v);
-        if (!psRef.current || !v.trim()) {
-            setPlaces([]);
-            return;
-        }
-        psRef.current.keywordSearch(v, (data, status) => {
-            if (status === window.kakao.maps.services.Status.OK) {
-                const list = data.slice(0, 10).map((p) => ({
-                    ...p,
-                    distance: currentPos ? getDistance(currentPos.lat, currentPos.lng, p.y, p.x) : null,
-                }));
-                setPlaces(list);
-                setSelectedIndex(-1);
-            } else {
-                setPlaces([]);
-            }
-        });
-    };
-
     // 키보드 내비게이션
     const handleKeyDown = (e) => {
         if (!places.length) return;
+
         if (e.key === 'ArrowDown') {
             e.preventDefault();
             setSelectedIndex((i) => (i + 1) % places.length);
@@ -504,11 +120,13 @@ export default function MapMain() {
         const loc = new window.kakao.maps.LatLng(place.y, place.x);
         mapRef.current.setCenter(loc);
         setIsSearchMode(false);
+
         setKeyword('');
         setPlaces([]);
+        handleClear();
     };
 
-    // 입력창 초기화
+    // 입력창 초기화 및 뒤로가기
     const handleClear = () => {
         setKeyword('');
         setPlaces([]);
@@ -518,32 +136,639 @@ export default function MapMain() {
     // 내 위치로 이동
     const moveToMyLocation = () => {
         if (!mapRef.current) return;
+
         navigator.geolocation?.getCurrentPosition(
             ({ coords }) => {
+                console.log('좌표 받아옴:', coords);
                 const loc = new window.kakao.maps.LatLng(coords.latitude, coords.longitude);
                 mapRef.current.setCenter(loc);
             },
-            () => alert('위치 정보를 가져올 수 없습니다.')
+            (err) => {
+                console.error('위치 정보 에러:', err);
+                alert('위치 정보를 가져올 수 없습니다.');
+            }
         );
     };
+    // ==================================================================================== 핸들러함수 종료
+    // ==================================================================================== 로직함수 시작
+    // 거리 계산
+    const getDistance = (lat1, lon1, lat2, lon2) => {
+        const toRad = (d) => (d * Math.PI) / 180;
+        const R = 6371000;
+        const dLat = toRad(lat2 - lat1);
+        const dLon = toRad(lon2 - lon1);
+        const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return Math.round(R * c);
+    };
+
+    // 검색 자동완성
+    const handleChange = (e) => {
+        const v = e.target.value;
+        setKeyword(v);
+        if (!psRef.current || !v.trim()) {
+            console.warn('[Search] 빈 검색어 또는 Places 서비스 미사용');
+            setPlaces([]);
+            return;
+        }
+
+        console.log(`[Search] 검색어 입력: "${v}"`);
+        psRef.current.keywordSearch(v, (data, status) => {
+            if (status === window.kakao.maps.services.Status.OK) {
+                const list = data.slice(0, 10).map((p) => ({
+                    ...p,
+                    distance: currentPos ? getDistance(currentPos.lat, currentPos.lng, p.y, p.x) : null,
+                }));
+                console.log(`[Search] 검색 결과 ${list.length}개`);
+                setPlaces(list);
+                setSelectedIndex(-1);
+            } else {
+                console.warn('[Search] 검색 결과 없음');
+                setPlaces([]);
+            }
+        });
+    };
+
+    // 이미지 불러오기
+    const getImageUrl = (path) => {
+        if (!path) return '/default-image.png';
+        const host = window.location.hostname;
+        const port = 8080;
+        return `http://${host}:${port}${path}`;
+    };
+
+    // 지도에 표시할 마커 적용
+    const applyInitialMarkerFilter = () => {
+        console.log('초기 필터 상태:', {
+            missFiltering: isMissing,
+            seeFiltering: isWitness,
+            shelterFiltering: isShelter,
+            hospitalFiltering: isHospital,
+        });
+
+        const map = mapRef.current;
+        if (!map) return;
+
+        const initMiss = location.state?.missFiltering ?? isMissing;
+        const initSee = location.state?.seeFiltering ?? isWitness;
+        const initShelter = location.state?.shelterFiltering ?? isShelter;
+        const initHospital = location.state?.hospitalFiltering ?? isHospital;
+
+        console.log('[Filter] 마커 필터 적용 시작', {
+            실종: initMiss,
+            목격: initSee,
+            보호소: initShelter,
+            병원: initHospital,
+        });
+
+        markersRef.current.forEach(({ type, overlay }) => {
+            const shouldShow =
+                (type === 'missing' && initMiss) ||
+                (type === 'sighting' && initSee) ||
+                (type === 'shelter' && initShelter) ||
+                (type === 'hospital' && initHospital);
+
+            overlay.setMap(shouldShow ? map : null);
+            // console.log(`[Filter] 마커 타입: ${type} → ${shouldShow ? '표시' : '숨김'}`);
+        });
+        // console.log('[Filter] 마커 필터 적용 완료');
+    };
+    // ==================================================================================== 로직함수 종료
+    // ==================================================================================== useEffect 시작
+
+    // 내 위치 조회 + Kakao SDK 로드 + 지도 초기화
+    useEffect(() => {
+        // 1) 내 위치 조회
+        navigator.geolocation?.getCurrentPosition(
+            ({ coords }) => {
+                setCurrentPos({ lat: coords.latitude, lng: coords.longitude });
+            },
+            () => console.warn('[Init] 위치 권한 없음')
+        );
+
+        // 2.1) 실종 전체 조회
+        axios
+            .get('/api/posts/missing/all')
+            .then(({ data }) => {
+                // console.log('[API] 실종 게시글 응답:', data);
+                setMissingPosts(Array.isArray(data) ? data : []);
+            })
+            .catch((err) => console.error('[API] 실종 게시글 요청 실패:', err));
+
+        // 2.2) 목격 전체 조회
+        axios
+            .get('/api/posts/witness/all')
+            .then(({ data }) => {
+                // console.log('[API] 목격 게시글 응답:', data);
+                setWitnessPosts(Array.isArray(data) ? data : []);
+            })
+            .catch((err) => console.error('[API] 목격 게시글 요청 실패:', err));
+
+        // 2.3) 보호소(입양, 실종) API 호출
+        Promise.all([axios.get('/api/map/shelter-adoption'), axios.get('/api/map/shelter-missing')])
+            .then(([adoptionRes, missingRes]) => {
+                const mergedData = [
+                    ...adoptionRes.data.map((item) => ({ ...item, type: 'adoption' })),
+                    ...missingRes.data.map((item) => ({ ...item, type: 'missing' })),
+                ];
+                console.log('[API] 보호소 전체 데이터 응답:', mergedData);
+                setShelters(mergedData);
+            })
+            .catch((err) => console.error('[API] 보호소 API 요청 실패:', err));
+
+        // 2.4) 병원 목록 API 호출
+        axios
+            .get('/api/map/hospital')
+            .then(({ data }) => {
+                console.log('[API] 병원 데이터 응답:', data);
+                setHospitals(data);
+            })
+            .catch((err) => console.error('[API] 병원 API 요청 실패:', err));
+
+        // 3) Kakao SDK 로드
+        const script = document.createElement('script');
+        script.src =
+            'https://dapi.kakao.com/v2/maps/sdk.js?appkey=f7f187089f6a8bc9d9967ce8bfcc67c0&autoload=false&libraries=services,clusterer';
+        script.async = true;
+
+        script.onload = () => {
+            window.kakao.maps.load(() => {
+                console.log('카카오 지도 인스턴스 생성 시작');
+                const kakao = window.kakao;
+                const map = new kakao.maps.Map(mapContainerRef.current, {
+                    // 디폴트 위치 : 금오공대
+                    center: new kakao.maps.LatLng(36.1460531, 128.39583),
+                    // 디폴트 위치 : 서울시청
+                    // center: new kakao.maps.LatLng(37.5665, 126.978),
+                    level: 3,
+                });
+                mapRef.current = map;
+
+                clustererRef.current = new kakao.maps.MarkerClusterer({
+                    map,
+                    averageCenter: true,
+                    minLevel: 4,
+                });
+
+                psRef.current = new kakao.maps.services.Places();
+
+                kakao.maps.event.addListener(map, 'click', () => {
+                    console.log('[Map] 지도 빈 공간 클릭 → 선택 마커 해제');
+                });
+
+                applyInitialMarkerFilter();
+
+                kakao.maps.event.addListener(map, 'zoom_changed', () => {
+                    const level = map.getLevel();
+                    console.log('현재 줌 레벨:', level);
+
+                    markersRef.current.forEach(({ type, overlay }) => {
+                        const shouldShow =
+                            (type === 'missing' && isMissing) ||
+                            (type === 'sighting' && isWitness) ||
+                            (type === 'shelter' && isShelter) ||
+                            (type === 'hospital' && isHospital);
+
+                        if (level > 6) {
+                            overlay.setMap(null); // 줌 아웃 → 모두 숨김
+                        } else {
+                            overlay.setMap(shouldShow ? map : null); // 줌 인 → 필터된 마커만 표시
+                        }
+                    });
+                });
+
+                // 지도 생성 후 현재 줌 레벨에 맞게, 마커 표시 여부 즉시 적용
+                const currentLevel = map.getLevel();
+                if (currentLevel > 2) {
+                    markersRef.current.forEach(({ overlay }) => overlay.setMap(null));
+                } else {
+                    markersRef.current.forEach(({ overlay }) => overlay.setMap(map));
+                }
+            });
+        };
+
+        document.head.appendChild(script);
+
+        return () => {
+            console.log('[Cleanup] useEffect 정리');
+        };
+    }, []);
+
+    // 마커(1: 실종, 2: 목격, 3: 보호소, 4: 병원)
+    // 1. 실종 마커
+    useEffect(() => {
+        if (!mapRef.current || missingPosts.length === 0) return;
+        console.log('[Marker] 실종 마커 생성 시작. 게시글 수:', missingPosts.length);
+
+        // 기존 실종 마커 제거
+        const removeExistingMarkers = () => {
+            markersRef.current = markersRef.current.filter(({ type, overlay }) => {
+                if (type === 'missing') {
+                    overlay.setMap(null);
+                    return false;
+                }
+                return true;
+            });
+        };
+
+        // 새 실종 마커 생성
+        const createMarker = (post) => {
+            return new Promise((resolve) => {
+                const div = document.createElement('div');
+                div.className = 'custom-marker-container missing';
+                div.innerHTML = `
+                <div class="marker-circle">
+                    <img src="${getImageUrl(post.photoUrl)}" class="marker-img" />
+                </div>
+                <div class="marker-label">실종</div>
+            `;
+
+                div.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    setActiveMarker({
+                        type: 'missing',
+                        data: {
+                            id: post.id,
+                            imageUrl: post.photoUrl,
+                            location: post.missingLocation,
+                            date: new Date(post.missingDatetime).toLocaleString(),
+                        },
+                    });
+                });
+
+                new kakao.maps.services.Geocoder().addressSearch(post.missingLocation, (result, status) => {
+                    if (status === kakao.maps.services.Status.OK) {
+                        const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+                        const overlay = new kakao.maps.CustomOverlay({
+                            position: coords,
+                            content: div,
+                            map: isMissing ? mapRef.current : null,
+                            yAnchor: 1,
+                        });
+
+                        markersRef.current.push({ type: 'missing', overlay });
+                    } else {
+                        console.warn(`[Marker] 주소 변환 실패. ID: ${post.id}, 주소: ${post.missingLocation}`);
+                    }
+                    resolve();
+                });
+            });
+        };
+
+        removeExistingMarkers();
+
+        Promise.all(missingPosts.filter((post) => post.postType === 'missing').map(createMarker)).then(() => {
+            console.log('[Marker] 실종 마커 생성 완료.');
+            setMarkerStatus((prev) => ({ ...prev, missing: true }));
+        });
+    }, [missingPosts, mapRef.current]);
+
+    // 2. 목격 마커
+    useEffect(() => {
+        if (!mapRef.current || witnessPosts.length === 0) return;
+        console.log('[Marker] 목격 마커 생성 시작. 게시글 수:', witnessPosts.length);
+
+        // 기존 목격 마커 제거
+        const removeExistingMarkers = () => {
+            markersRef.current = markersRef.current.filter(({ type, overlay }) => {
+                if (type === 'witness') {
+                    overlay.setMap(null);
+                    return false;
+                }
+                return true;
+            });
+        };
+
+        // 새 목격 마커 생성
+        const createMarker = (post) => {
+            return new Promise((resolve) => {
+                const imageUrl = post.photoUrl ? post.photoUrl.split(',')[0] : '/default-image.png';
+
+                const div = document.createElement('div');
+                div.className = 'custom-marker-container sighting';
+                div.innerHTML = `
+                <div class="marker-circle">
+                    <img src="${getImageUrl(imageUrl)}" class="marker-img" />
+                </div>
+                <div class="marker-label">목격</div>
+            `;
+
+                div.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    setActiveMarker({
+                        type: 'sighting',
+                        data: {
+                            id: post.id,
+                            imageUrl: imageUrl,
+                            location: post.witnessLocation,
+                            date: new Date(post.witnessDatetime).toLocaleString(),
+                        },
+                    });
+                });
+
+                new kakao.maps.services.Geocoder().addressSearch(post.witnessLocation, (result, status) => {
+                    if (status === kakao.maps.services.Status.OK) {
+                        const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+                        const overlay = new kakao.maps.CustomOverlay({
+                            position: coords,
+                            content: div,
+                            map: isWitness ? mapRef.current : null,
+                            yAnchor: 1,
+                        });
+
+                        markersRef.current.push({ type: 'witness', overlay });
+                    } else {
+                        console.warn(`[Marker] 목격 주소 변환 실패. ID: ${post.id}, 주소: ${post.witnessLocation}`);
+                    }
+                    resolve();
+                });
+            });
+        };
+
+        removeExistingMarkers();
+
+        Promise.all(witnessPosts.filter((post) => post.postType === 'witness').map(createMarker)).then(() => {
+            console.log('[Marker] 목격 마커 생성 완료.');
+            setMarkerStatus((prev) => ({ ...prev, witness: true }));
+        });
+    }, [witnessPosts, mapRef.current]);
+
+    // 3. 병원 마커 - 최초 1회 생성, 이후 표시/숨김만 처리
+    useEffect(() => {
+        if (!mapRef.current || hospitals.length === 0) return;
+
+        const kakao = window.kakao;
+        const chunkSize = 100;
+        let index = 0;
+
+        const bounds = mapRef.current.getBounds();
+        const sw = bounds.getSouthWest();
+        const ne = bounds.getNorthEast();
+
+        const isInView = (lat, lng) =>
+            lat >= sw.getLat() && lat <= ne.getLat() && lng >= sw.getLng() && lng <= ne.getLng();
+
+        const sortedHospitals = hospitals.slice().sort((a, b) => {
+            const aInView = isInView(a.latitude, a.longitude);
+            const bInView = isInView(b.latitude, b.longitude);
+            return bInView - aInView; // 화면 안에 있는 병원 우선 처리
+        });
+
+        // 기존 병원 마커 제거
+        const removeExistingMarkers = () => {
+            markersRef.current = markersRef.current.filter(({ type, overlay }) => {
+                if (type === 'hospital') {
+                    overlay.setMap(null); // 지도에서 제거
+                    return false;
+                }
+                return true;
+            });
+        };
+
+        // 새 병원 마커 생성
+        const createHospitalMarker = (hospital) => {
+            const exists = markersRef.current.some(({ type, id }) => type === 'hospital' && id === hospital.id);
+            if (exists) return;
+
+            const div = document.createElement('div');
+            div.className = 'custom-marker-div hospital';
+            div.innerHTML = `<img src="${hospital2}" class="custom-marker-img" />`;
+
+            div.addEventListener('click', (e) => {
+                e.stopPropagation();
+                setActiveMarker({
+                    type: 'hospital',
+                    data: {
+                        imageUrl: hospital2,
+                        name: hospital.name,
+                        location: hospital.address,
+                        phone: hospital.phone || '전화번호 없음',
+                    },
+                });
+            });
+
+            if (hospital.latitude && hospital.longitude) {
+                const coords = new kakao.maps.LatLng(hospital.latitude, hospital.longitude);
+                const overlay = new kakao.maps.CustomOverlay({
+                    position: coords,
+                    content: div,
+                    map: isHospital ? mapRef.current : null,
+                    yAnchor: 1,
+                    clickable: true,
+                });
+
+                markersRef.current.push({ type: 'hospital', overlay, id: hospital.id });
+            }
+        };
+
+        // 나눠서 처리
+        const processChunk = () => {
+            const end = Math.min(index + chunkSize, sortedHospitals.length);
+
+            for (; index < end; index++) {
+                createHospitalMarker(sortedHospitals[index]);
+            }
+
+            if (index < sortedHospitals.length) {
+                setTimeout(processChunk, 0);
+            } else {
+                setMarkerStatus((prev) => ({ ...prev, hospital: true }));
+            }
+        };
+
+        // 기존 마커 제거 후 새 마커 생성 시작
+        removeExistingMarkers();
+        processChunk();
+    }, [hospitals, mapRef.current]);
+
+    // 병원 마커 토글
+    useEffect(() => {
+        if (!mapRef.current) return;
+
+        markersRef.current.forEach(({ type, overlay }) => {
+            if (type === 'hospital') {
+                overlay.setMap(isHospital ? mapRef.current : null);
+            }
+        });
+    }, [isHospital]);
+
+    // 4. 보호소 마커
+    useEffect(() => {
+        if (!mapRef.current || shelters.length === 0) return;
+
+        const kakao = window.kakao;
+        const chunkSize = 100;
+        let index = 0;
+
+        const bounds = mapRef.current.getBounds();
+        const sw = bounds.getSouthWest();
+        const ne = bounds.getNorthEast();
+
+        const isInView = (lat, lng) =>
+            lat >= sw.getLat() && lat <= ne.getLat() && lng >= sw.getLng() && lng <= ne.getLng();
+
+        const sortedShelters = shelters.slice().sort((a, b) => {
+            const aInView = isInView(a.latitude, a.longitude);
+            const bInView = isInView(b.latitude, b.longitude);
+            return bInView - aInView;
+        });
+
+        // 기존 보호소 마커 제거
+        const removeExistingMarkers = () => {
+            markersRef.current = markersRef.current.filter(({ type, overlay }) => {
+                if (type === 'shelter') {
+                    overlay.setMap(null);
+                    return false;
+                }
+                return true;
+            });
+        };
+
+        // 새 보호소 마커 생성
+        const createShelterMarker = (shelter) => {
+            const exists = markersRef.current.some(({ type, id }) => type === 'shelter' && id === shelter.shelterName);
+            if (exists) return;
+
+            const div = document.createElement('div');
+            div.className = 'custom-marker-div shelter';
+            div.innerHTML = `<img src="${shelter2}" class="custom-marker-img" />`;
+
+            div.addEventListener('click', (e) => {
+                e.stopPropagation();
+
+                const imageList = shelter.imageUrl
+                    ? shelter.imageUrl.split(',').slice(0, 4)
+                    : shelter.imageUrls
+                    ? shelter.imageUrls.split(',').slice(0, 4)
+                    : ['/default-image.png'];
+
+                setActiveMarker({
+                    type: 'shelter',
+                    data: {
+                        imageUrl: imageList,
+                        shelterName: shelter.shelterName,
+                        location: shelter.address || shelter.protectionLocation,
+                        callNumber: shelter.phone || shelter.shelterContact || '전화번호 없음',
+                        fullShelter: shelter,
+                    },
+                });
+            });
+
+            if (shelter.latitude && shelter.longitude) {
+                const coords = new kakao.maps.LatLng(shelter.latitude, shelter.longitude);
+                const overlay = new kakao.maps.CustomOverlay({
+                    position: coords,
+                    content: div,
+                    map: isShelter ? mapRef.current : null,
+                    yAnchor: 1,
+                    clickable: true,
+                });
+
+                markersRef.current.push({ type: 'shelter', overlay, id: shelter.shelterName });
+            }
+        };
+
+        // 나눠서 처리
+        const processChunk = () => {
+            const end = Math.min(index + chunkSize, sortedShelters.length);
+
+            for (; index < end; index++) {
+                createShelterMarker(sortedShelters[index]);
+            }
+
+            if (index < sortedShelters.length) {
+                setTimeout(processChunk, 0);
+            } else {
+                setMarkerStatus((prev) => ({ ...prev, shelter: true }));
+            }
+        };
+
+        // 기존 마커 제거 후 새 마커 생성
+        removeExistingMarkers();
+        processChunk();
+    }, [shelters, mapRef.current]);
+
+    // 보호소 마커 토글 유지
+    useEffect(() => {
+        if (!mapRef.current) return;
+
+        markersRef.current.forEach(({ type, overlay }) => {
+            if (type === 'shelter') {
+                overlay.setMap(isShelter ? mapRef.current : null);
+            }
+        });
+    }, [isShelter]);
+
+    // 마커 로드
+    useEffect(() => {
+        const allLoaded = Object.values(markerStatus).every((v) => v === true);
+
+        if (allLoaded) {
+            applyInitialMarkerFilter();
+
+            // setMarkerLoadStates({ missing: false, witness: false, shelter: false, hospital: false });
+        }
+    }, [markerStatus]);
+
+    // 필터 상태 변경 시마다 마커 보이기/숨기기
+    useEffect(() => {
+        // console.log('[Filter] 마커 표시 상태 변경', {
+        //     실종: isMissing,
+        //     목격: isWitness,
+        //     보호소: isShelter,
+        //     병원: isHospital,
+        // });
+
+        markersRef.current.forEach(({ type, overlay }) => {
+            const shouldShow =
+                (type === 'missing' && isMissing) ||
+                (type === 'sighting' && isWitness) ||
+                (type === 'shelter' && isShelter) ||
+                (type === 'hospital' && isHospital);
+            overlay.setMap(shouldShow ? mapRef.current : null);
+            // console.log(`[Filter] 마커 타입: ${type} → ${shouldShow ? '표시' : '숨김'}`);
+        });
+    }, [isMissing, isWitness, isShelter, isHospital]);
 
     useEffect(() => {
         if (location.state) {
-            const { missFiltering, seeFiltering, shelterFiltering, hospitalFiltering, breedFiltering, colorFiltering } =
-                location.state;
-            setMissFiltering(missFiltering);
-            setSeeFiltering(seeFiltering);
-            setShelterFiltering(shelterFiltering);
-            setHospitalFiltering(hospitalFiltering);
-            setBreedFiltering(breedFiltering);
-            setColorFiltering(colorFiltering);
+            const {
+                missFiltering = false,
+                seeFiltering = false,
+                shelterFiltering = false,
+                hospitalFiltering = false,
+                breedFiltering = '',
+                colorFiltering = '',
+            } = location.state;
+
+            setIsMissing(missFiltering);
+            setIsWitness(seeFiltering);
+            setIsShelter(shelterFiltering);
+            setIsHospital(hospitalFiltering);
+            setBreedFilter(breedFiltering);
+            setColorFilter(colorFiltering);
+
+            console.log('[Filter] 필터 상태 설정:', {
+                missFiltering,
+                seeFiltering,
+                shelterFiltering,
+                hospitalFiltering,
+                breedFiltering,
+                colorFiltering,
+            });
         }
     }, [location.state]);
 
+    useEffect(() => {
+        applyInitialMarkerFilter();
+    }, [isMissing, isWitness, isShelter, isHospital]);
+
+    // ==================================================================================== useEffect 종료
+    // ==================================================================================== 렌더링 시작
     return (
         <div className="mappage-container">
             {/* 지도 */}
-            <div ref={mapContainer} className="map-box" />
+            <div ref={mapContainerRef} className="map-box" />
 
             {!isSearchMode ? (
                 <form className="search-ui" onSubmit={(e) => e.preventDefault()}>
@@ -568,12 +793,12 @@ export default function MapMain() {
                             onClick={() => {
                                 navigate('/filters', {
                                     state: {
-                                        missFiltering,
-                                        seeFiltering,
-                                        shelterFiltering,
-                                        hospitalFiltering,
-                                        breedFiltering,
-                                        colorFiltering,
+                                        missFiltering: isMissing,
+                                        seeFiltering: isWitness,
+                                        shelterFiltering: isShelter,
+                                        hospitalFiltering: isHospital,
+                                        breedFiltering: breedFilter,
+                                        colorFiltering: colorFilter,
                                     },
                                 });
                             }}
@@ -581,54 +806,47 @@ export default function MapMain() {
                             <img src={tag} alt="filter" className="tag-icon" />
                         </button>
                     </div>
+
+                    {/* 1. 태그 */}
                     <div className="tag-container">
+                        {/* 1.1. 실종 태그 */}
                         <span
-                            className={`tag-wrap1 ${missFiltering ? 'activeM' : ''}`}
+                            className={`tag-wrap1 ${isMissing ? 'activeM' : ''}`}
                             onClick={() => {
-                                setMissFiltering((prev) => !prev);
+                                setIsMissing((prev) => !prev);
+                                applyInitialMarkerFilter(); // ✅ 필터 즉시 적용
                             }}
                         >
-                            <img src={missFiltering ? missing2 : missing} alt="실종" className="tag-img1" />
+                            <img src={isMissing ? missing2 : missing} alt="실종" className="tag-img1" />
                             실종
                         </span>
 
-                        {/* 목격 태그 */}
+                        {/* 1.2. 목격 태그 */}
                         <span
-                            className={`tag-wrap1 ${seeFiltering ? 'activeW' : ''}`}
+                            className={`tag-wrap1 ${isWitness ? 'activeW' : ''}`}
                             onClick={() => {
-                                setSeeFiltering((prev) => !prev);
+                                setIsWitness((prev) => !prev);
+                                applyInitialMarkerFilter(); // ✅ 필터 즉시 적용
                             }}
                         >
-                            <img src={seeFiltering ? sighting2 : sighting} alt="목격" className="tag-img1" />
+                            <img src={isWitness ? sighting2 : sighting} alt="목격" className="tag-img1" />
                             목격
                         </span>
 
-                        {/* 병원 태그 */}
+                        {/* 1.3. 병원 태그 */}
                         <span
-                            className={`tag-wrap1 ${hospitalFiltering ? 'activeH' : ''}`}
-                            onClick={() => {
-                                if (hospitalFiltering) {
-                                    setHospitalFiltering(false);
-                                } else {
-                                    setHospitalFiltering(true);
-                                }
-                            }}
+                            className={`tag-wrap1 ${isHospital ? 'activeH' : ''}`}
+                            onClick={() => setIsHospital((prev) => !prev)}
                         >
-                            <img src={hospitalFiltering ? hospital2 : hospital} alt="병원" className="tag-img1" />
+                            <img src={isHospital ? hospital2 : hospital} alt="병원" className="tag-img1" />
                             병원
                         </span>
-                        {/* 보호소 태그 */}
+                        {/* 1.4.보호소 태그 */}
                         <span
-                            className={`tag-wrap2 ${shelterFiltering ? 'activeS' : ''}`}
-                            onClick={() => {
-                                if (shelterFiltering) {
-                                    setShelterFiltering(false);
-                                } else {
-                                    setShelterFiltering(true);
-                                }
-                            }}
+                            className={`tag-wrap2 ${isShelter ? 'activeS' : ''}`}
+                            onClick={() => setIsShelter((prev) => !prev)}
                         >
-                            <img src={shelterFiltering ? shelter2 : shelter} alt="보호소" className="tag-img" />
+                            <img src={isShelter ? shelter2 : shelter} alt="보호소" className="tag-img" />
                             보호소
                         </span>
                         <span className="location-wrap" onClick={moveToMyLocation}>
@@ -692,19 +910,20 @@ export default function MapMain() {
 
             <BottomSheet
                 percent={percent}
-                minPercent={snapPoints[0]}
+                minPercent={snapPoints[0.1]}
                 maxPercent={snapPoints[snapPoints.length - 1]}
                 onDragEnd={handleDragEnd}
             >
-                {selectedMarker ? (
-                    // 마커 클릭 시 보여줄 내용
+                {activeMarker ? (
+                    // 2. 마커 클릭 시 보여줄 내용
                     <div>
-                        {selectedMarker.type === 'missing' && (
+                        {/* 2.1. 실종 마커 선택 */}
+                        {activeMarker.type === 'missing' && (
                             <div
                                 className="list-wrap"
                                 onClick={() =>
-                                    navigate(`/missingpostDetail/${selectedMarker.data.id}`, {
-                                        state: { post: selectedMarker.data },
+                                    navigate(`/missingpostDetail/${activeMarker.data.id}`, {
+                                        state: { post: activeMarker.data },
                                     })
                                 }
                             >
@@ -714,23 +933,28 @@ export default function MapMain() {
                                         실종
                                     </div>
                                     <div className="list-location">
-                                        {selectedMarker.data.location} {/* 주소*/}
-                                        <p>{selectedMarker.data.date}</p> {/* 글 등록 시간 */}
+                                        {activeMarker.data.location} {/* 주소*/}
+                                        <p>{activeMarker.data.date}</p> {/* 글 등록 시간 */}
                                     </div>
                                 </div>
                                 <div className="list-img">
-                                    <img src={selectedMarker.data.imageUrl} alt="testdog" className="sheet-nailimg" />
+                                    <img
+                                        src={getImageUrl(activeMarker.data.imageUrl)}
+                                        alt="testdog"
+                                        className="sheet-nailimg"
+                                    />
                                 </div>
                                 <hr />
                             </div>
                         )}
-                        {selectedMarker.type === 'sighting' && (
+                        {/* 2.2. 목격 마커 선택 */}
+                        {activeMarker.type === 'sighting' && (
                             <>
                                 <div
                                     className="list-wrap"
                                     onClick={() =>
-                                        navigate(`/witnesspostDetail/${selectedMarker.data.id}`, {
-                                            state: { postId: selectedMarker.data.id },
+                                        navigate(`/witnesspostDetail/${activeMarker.data.id}`, {
+                                            state: { postId: activeMarker.data.id },
                                         })
                                     }
                                 >
@@ -740,13 +964,13 @@ export default function MapMain() {
                                             목격
                                         </div>
                                         <div className="list-location">
-                                            {selectedMarker.data.location}
-                                            <p>{selectedMarker.data.date}</p>
+                                            {activeMarker.data.location}
+                                            <p>{activeMarker.data.date}</p>
                                         </div>
                                     </div>
                                     <div className="list-img">
                                         <img
-                                            src={selectedMarker.data.imageUrl}
+                                            src={getImageUrl(activeMarker.data.imageUrl)}
                                             alt="testdog"
                                             className="sheet-nailimg"
                                         />
@@ -755,14 +979,15 @@ export default function MapMain() {
                                 </div>
                             </>
                         )}
-                        {selectedMarker.type === 'shelter' && (
+                        {/* 2.3. 보호소 마커 선택 */}
+                        {activeMarker.type === 'shelter' && (
                             <div
                                 className="list-wrap"
                                 onClick={() =>
                                     navigate('/shelterdetail', {
                                         state: {
-                                            shelters: shelterAnnouncements,
-                                            selectedShelter: selectedMarker.data.fullShelter, // ← 여기
+                                            shelters: shelters,
+                                            selectedShelter: activeMarker.data.fullShelter, // ← 여기
                                         },
                                     })
                                 }
@@ -773,25 +998,24 @@ export default function MapMain() {
                                         보호소
                                     </div>
                                     <div className="list-left">
-                                        <div className="state-shelter">
-                                            {selectedMarker.data.fullShelter.shelterName}
+                                        <div className="state-shelter">{activeMarker.data.fullShelter.shelterName}</div>
+                                        <div className="list-location">
+                                            {activeMarker.data.fullShelter.address}
+                                            {activeMarker.data.fullShelter.protectionLocation}
                                         </div>
-                                        <div className="list-location">{selectedMarker.data.fullShelter.address}</div>
                                     </div>
                                 </div>
                                 <div className="list-img">
                                     <img
-                                        src={
-                                            selectedMarker.data.fullShelter.animalSummaries?.[0]?.imageUrl ?? defaultImg
-                                        }
+                                        src={activeMarker.data.fullShelter.imageUrl ?? '/default-image.png'}
                                         alt="animal"
                                         className="sheet-nailimg"
                                     />
                                 </div>
                             </div>
                         )}
-                        {/* 여기 보호소 정보가 백엔드에서 응답을 어떻게 주는지 모르겠는데 응답에 맞춰서 추가 */}
-                        {selectedMarker.type === 'hospital' && (
+                        {/* 2.4. 병원 마커 선택 */}
+                        {activeMarker.type === 'hospital' && (
                             <div className="list-wrap">
                                 <div>
                                     <div className="hospital-wrap">
@@ -799,44 +1023,45 @@ export default function MapMain() {
                                         병원
                                     </div>
                                     <div className="list-left">
-                                        <div className="state-hospital">{selectedMarker.data.name}</div>
-                                        <div className="list-location">{selectedMarker.data.location}</div>
-                                        <div className="list-location">수완이형 여기에 병원 전화번호 넣어주세요</div>
+                                        <div className="state-hospital">{activeMarker.data.name}</div>
+                                        <div className="list-location">{activeMarker.data.location}</div>
+                                        <div className="list-location">{activeMarker.data.phone}</div>
                                     </div>
                                 </div>
                                 <div className="list-img">
-                                    <img src={selectedMarker.data.imageUrl} alt="hospital" className="sheet-nailimg" />
+                                    <img src={pethospital} alt="hospital" className="sheet-nailimg" />
                                 </div>
                             </div>
                         )}
                     </div>
                 ) : (
                     // map 써서 받아온 리스트 쭉 보여주면 됨
+                    // 3. 리스트
                     <div>
                         <div className="list-header">
                             <div className="post-count">
-                                {(missFiltering ? missingPosts.length : 0) +
-                                    (seeFiltering ? witnessPosts.length : 0) +
-                                    (shelterFiltering ? shelterAnnouncements.length : 0) +
-                                    (hospitalFiltering ? hospitals.length : 0)}
+                                {(isMissing ? missingPosts.length : 0) +
+                                    (isWitness ? witnessPosts.length : 0) +
+                                    (isShelter ? shelters.length : 0) +
+                                    (isHospital ? hospitals.length : 0)}
                                 개의 게시글
                             </div>
                             <div
-                                className={`sort-toggle ${!listChange ? 'reversed' : ''}`}
-                                onClick={() => setListChange((prev) => !prev)}
+                                className={`sort-toggle ${!isLatest ? 'reversed' : ''}`}
+                                onClick={() => setIsLatest((prev) => !prev)}
                             >
-                                {listChange ? '최근작성순' : '오래된 순'}
+                                {isLatest ? '최근작성순' : '오래된 순'}
                                 <img src={change} alt="변경" />
                             </div>
                         </div>
 
                         <div className="list-wrap-group">
-                            {/* ✅ 실종 리스트 */}
-                            {missFiltering &&
+                            {/* 3.1. 실종 리스트 */}
+                            {isMissing &&
                                 missingPosts
                                     .slice()
                                     .sort((a, b) =>
-                                        listChange
+                                        isLatest
                                             ? new Date(b.missingDatetime) - new Date(a.missingDatetime)
                                             : new Date(a.missingDatetime) - new Date(b.missingDatetime)
                                     )
@@ -857,18 +1082,22 @@ export default function MapMain() {
                                                 </div>
                                             </div>
                                             <div className="list-img">
-                                                <img src={post.photoUrl} alt="dog" className="sheet-nailimg" />
+                                                <img
+                                                    src={getImageUrl(post.photoUrl)}
+                                                    alt="dog"
+                                                    className="sheet-nailimg"
+                                                />
                                             </div>
                                             <hr />
                                         </div>
                                     ))}
 
-                            {/* ✅ 목격 리스트 */}
-                            {seeFiltering &&
+                            {/* 3.2. 목격 리스트 */}
+                            {isWitness &&
                                 witnessPosts
                                     .slice()
                                     .sort((a, b) =>
-                                        listChange
+                                        isLatest
                                             ? new Date(b.witnessDatetime) - new Date(a.witnessDatetime)
                                             : new Date(a.witnessDatetime) - new Date(b.witnessDatetime)
                                     )
@@ -880,7 +1109,7 @@ export default function MapMain() {
                                         >
                                             <div className="list-left">
                                                 <div className="state-find">
-                                                    <img src={missing2} alt="witness" className="sheet-img" />
+                                                    <img src={sighting2} alt="witness" className="sheet-img" />
                                                     목격
                                                 </div>
                                                 <div className="list-location">
@@ -889,22 +1118,26 @@ export default function MapMain() {
                                                 </div>
                                             </div>
                                             <div className="list-img">
-                                                <img src={post.photoUrl} alt="dog" className="sheet-nailimg" />
+                                                <img
+                                                    src={getImageUrl(post.photoUrl.split(',')[0])} // 첫 번째 경로만 사용
+                                                    alt="dog"
+                                                    className="sheet-nailimg"
+                                                />
                                             </div>
                                             <hr />
                                         </div>
                                     ))}
 
-                            {/* ✅ 보호소 리스트 */}
-                            {shelterFiltering &&
-                                shelterAnnouncements.map((shelter, index) => (
+                            {/* 3.3. 보호소 리스트 */}
+                            {isShelter &&
+                                shelters.map((shelter, index) => (
                                     <div
                                         key={`shelter-${index}`}
                                         className="list-wrap"
                                         onClick={() =>
                                             navigate('/shelterdetail', {
                                                 state: {
-                                                    shelters: shelterAnnouncements,
+                                                    shelters: shelters,
                                                     selectedShelter: shelter,
                                                 },
                                             })
@@ -917,12 +1150,12 @@ export default function MapMain() {
                                             </div>
                                             <div className="list-left">
                                                 <div className="state-shelter">{shelter.shelterName}</div>
-                                                <div className="list-location">{shelter.address}</div>
+                                                <div className="list-location">{shelter.protectionLocation}</div>
                                             </div>
                                         </div>
                                         <div className="list-img">
                                             <img
-                                                src={shelter.animalSummaries?.[0]?.imageUrl ?? defaultImg}
+                                                src={shelter.imageUrls?.split(';')[0] || '/default-image.png'}
                                                 alt="animal"
                                                 className="sheet-nailimg"
                                             />
@@ -931,8 +1164,8 @@ export default function MapMain() {
                                     </div>
                                 ))}
 
-                            {/* ✅ 병원 리스트 */}
-                            {hospitalFiltering &&
+                            {/* 3.4. 병원 리스트 */}
+                            {isHospital &&
                                 hospitals.map((hospital, index) => (
                                     <div key={`hospital-${index}`} className="list-wrap">
                                         <div>
@@ -943,9 +1176,7 @@ export default function MapMain() {
                                             <div className="list-left">
                                                 <div className="state-hospital">{hospital.name}</div>
                                                 <div className="list-location">{hospital.address}</div>
-                                                <div className="list-location">
-                                                    수완이형 여기에 병원 전화번호 넣어주세요
-                                                </div>
+                                                <div className="list-location">{hospital.phone}</div>
                                             </div>
                                         </div>
                                         <div className="list-img">
