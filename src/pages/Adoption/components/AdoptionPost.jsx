@@ -10,15 +10,18 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
-import blackcircle from '../../../assets/blackcircle.svg';
-import lightgoldcircle from '../../../assets/lightgoldcircle.svg';
-import silvercircle from '../../../assets/silvercircle.svg';
-import browncircle from '../../../assets/browncircle.svg';
-import darkgoldcircle from '../../../assets/darkgoldcircle.svg';
-import whitecircle from '../../../assets/whitecircle.svg';
-import { FaCheck } from 'react-icons/fa';
+
 
 // 등록된 반려동물 입양글 등록 시 반려동물 이름, 사진 , 품종, 털색 성별, 중성화 여부, 생일, 몸무게, 동물 등록번호 있으면 받아오기
+
+const colorOptions = [
+    { label: '검은색', value: 'black', hex: '#000000' },
+    { label: '하얀색', value: 'white', hex: '#FFFFFF' },
+    { label: '회색', value: 'gray', hex: '#7E7E7E' },
+    { label: '갈색', value: 'brown', hex: '#8B4513' },
+    { label: '붉은색', value: 'red', hex: '#E74C3C' },
+    { label: '골드', value: 'gold', hex: '#F8DF65' },
+];
 
 const otherBreeds = [
     '그레이하운드',
@@ -186,7 +189,6 @@ const prioritizedBreeds = [
 ];
 
 export default function AdoptionPost() {
-// <<<<<<< HEAD
     const { state } = useLocation(); // 📍 라우팅 state에서 petData 가져오기
     const navigate = useNavigate();
     const initialized = useRef(false); // 🌀 중복 초기화 방지용 ref
@@ -221,26 +223,12 @@ export default function AdoptionPost() {
     const [birthDate, setBirthDate] = useState(petData.birth ? new Date(petData.birth) : null);
     const [weight, setWeight] = useState(petData.weight || '');
     const [regNumber, setRegNumber] = useState(petData.registrationNumber || '');
-// =======
-//     const [petName, setPetName] = useState('');
-//     const [selectedBreed, setSelectedBreed] = useState('');
-//     const [isSheetOpen, setIsSheetOpen] = useState(false);
-//     const [search, setSearch] = useState('');
-
-//     const [selectedColors, setSelectedColors] = useState([]);
-
-//     const [gender, setGender] = useState('');
-//     const [neutered, setNeutered] = useState(false);
-//     const [birthDate, setBirthDate] = useState(null);
-//     const [weight, setWeight] = useState('');
-//     const [regNumber, setRegNumber] = useState('');
-// >>>>>>> 00cb71d8ec8a449f25e8da3e72b1cba1e48df464
     const [phone, setPhone] = useState('');
     const [isRegSheetOpen, setIsRegSheetOpen] = useState(false);
     const [isVerified, setIsVerified] = useState(false);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [search, setSearch] = useState('');
-    const fileInputRef = useRef(null);
+
 
     // ✅ 유효성 검사
     const isPhoneValid = /^010\d{8}$/.test(phone);
@@ -255,36 +243,121 @@ export default function AdoptionPost() {
     // ✅ 품종 선택 시 BottomSheet 토글
     const toggleSheet = () => setIsSheetOpen(prev => !prev);
 
-    //이미지 파일 업로드
-    const handleImageUpload = (e) => {
-        const files = Array.from(e.target.files); // 사용자가 고른 File 객체들
-        const newFileObjects = files.map(file => ({
-            file, // 👈 실제 File 객체 저장
-            url: URL.createObjectURL(file) // 👈 미리보기용 blob URL
-        }));
-        setUploadedFiles(prev => [...prev, ...newFileObjects]);
-    };
+    // ✅ 이미지 삭제 핸들러
     const handleImageDelete = (urlToDelete) => {
         setUploadedFiles(prev => prev.filter(img => img.url !== urlToDelete));
     };
 
-    // ✅ 털색 초기화 (한 번만 실행)
+    // ✅ 앱에서 촬영 or 갤러리 선택 시 실행
+    const getImageUrl = (path) => {
+        if (!path) return '';
+        const base = 'http://10.0.2.2:8080'; // 에뮬레이터에서 PC의 localhost를 바라보는 고정 주소
+        return path.startsWith('http') ? path : `${base}${path}`;
+    };
+    
+
+    const handleMorpheusImageUpload = () => {
+        const userChoice = confirm('사진을 촬영하시겠습니까?');
+
+        const uploadImage = async (localPath) => {
+            const fileExt = localPath.split('.').pop().toLowerCase();
+            const mimeTypeMap = {
+                jpg: 'image/jpeg',
+                jpeg: 'image/jpeg',
+                png: 'image/png',
+                gif: 'image/gif',
+            };
+            const mimeType = mimeTypeMap[fileExt] || 'image/jpeg';
+
+            // ✅ Morpheus 방식 직접 업로드
+            M.net.http.upload({
+                url: `http://${window.location.hostname}:8080/api/adopt/image-upload`,
+                method: 'POST',
+                header: {
+                    Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+                },
+                body: [
+                    {
+                        name: 'file',
+                        content: localPath,
+                        type: 'FILE',
+                    },
+                ],
+                finish: (status, header, body) => {
+                    try {
+                        const result = JSON.parse(body);
+                        const uploadedPath = result.photoPath;
+
+                        const fileObj = {
+                            file: null,
+                            url: getImageUrl(uploadedPath),
+                        };
+                        setUploadedFiles((prev) => [...prev, fileObj]);
+
+                        console.log('🔥 업로드 성공:', result);
+                    } catch (e) {
+                        console.error('🔥 응답 파싱 실패:', body);
+                        alert('이미지 업로드 실패');
+                    }
+                },
+            });
+        };
+
+        const handleResult = (status, result) => {
+            if (status !== 'SUCCESS' || !result.path) {
+                alert('사진 선택 실패');
+                return;
+            }
+
+            const path = result.fullpath || result.path;
+            if (!/\.(jpg|jpeg|png|gif)$/i.test(path)) {
+                alert('이미지 파일만 선택해주세요.');
+                return;
+            }
+
+            uploadImage(path);
+        };
+
+        const mediaConfig = {
+            path: '/media',
+            mediaType: 'ALL', // ✅ 이미지 외에도 파일 선택 가능하게 설정
+            saveAlbum: true,
+            callback: handleResult,
+        };
+
+        if (userChoice) {
+            M.media.camera(mediaConfig);
+        } else {
+            M.media.picker({
+                ...mediaConfig,
+                mode: 'SINGLE',
+                column: 3,
+            });
+        }
+    };
+
+
+
+
+
+
+
+    // ✅ 컴포넌트 마운트 시 서버 이미지 있을 경우 미리보기 세팅
     useEffect(() => {
         if (petData?.image && uploadedFiles.length === 0) {
             const petImages = (petData.image || '')
                 .split(',')
                 .filter(url => url.trim() !== '')
                 .map(url => ({
-                    url: url.startsWith('http') ? url : `http://localhost:8080${url}`,
-                    file: null // 서버 이미지라 파일은 없음
+                    url: url.startsWith('http') ? url : getImageUrl(url),
+                    file: null
                 }));
-            setUploadedFiles(petImages); // ✅ 등록된 이미지도 uploadedFiles에 포함
+            setUploadedFiles(petImages);
         }
     }, [petData?.image]);
 
 
-    const toggleColor = (c) =>
-        setSelectedColors((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
+
     return (
         <div className="adoption-post">
             <header className="header">
@@ -326,7 +399,7 @@ export default function AdoptionPost() {
                     <div
                         key={i}
                         className="add-pic"
-                        onClick={() => fileInputRef.current?.click()}
+                        onClick={handleMorpheusImageUpload}
                     >
                         <FaPlus size={24} />
                     </div>
@@ -396,23 +469,12 @@ export default function AdoptionPost() {
                 )}
 
                 <div className="form-group color-group">
-                    <label>
-                        털색*
-                        <span className="pet-color-comment">털 색상이 한 가지가 아닌 경우 중복 선택 가능합니다.</span>
-                    </label>
-                    <div className="color-container">
-                        {[
-                            [blackcircle, '검은색'],
-                            [whitecircle, '하얀색'],
-                            [silvercircle, '회색'],
-                            [browncircle, '브라운'],
-                            [darkgoldcircle, '어두운 골드'],
-                            [lightgoldcircle, '밝은 골드'],
-                        ].map(([src, label]) => {
-                            const isSelected = selectedColors.includes(label);
+                    <label>털색*</label>
+                    <div className="color-options">
+                        {colorOptions.map((c) => {
+                            const isSelected = color.includes(c.value);
                             return (
                                 <div
-// <<<<<<< HEAD
                                     key={c.value}
                                     className="color-box"
                                     onClick={() => {
@@ -428,19 +490,6 @@ export default function AdoptionPost() {
                                         {isSelected && <span className="color-check2">✔</span>}
                                     </span>
                                     <span className="color-label">{c.label}</span>
-{/* =======
-                                    key={label}
-                                    className={`color-item ${isSelected ? 'selected' : ''}`}
-                                    onClick={() => toggleColor(label)}
-                                >
-                                    <img src={src} alt={label} />
-                                    {isSelected && (
-                                        <div className={`color-check ${label === '하얀색' ? 'white-check' : ''}`}>
-                                            <FaCheck />
-                                        </div>
-                                    )}
-                                    <p className="color-comment">{label}</p>
->>>>>>> 00cb71d8ec8a449f25e8da3e72b1cba1e48df464 */}
                                 </div>
                             );
                         })}
@@ -551,22 +600,7 @@ export default function AdoptionPost() {
                         };
                         console.log('🟢 넘겨주는 post:', post);
                         navigate('/adoptionpost/add/details', {
-// <<<<<<< HEAD
                             state: { post, },
-// =======
-//                             state: {
-//                                 petName,
-//                                 breed: selectedBreed,
-//                                 colors: selectedColors, // 선택된 털색 배열
-//                                 gender,
-//                                 neutered,
-//                                 birthDate, // Date 객체
-//                                 weight,
-//                                 registrationNo: regNumber,
-//                                 phone,
-//                                 isVerified,
-//                             },
-// >>>>>>> 00cb71d8ec8a449f25e8da3e72b1cba1e48df464
                         });
                     }}
                 >
@@ -632,14 +666,7 @@ export default function AdoptionPost() {
                 )}
             </form>
 
-            <input
-                type="file"
-                accept="image/*"
-                multiple
-                hidden
-                ref={fileInputRef}
-                onChange={handleImageUpload}
-            />
+            file
         </div>
     );
 }
