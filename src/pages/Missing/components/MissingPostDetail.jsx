@@ -53,7 +53,6 @@ export default function MissingPostDetail() {
         setCommentInput('');
     };
 
-    // 사진 불러오기
     const getImageUrl = (path) => {
         if (!path) return '/default-image.png';
         const host = window.location.hostname;
@@ -61,7 +60,6 @@ export default function MissingPostDetail() {
         return `http://${host}:${port}${path}`;
     };
 
-    // ?일 전 계산
     const calculateTimeAgo = (createdAt) => {
         const now = new Date();
         const createdDate = new Date(createdAt);
@@ -78,24 +76,16 @@ export default function MissingPostDetail() {
     };
 
     useEffect(() => {
-        console.log('요청 ID:', id);
         axios
             .get(`/api/posts/missing/${id}`)
-            .then((response) => {
-                console.log('응답 데이터:', response.data);
-                setPost(response.data);
-            })
+            .then((response) => setPost(response.data))
             .catch((error) => console.error('Error:', error));
     }, [id]);
 
-    // ✅ 지도 관련
     const mapRef = useRef(null);
 
     useEffect(() => {
-        if (!post || !post.missingLocation) {
-            console.log('지도 표시 실패: 주소 정보 없음', post);
-            return;
-        }
+        if (!post || !post.missingLocation) return;
 
         const script = document.createElement('script');
         script.src =
@@ -108,35 +98,26 @@ export default function MissingPostDetail() {
                 const kakao = window.kakao;
                 const geocoder = new kakao.maps.services.Geocoder();
 
-                console.log('주소로 좌표 변환 요청:', post.missingLocation);
-
                 geocoder.addressSearch(post.missingLocation, (result, status) => {
-                    console.log('주소 검색 결과:', result, '상태:', status);
-
-                    if (status === window.kakao.maps.services.Status.OK) {
+                    if (status === kakao.maps.services.Status.OK) {
                         const latitude = parseFloat(result[0].y);
                         const longitude = parseFloat(result[0].x);
-                        console.log('변환된 좌표:', latitude, longitude);
 
                         const map = new kakao.maps.Map(mapRef.current, {
                             center: new kakao.maps.LatLng(latitude, longitude),
                             level: 4,
                         });
 
-                        new window.kakao.maps.Marker({
-                            position: new window.kakao.maps.LatLng(latitude, longitude),
+                        new kakao.maps.Marker({
+                            position: new kakao.maps.LatLng(latitude, longitude),
                             map,
                         });
-                        console.log('지도와 마커 생성 완료');
-                    } else {
-                        console.error('주소 변환 실패: 상태 =', status);
                     }
                 });
             });
         };
 
         return () => {
-            console.log('카카오 스크립트 제거');
             document.head.removeChild(script);
         };
     }, [post]);
@@ -190,19 +171,6 @@ export default function MissingPostDetail() {
                     </div>
                 </div>
 
-                <div className="missing-thumbnail-slider">
-                    {post2.images.map((img, idx) => (
-                        <div className="missing-thumbnail-card" key={idx}>
-                            <img src={img} alt={`썸네일${idx}`} />
-                            <div className="missing-thumbnail-text">
-                                <div>목격 - 2025년 4월 30일</div>
-                                <div>품종</div>
-                                <div>털색</div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
                 <div className="missing-detail-info">
                     <div className="missing-date-row">
                         <img src={calender} alt="calender" className="missing-calender-image" />{' '}
@@ -223,11 +191,26 @@ export default function MissingPostDetail() {
                     <p className="missing-description">{post.detailDescription}</p>
                 </div>
 
-                {/* ✅ 지도 적용 */}
+                {/* ✅ 지도 */}
                 <div className="missing-map-section">
                     <div ref={mapRef} className="missing-map-image" />
                 </div>
 
+                {/* ✅ 썸네일 슬라이더 댓글 위로 이동 */}
+                <div className="missing-thumbnail-slider">
+                    {post2.images.map((img, idx) => (
+                        <div className="missing-thumbnail-card" key={idx}>
+                            <img src={img} alt={`썸네일${idx}`} />
+                            <div className="missing-thumbnail-text">
+                                <div>목격 - 2025년 4월 30일</div>
+                                <div>품종</div>
+                                <div>털색</div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* ✅ 댓글 섹션 */}
                 <div className="missing-comment-section">
                     <div className="missing-comment-count">댓글 {commentList.length}개</div>
                     {commentList.map((cmt, idx) => (
