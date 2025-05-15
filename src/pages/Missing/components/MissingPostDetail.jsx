@@ -195,6 +195,7 @@ export default function MissingPostDetail() {
                 <div className="missing-map-section">
                     <div ref={mapRef} className="missing-map-image" />
                 </div>
+                <p className="witness-similar-info-text">실종된 아이와 닮은 목격정보에요!</p>
 
                 {/* ✅ 썸네일 슬라이더 댓글 위로 이동 */}
                 <div className="missing-thumbnail-slider">

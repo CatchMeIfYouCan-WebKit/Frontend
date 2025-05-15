@@ -365,3 +365,10 @@
     margin: 0 auto;
     border-radius: 12px;
 }
+.witness-similar-info-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: #444;
+    margin: 24px 16px 8px;
+    text-align: left;
+}

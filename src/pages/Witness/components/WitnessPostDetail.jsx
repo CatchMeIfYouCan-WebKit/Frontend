@@ -211,6 +211,7 @@ export default function WitnessPostDetail() {
                 <div className="witness-map-section">
                     <div ref={mapRef} className="witness-map-image" />
                 </div>
+                <p className="witness-similar-info-text">목격된 아이와 닮은 실종정보에요!</p>
 
                 {/* ✅ 슬라이더를 댓글 바로 위로 이동 */}
                 <div className="witness-thumbnail-slider">
