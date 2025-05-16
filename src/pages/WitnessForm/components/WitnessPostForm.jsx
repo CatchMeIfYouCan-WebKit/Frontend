@@ -103,7 +103,6 @@ export default function WitnessPostForm() {
 
         try {
             const formData = new FormData();
-
             const formattedDate = format(date, "yyyy-MM-dd'T'HH:mm");
 
             const witnessData = {
@@ -116,14 +115,26 @@ export default function WitnessPostForm() {
             formData.append('post', JSON.stringify(witnessData));
             files.forEach((file) => formData.append('files', file));
 
+            // 1. 목격 게시글 등록 요청
             const res = await axios.post('/api/posts/witness', formData, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                 },
             });
 
-            console.log({ location, date, desc, files });
-            alert('목격 신고를 했습니다.');
+            const { postId, photoUrls } = res.data; // ✅ 서버 응답에 포함되어야 함
+
+            // 2. 대표 이미지로 AI 예측 요청 (첫 번째 이미지 기준)
+            if (photoUrls && photoUrls.length > 0) {
+                await axios.post('http://10.0.2.2:8081/ai/predict-from-path', {
+                    photo_url: photoUrls[0],
+                    pet_id: null, // 목격 게시글은 반려동물 ID 없음
+                    post_type: 'witness',
+                    post_id: postId,
+                });
+            }
+
+            alert('목격 신고 및 AI 예측 완료');
             navigate('/main');
         } catch (error) {
             console.error('등록 실패:', error);
