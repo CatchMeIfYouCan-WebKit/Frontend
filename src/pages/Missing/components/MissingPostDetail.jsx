@@ -9,7 +9,8 @@ import calender from '../../../assets/uit_calender.svg';
 import location from '../../../assets/location.svg';
 import send from '../../../assets/send.svg';
 import user from '../../../assets/users.svg';
-import axios from 'axios';
+
+// import axios from 'axios'; // 주석 처리: 테스트용 데이터 사용 시 불필요
 
 export default function MissingPostDetail() {
     const navigate = useNavigate();
@@ -75,12 +76,21 @@ export default function MissingPostDetail() {
         return `${diffDays}일 전`;
     };
 
+    // ❌ 실제 API 호출 제거 → ✅ 테스트용 데이터 강제 지정
     useEffect(() => {
-        axios
-            .get(`/api/posts/missing/${id}`)
-            .then((response) => setPost(response.data))
-            .catch((error) => console.error('Error:', error));
-    }, [id]);
+        const testData = {
+            userNickname: '홍길동',
+            dogName: '코코',
+            breed: '말티즈',
+            createdAt: new Date().toISOString(),
+            missingDatetime: new Date().toISOString(),
+            postType: 'missing',
+            missingLocation: '서울특별시 강남구 개포동',
+            detailDescription: '산책 중이던 강아지가 사라졌습니다. 흰색에 활발한 성격입니다.',
+            photoUrl: testdog, // 여기!
+        };
+        setPost(testData);
+    }, []);
 
     const mapRef = useRef(null);
 
@@ -135,39 +145,37 @@ export default function MissingPostDetail() {
 
             <div className={`missing-detail-container ${fadeOut ? 'missing-fade-out' : ''}`}>
                 <div className="missing-user-info">
-                    <div className="missing-left-part">
+                    <div className="missing-top-row">
                         <img src={user} alt="프로필" className="missing-profile-circle" />
-                    </div>
-                    <div className="missing-right-part">
-                        <div className="missing-nickname-row">
+                        <div className="missing-nickname-section">
                             <span className="missing-nickname">{post.userNickname}</span>
-                            <button className="missing-more-btn" onClick={() => setIsDropdownOpen((prev) => !prev)}>
-                                &#8942;
-                            </button>
-                            {isDropdownOpen && (
-                                <div className="missing-dropdown">
-                                    <div className="missing-dropdown-item" onClick={() => alert('게시글 수정')}>
-                                        게시글 수정
-                                    </div>
-                                    <div className="missing-dropdown-item" onClick={() => alert('게시글 삭제')}>
-                                        게시글 삭제
-                                    </div>
+                        </div>
+                        <button className="missing-more-btn" onClick={() => setIsDropdownOpen((prev) => !prev)}>
+                            &#8942;
+                        </button>
+                        {isDropdownOpen && (
+                            <div className="missing-dropdown">
+                                <div className="missing-dropdown-item" onClick={() => alert('게시글 수정')}>
+                                    게시글 수정
                                 </div>
-                            )}
-                        </div>
-                        <div className="missing-dog-row">
-                            <div className="missing-dog-info">
-                                <span className="missing-dog-name">{post.dogName}</span>
-                                <span className="missing-breed">{post.breed}</span>
+                                <div className="missing-dropdown-item" onClick={() => alert('게시글 삭제')}>
+                                    게시글 삭제
+                                </div>
                             </div>
-                            <div className="missing-time-ago">{calculateTimeAgo(post.createdAt)}</div>
+                        )}
+                    </div>
+                    <div className="missing-bottom-row">
+                        <div className="missing-dog-info">
+                            <span className="missing-dog-name">{post.dogName}</span>
+                            <span className="missing-breed">{post.breed}</span>
                         </div>
+                        <div className="missing-time-ago">{calculateTimeAgo(post.createdAt)}</div>
                     </div>
                 </div>
 
                 <div className="missing-image-slider" onScroll={handleScroll}>
                     <div className="missing-slide">
-                        <img src={getImageUrl(post.photoUrl)} alt={'강아지'} />
+                        <img src={post.photoUrl} alt="강아지" />
                     </div>
                 </div>
 
@@ -193,38 +201,38 @@ export default function MissingPostDetail() {
                     <p className="missing-description">{post.detailDescription}</p>
                 </div>
 
-                {/* ✅ 지도 */}
                 <div className="missing-map-section">
                     <div ref={mapRef} className="missing-map-image" />
                 </div>
-                <p className="witness-similar-info-text">실종된 아이와 닮은 목격정보에요!</p>
+                <div className="witness-similar">
+                    <div className="witness-similar-info-text1">실종된 아이와 닮은 목격정보에요!</div>
 
-                {/* ✅ 썸네일 슬라이더 댓글 위로 이동 */}
-                <div className="missing-thumbnail-slider">
-                    {post2.images.map((img, idx) => (
-                        <div className="missing-thumbnail-card" key={idx}>
-                            <img src={img} alt={`썸네일${idx}`} />
-                            <div className="missing-thumbnail-text">
-                                <div>목격 - 2025년 4월 30일</div>
-                                <div>품종</div>
-                                <div>털색</div>
+                    <div className="missing-thumbnail-slider">
+                        {post2.images.map((img, idx) => (
+                            <div className="missing-thumbnail-card" key={idx}>
+                                <img src={img} alt={`썸네일${idx}`} />
+                                <div className="missing-thumbnail-text">
+                                    <div>목격 - 2025년 4월 30일</div>
+                                    <div>품종</div>
+                                    <div>털색</div>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
 
-                {/* ✅ 댓글 섹션 */}
                 <div className="missing-comment-section">
                     <div className="missing-comment-count">댓글 {commentList.length}개</div>
                     {commentList.map((cmt, idx) => (
                         <div className="missing-comment" key={idx}>
-                            <img src={user} alt="댓글 작성자" className="missing-comment-profile-circle" />
                             <div className="missing-comment-content">
                                 <div className="missing-comment-meta">
+                                    <img src={user} alt="댓글 작성자" className="missing-comment-profile-circle" />
+
                                     <span className="missing-comment-author">{cmt.author}</span>
-                                    <span className="missing-comment-date">{cmt.date}</span>
                                 </div>
                                 <div className="missing-comment-text">{cmt.content}</div>
+                                <div className="missing-comment-date">{cmt.date}</div>
                             </div>
                         </div>
                     ))}

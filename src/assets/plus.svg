@@ -1,4 +1,3 @@
-<!-- src/assets/plus.svg -->
-<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="gray" viewBox="0 0 24 24">
-  <path d="M12 5v14m-7-7h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20.0026 5.83301V34.1663M34.1693 19.9997H5.83594" stroke="#111111" stroke-linecap="round"/>
 </svg>
