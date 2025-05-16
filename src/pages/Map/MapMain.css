@@ -262,12 +262,12 @@
 }
 
 .search-overlay-content .search-input-wrapper .back-button {
-    left: 10px; /* wrapper 패딩만큼 왼쪽에 위치 */
+    left: 8px; /* wrapper 패딩만큼 왼쪽에 위치 */
     background: none;
     border: none;
     cursor: pointer;
     z-index: 10;
-    top: 8px;
+    top: 20px;
 }
 
 /* 오버레이 자동완성 리스트 */

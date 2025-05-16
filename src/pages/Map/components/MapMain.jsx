@@ -908,7 +908,7 @@ export default function MapMain() {
                     <div className="search-overlay-content">
                         <div className="search-input-wrapper">
                             <button className="back-button" onClick={() => setIsSearchMode(false)}>
-                                <GoChevronLeft size={30} />
+                                <GoChevronLeft size={32} />
                             </button>
                             <input
                                 autoFocus
