@@ -52,7 +52,6 @@ export default function ShelterDetail() {
     function truncateLabel(label) {
         return label.length > TRUNCATE_LEN ? `${label.slice(0, TRUNCATE_LEN - 1)}...` : label;
     }
-
     // ============================================================================== useEffect 시작
     // 데이터 호출 (컴포넌트 렌더링 시 한 번만 호출)
     useEffect(() => {
@@ -66,7 +65,6 @@ export default function ShelterDetail() {
             .catch((err) => console.error('[API] 보호소 API 요청 실패:', err));
     }, []);
     // ============================================================================== useEffect 종료
-
     return (
         <div className="shelter-detail">
             <div className="shelter-detail-header">
@@ -119,7 +117,7 @@ export default function ShelterDetail() {
                             className="animal-img"
                             onError={(e) => {
                                 console.log('이미지 로드 실패:', shelter.imageUrl);
-                                e.target.src = a; // 대체 이미지
+                                e.target.src = a;
                             }}
                         />
                         <div className="animal-details">

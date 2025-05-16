@@ -6,15 +6,12 @@ import placeholder from '../../../assets/1.png';
 
 export default function ShelterPostDetail() {
     const navigate = useNavigate();
-    const { id } = useParams();
     const location = useLocation();
-    const shelter = location.state?.shelter;
 
-    console.log('넘어온 id:', id);
+    const shelter = location.state?.shelter;
     console.log('넘어온 데이터:', shelter);
 
     const currentUser = shelter.currentUser;
-
     const isAdmin = currentUser?.role === 'admin';
 
     const handleDelete = () => {
@@ -40,9 +37,7 @@ export default function ShelterPostDetail() {
             <div className="spd-body">
                 <div className="spd-image-wrap">
                     <img
-                        src={shelter.imageUrl ? encodeURI(shelter.imageUrl) : placeholder}
-                        // src={encodeURI(shelter.imageUrl)}
-                        // src={shelter.imageUrl}
+                        src={shelter.imageUrl}
                         alt={shelter.breed}
                         className="spd-image"
                         onError={(e) => {
