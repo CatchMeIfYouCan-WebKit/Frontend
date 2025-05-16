@@ -139,9 +139,8 @@ export default function MissingPostDetail() {
         return `${diffDays}일 전`;
     };
 
-
     // ❌ 실제 API 호출 제거 → ✅ 테스트용 데이터 강제 지정
-=======
+
     // 날짜 변환
     function formatDate(dateStr) {
         const date = new Date(dateStr);
@@ -150,20 +149,20 @@ export default function MissingPostDetail() {
     // ======================================================================================== useEffect
     // API : 실종 게시글
 
-//     useEffect(() => {
-//         const testData = {
-//             userNickname: '홍길동',
-//             dogName: '코코',
-//             breed: '말티즈',
-//             createdAt: new Date().toISOString(),
-//             missingDatetime: new Date().toISOString(),
-//             postType: 'missing',
-//             missingLocation: '서울특별시 강남구 개포동',
-//             detailDescription: '산책 중이던 강아지가 사라졌습니다. 흰색에 활발한 성격입니다.',
-//             photoUrl: testdog, // 여기!
-//         };
-//         setPost(testData);
-//     }, []);
+    //     useEffect(() => {
+    //         const testData = {
+    //             userNickname: '홍길동',
+    //             dogName: '코코',
+    //             breed: '말티즈',
+    //             createdAt: new Date().toISOString(),
+    //             missingDatetime: new Date().toISOString(),
+    //             postType: 'missing',
+    //             missingLocation: '서울특별시 강남구 개포동',
+    //             detailDescription: '산책 중이던 강아지가 사라졌습니다. 흰색에 활발한 성격입니다.',
+    //             photoUrl: testdog, // 여기!
+    //         };
+    //         setPost(testData);
+    //     }, []);
 
     // API : 댓글 조회
     useEffect(() => {
