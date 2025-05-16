@@ -1076,7 +1076,15 @@ export default function MapMain() {
                                                     </div>
                                                     <div className="list-location">
                                                         {post.missingLocation}
-                                                        <p>{new Date(post.missingDatetime).toLocaleString()}</p>
+                                                        <p>
+                                                            {new Date(post.missingDatetime).toLocaleString('ko-KR', {
+                                                                year: 'numeric',
+                                                                month: 'long',
+                                                                day: 'numeric',
+                                                                hour: 'numeric',
+                                                                minute: 'numeric',
+                                                            })}
+                                                        </p>
                                                     </div>
                                                     {/* 댓글 개수 */}
                                                     <div>{`댓글 ${post.commentCount}개`}</div>
@@ -1114,7 +1122,15 @@ export default function MapMain() {
                                                     </div>
                                                     <div className="list-location">
                                                         {post.witnessLocation}
-                                                        <p>{new Date(post.witnessDatetime).toLocaleString()}</p>
+                                                        <p>
+                                                            {new Date(post.witnessDatetime).toLocaleString('ko-KR', {
+                                                                year: 'numeric',
+                                                                month: 'long',
+                                                                day: 'numeric',
+                                                                hour: 'numeric',
+                                                                minute: 'numeric',
+                                                            })}
+                                                        </p>
                                                     </div>
                                                     {/* 댓글 개수 */}
                                                     <div>{`댓글 ${post.commentCount}개`}</div>
