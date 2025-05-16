@@ -216,21 +216,36 @@ export default function MapMain() {
         const map = mapRef.current;
         if (!map) return;
 
-        const initMiss = location.state?.missFiltering ?? isMissing;
-        const initSee = location.state?.seeFiltering ?? isWitness;
-        const initShelter = location.state?.shelterFiltering ?? isShelter;
-        const initHospital = location.state?.hospitalFiltering ?? isHospital;
+        const {
+            missFiltering = isMissing,
+            seeFiltering = isWitness,
+            shelterFiltering = isShelter,
+            hospitalFiltering = isHospital,
+            breedFiltering = breedFilter,
+            colorFiltering = colorFilter,
+        } = location.state || {};
 
-        markersRef.current.forEach(({ type, overlay }) => {
-            const shouldShow =
-                (type === 'missing' && initMiss) ||
-                (type === 'witness' && initSee) ||
-                (type === 'shelter' && initShelter) ||
-                (type === 'hospital' && initHospital);
+        markersRef.current.forEach(({ type, overlay, data }) => {
+            let shouldShow =
+                (type === 'missing' && missFiltering) ||
+                (type === 'witness' && seeFiltering) ||
+                (type === 'shelter' && shelterFiltering) ||
+                (type === 'hospital' && hospitalFiltering);
+
+            // 품종 필터링 추가
+            if (shouldShow && breedFiltering && data?.breed) {
+                shouldShow = data.breed.includes(breedFiltering);
+            }
+
+            // 색상 필터링 추가 (colorFiltering은 배열)
+            if (shouldShow && Array.isArray(colorFiltering) && colorFiltering.length > 0 && data?.color) {
+                shouldShow = colorFiltering.some((color) => data.color.includes(color));
+            }
 
             overlay.setMap(shouldShow ? map : null);
         });
     };
+
     // ==================================================================================== 로직함수 종료
     // ==================================================================================== useEffect 시작
 
@@ -370,6 +385,7 @@ export default function MapMain() {
 
                                 overlay.setMap(shouldShow ? map : null);
                             });
+
                             clustererRef.current?.addMarkers(markersRef.current.map(({ overlay }) => overlay));
                         }
                     });
@@ -456,7 +472,11 @@ export default function MapMain() {
                             yAnchor: 1,
                         });
 
-                        markersRef.current.push({ type: 'missing', overlay });
+                        markersRef.current.push({
+                            type: 'missing',
+                            overlay,
+                            data: { breed: post.petBreed, color: post.petCoatColor },
+                        });
                     } else {
                         console.warn(`[Marker] 주소 변환 실패. ID: ${post.id}, 주소: ${post.missingLocation}`);
                     }
@@ -490,7 +510,6 @@ export default function MapMain() {
 
                 .map(createMarker)
         ).then(() => {
-            console.log('[Marker] 실종 마커 생성 완료.');
             setMarkerStatus((prev) => ({ ...prev, missing: true }));
         });
     }, [missingPosts, mapRef.current]);
@@ -548,7 +567,11 @@ export default function MapMain() {
                             yAnchor: 1,
                         });
 
-                        markersRef.current.push({ type: 'witness', overlay });
+                        markersRef.current.push({
+                            type: 'witness',
+                            overlay,
+                            data: { breed: post.breed, color: post.color },
+                        });
                     } else {
                         console.warn(`[Marker] 목격 주소 변환 실패. ID: ${post.id}, 주소: ${post.witnessLocation}`);
                     }
@@ -581,7 +604,6 @@ export default function MapMain() {
                 })
                 .map(createMarker)
         ).then(() => {
-            console.log('[Marker] 목격 마커 생성 완료.');
             setMarkerStatus((prev) => ({ ...prev, witness: true }));
         });
     }, [witnessPosts, mapRef.current]);
@@ -792,6 +814,8 @@ export default function MapMain() {
 
     useEffect(() => {
         if (location.state) {
+            console.log('[MapMain] 전달된 필터 상태:', location.state);
+
             const {
                 missFiltering = false,
                 seeFiltering = false,

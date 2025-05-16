@@ -24,7 +24,7 @@ export default function BottomSheet({
 
         heightRef.current = h;
 
-        console.log('[BottomSheet] 강제로 높이 설정:', h);
+        // console.log('[BottomSheet] 강제로 높이 설정:', h);
     }, [percent]);
 
     // 3) height state가 바뀔 때도 ref 동기화
