@@ -15,9 +15,10 @@ export default function Header() {
                 <span className="brand">CatchMe</span>
             </div>
             <div className="icons">
-                <button className="icon-button" onClick={() => navigate('/notifications')}>
+                <button className="icon-button" onClick={() => navigate('/missingpostDetail/6')}>
                     <FontAwesomeIcon icon={faBell} style={{ color: '#ffffff' }} />
                 </button>
+
                 <button
                     className="icon-button"
                     onClick={() => navigate('/mypage')} // 이제 정상 동작
