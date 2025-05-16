@@ -343,19 +343,21 @@ export default function MapMain() {
                     clustererRef.current?.clear(); // 클러스터러 비우고
 
                     markersRef.current.forEach(({ type, overlay }) => {
-                        const shouldShow =
-                            (type === 'missing' && isMissing) ||
-                            (type === 'witness' && isWitness) ||
-                            (type === 'shelter' && isShelter) ||
-                            (type === 'hospital' && isHospital);
-
                         if (level > 7) {
                             // 마커는 숨기고 클러스터만 표시
                             markersRef.current.forEach(({ overlay }) => overlay.setMap(null));
                             clustererRef.current?.addMarkers(markersRef.current.map(({ overlay }) => overlay));
                         } else {
-                            // 마커 표시 + 클러스터 적용
-                            markersRef.current.forEach(({ overlay }) => overlay.setMap(map));
+                            // 마커 표시, 클러스터 유지
+                            markersRef.current.forEach(({ type, overlay }) => {
+                                const shouldShow =
+                                    (type === 'missing' && isMissing) ||
+                                    (type === 'witness' && isWitness) ||
+                                    (type === 'shelter' && isShelter) ||
+                                    (type === 'hospital' && isHospital);
+
+                                overlay.setMap(shouldShow ? map : null);
+                            });
                             clustererRef.current?.addMarkers(markersRef.current.map(({ overlay }) => overlay));
                         }
                     });
