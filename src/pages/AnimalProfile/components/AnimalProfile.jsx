@@ -507,9 +507,11 @@ export default function AnimalProfile() {
     useEffect(() => {
         console.log('📸 previewUrl:', previewUrl);
     }, [previewUrl]);
+
     const goBack = () => {
         navigate('/main');
     };
+
     return (
         <div className="animal-profile">
             <div className="filtering-header">

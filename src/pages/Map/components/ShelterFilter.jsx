@@ -284,6 +284,9 @@ export default function ShelterFilter() {
     // 강아지 중복 제거
     const uniqueBreedSuggestions = Array.from(new Set(otherBreeds.filter((b) => b.includes(breedQuery))));
 
+    const goBack = () => {
+        navigate('/shelterdetail');
+    };
     // ======================================== useEffect
     useEffect(() => {
         if (shelterQuery.trim()) {
@@ -312,9 +315,7 @@ export default function ShelterFilter() {
     }, []);
 
     // ======================================== useEffect
-    const goBack = () => {
-        navigate('/mapmain');
-    };
+
     return (
         <div className="shelter-filter">
             {/* 헤더 */}
