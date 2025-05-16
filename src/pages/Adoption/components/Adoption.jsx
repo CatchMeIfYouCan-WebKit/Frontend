@@ -212,9 +212,6 @@ export default function Adoption() {
                             <div className="post-footer">
                                 <span className="post-location">{p.location || '위치 정보 없음'}</span>{' '}
                                 <span className="post-time">{p.timeAgo}</span>
-                                <button className="comment-btn">
-                                    <img src={chatimg} alt="댓글" />
-                                </button>
                             </div>
                         </div>
                     </div>

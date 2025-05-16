@@ -47,7 +47,7 @@ export default function RegisterPost() {
         <div className="register-post">
             <header className="rp-header">
                 <button className="rp-back" onClick={() => navigate(-1)}>
-                    <IoIosArrowBack size={24} />
+                    <IoIosArrowBack size={32} />
                 </button>
                 <h1 className="rp-title">게시글 작성</h1>
             </header>

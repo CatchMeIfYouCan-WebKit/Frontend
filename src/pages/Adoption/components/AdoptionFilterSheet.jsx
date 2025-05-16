@@ -1,6 +1,5 @@
 // AdoptionFilterSheet.jsx
 import React, { useState, useMemo, useRef } from 'react';
-import X from '../../../assets/X.svg';
 import browncircle from '../../../assets/browncircle.svg';
 import blackcircle from '../../../assets/blackcircle.svg';
 import lightgoldcircle from '../../../assets/lightgoldcircle.svg';
@@ -203,7 +202,7 @@ export default function AdoptionFilterSheet({ onApply, onClose, initFilter }) {
         [darkgoldcircle, '어두운 골드'],
         [lightgoldcircle, '밝은 골드'],
     ];
-    const popularBreeds = ['믹스견', '말티즈', '푸들', '포메라니안', '짓돗개', '시츄', '골든 리트리버', '치와와'];
+    const popularBreeds = ['믹스견', '말티즈', '푸들', '포메라니안', '진돗개', '시츄', '골든 리트리버', '치와와'];
     const [selectedPopularBreed, setSelectedPopularBreed] = useState('');
 
     const apply = () => {
