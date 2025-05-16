@@ -2,57 +2,43 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
+import { MdMyLocation } from 'react-icons/md';
 import '../LocationSelect.css';
 
 export default function LocationSelect() {
     const navigate = useNavigate();
     const location = useLocation();
+
+    const mapDiv = useRef(null);
     const mapRef = useRef(null);
     const markerRef = useRef(null);
+    const psRef = useRef(null);
+
     const [selectedPos, setSelectedPos] = useState(null);
+    const [keyword, setKeyword] = useState('');
+    const [places, setPlaces] = useState([]);
 
     const KAKAO_MAP_SDK =
         'https://dapi.kakao.com/v2/maps/sdk.js?appkey=9402031e36074f7a2da9f3094bc383e7&autoload=false&libraries=services';
 
     useEffect(() => {
-        // 1) SDK 스크립트 로드
         const script = document.createElement('script');
         script.src = KAKAO_MAP_SDK;
         script.async = true;
         document.head.appendChild(script);
 
         script.onload = () => {
-            // 2) SDK 초기화
             window.kakao.maps.load(() => {
                 const kakao = window.kakao;
-                const map = new kakao.maps.Map(mapRef.current, {
-                    center: new kakao.maps.LatLng(37.5665, 126.978),
+                const map = new kakao.maps.Map(mapDiv.current, {
+                    center: new kakao.maps.LatLng(36.1460531, 128.39583),
                     level: 4,
                 });
-                const geocoder = new kakao.maps.services.Geocoder();
+                mapRef.current = map;
+                psRef.current = new kakao.maps.services.Places();
 
-                // 마커 & 클릭 처리 함수
-                const placeMarker = (latLng) => {
-                    // 이전 마커 제거
-                    if (markerRef.current) {
-                        markerRef.current.setMap(null);
-                    }
-                    // 새 마커 생성
-                    markerRef.current = new kakao.maps.Marker({
-                        map,
-                        position: latLng,
-                    });
-                    const lat = latLng.getLat();
-                    const lng = latLng.getLng();
-                    setSelectedPos({ lat, lng });
-                };
-
-                // 데스크탑 · 모바일 모두 지원
                 kakao.maps.event.addListener(map, 'click', (e) => {
-                    placeMarker(e.latLng);
-                });
-                kakao.maps.event.addListener(map, 'rightclick', (e) => {
-                    placeMarker(e.latLng);
+                    placeMarker(e.latLng.getLat(), e.latLng.getLng());
                 });
             });
         };
@@ -62,49 +48,99 @@ export default function LocationSelect() {
         };
     }, []);
 
-    const handleBack = () => {
-        navigate(-1);
+    const placeMarker = (lat, lng) => {
+        const kakao = window.kakao;
+        const map = mapRef.current;
+        if (!map) return;
+
+        if (markerRef.current) markerRef.current.setMap(null);
+
+        const position = new kakao.maps.LatLng(lat, lng);
+        markerRef.current = new kakao.maps.Marker({ position, map });
+        map.setCenter(position);
+        setSelectedPos({ lat, lng });
     };
 
-    const handleConfirm = () => {
-        if (!selectedPos) return;
-
-        const geocoder = new window.kakao.maps.services.Geocoder();
-
-        geocoder.coord2Address(selectedPos.lng, selectedPos.lat, (result, status) => {
+    const handleSearchChange = (e) => {
+        const kw = e.target.value;
+        setKeyword(kw);
+        if (!kw.trim() || !psRef.current) {
+            setPlaces([]);
+            return;
+        }
+        psRef.current.keywordSearch(kw, (data, status) => {
             if (status === window.kakao.maps.services.Status.OK) {
-                const address = result[0].address.address_name;
-
-                // 📦 RegisterPost로 주소, 위도, 경도 모두 전달
-                navigate('/adoptionpost/add/details', {
-                    replace: true,
-                    state: {
-                        ...location.state,
-                        post: {
-                            ...location.state.post,
-                            adopt_location: address, // 🏠 주소 텍스트
-                            latitude: selectedPos.lat,
-                            longitude: selectedPos.lng,
-                        },
-                    },
-                });
+                setPlaces(data);
+            } else {
+                setPlaces([]);
             }
         });
     };
 
+    const handleSelectPlace = (place) => {
+        placeMarker(parseFloat(place.y), parseFloat(place.x));
+        setKeyword(place.place_name);
+        setPlaces([]);
+    };
 
+    const handleMyLocation = () => {
+        if (!navigator.geolocation) return;
+        navigator.geolocation.getCurrentPosition(
+            ({ coords }) => placeMarker(coords.latitude, coords.longitude),
+            () => alert('위치 정보를 가져올 수 없습니다.')
+        );
+    };
+
+    const handleBack = () => navigate(-1);
+    const handleConfirm = () => {
+        if (!selectedPos) return;
+        navigate('/report-missing', {
+            replace: true,
+            state: {
+                ...location.state,
+                latitude: selectedPos.lat,
+                longitude: selectedPos.lng,
+            },
+        });
+    };
 
     return (
         <div className="location-select">
             <header className="ls-header">
-                <div className="ls-back" onClick={handleBack}>
-                    <IoIosArrowBack size={24} />
+                <div className="ls-back" onClick={handleBack} style={{marginLeft:'0px'}}>
+                    <IoIosArrowBack size={33} style={{ marginBottom: '8px' }} />
                 </div>
-                <h1 className="ls-title">아이가 새로운 반려인을 만날 곳을 선택해주세요</h1>
-                <p className="ls-subtitle">지도에서 원하시는 장소를 마커로 표시해주세요</p>
+
+                <input
+                    className="ls-search-input"
+                    type="text"
+                    placeholder="장소를 검색하세요"
+                    value={keyword}
+                    onChange={handleSearchChange}
+                    style={{ marginBottom: '15px' }}
+                />
+                <MdMyLocation
+                    className="ls-my-location-btn"
+                    size={24}
+                    onClick={handleMyLocation}
+                    title="내 위치로 이동"
+                    style={{ top: '85px' }}
+                />
+
+                {places.length > 0 && (
+                    <ul className="ls-suggestion-list" style={{ width: '422px', marginLeft: '8px', top: '64px' }}>
+                        {places.map((p) => (
+                            <li key={p.id} className="ls-suggestion-item" onClick={() => handleSelectPlace(p)}>
+                                {p.place_name}
+                            </li>
+                        ))}
+                    </ul>
+                )}
             </header>
 
-            <div ref={mapRef} className="ls-map" />
+            <div className="map-wrapper">
+                <div ref={mapDiv} className="ls-map" />
+            </div>
 
             <button className="ls-confirm-btn" onClick={handleConfirm} disabled={!selectedPos}>
                 선택 완료
