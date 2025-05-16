@@ -1,6 +1,6 @@
 // src/pages/Map/components/Filtering.jsx
 import '../Filtering.css';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
 import { useNavigate, useLocation } from 'react-router-dom';
 import blackcircle from '../../../assets/blackcircle.svg';
@@ -59,9 +59,12 @@ export default function Filtering() {
             },
         });
     };
+    // 추가된 상태
+    const [isSuggestOpen, setIsSuggestOpen] = useState(false);
+    const wrapperRef = useRef(null);
 
     const goBack = () => {
-        navigate(-1);
+        navigate('/mapmain');
     };
 
     // 입력창 자동완성
@@ -69,6 +72,8 @@ export default function Filtering() {
 
     //----------------
     // 강아지 품종 리스트
+    const [selectedPopularBreed, setSelectedPopularBreed] = useState('');
+
     const prioritizedBreeds = [
         '선택안함',
         '믹스견',
@@ -80,6 +85,8 @@ export default function Filtering() {
         '골든 리트리버',
         '치와와',
     ];
+    // (이전 훅들 아래쯤)
+    const popularBreeds = ['믹스견', '말티즈', '푸들', '포메라니안', '짓돗개', '시츄', '골든 리트리버', '치와와'];
 
     const otherBreeds = [
         '그레이하운드',
@@ -246,14 +253,23 @@ export default function Filtering() {
         if (!search.trim()) return allBreeds;
         return allBreeds.filter((b) => b.includes(search.trim()));
     }, [search, allBreeds]);
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+                setIsSuggestOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
     //--------------------------------------
 
     return (
         <div className="filter-page">
             <div className="filtering-header">
-                <button className="back-button2" onClick={goBack}>
-                    <IoIosArrowBack />
-                </button>
+                <div className="back-button2" onClick={goBack}>
+                    <IoIosArrowBack size={32} />
+                </div>
                 <div className="filtering-title">필터링</div>
             </div>
 
@@ -310,18 +326,66 @@ export default function Filtering() {
                 </div>
             </section>
 
-            <div className="breed">
-                <div className="breed-title">강아지 품종 *</div>
-                {/* onClick을 toggleSheet로 수정했습니다 */}
-                <div className="bread-body" onClick={toggleSheet}>
-                    <div className="bread-bodycomment">
-                        {breadFilter === '' || breadFilter === '선택안함' ? '강아지 품종을 선택해주세요' : breadFilter}
-                    </div>
-                    {/* 선택안함 부분 이면 ''로 변경하고 맵 메인도 ''로변경 */}
-                    <div className="bread-bodybtn">
-                        <img src={downbtn} alt="downbtn" />
-                    </div>
+            <div className="breed" ref={wrapperRef}>
+                <div className="breed-title">
+                    강아지 품종 *{' '}
+                    <div className="label-comment">품종은 한 개만 선택 가능합니다.</div>
                 </div>
+                {/* onClick을 toggleSheet로 수정했습니다 */}
+                <div className="bread-input-wrap">
+                    <input
+                        type="text"
+                        className="bread-input"
+                        placeholder="강아지 품종을 선택해주세요"
+                        value={search}
+                        onChange={(e) => {
+                            setSearch(e.target.value);
+                            setIsSuggestOpen(true);
+                        }}
+                        onFocus={() => setIsSuggestOpen(true)}
+                    />
+                    <div className="breed-search">검색</div>
+                </div>
+                <div className="popular-breeds">
+                    {popularBreeds.map((b) => (
+                        <label key={b} className="popular-breed-btn">
+                            <input
+                                type="checkbox"
+                                checked={selectedPopularBreed === b}
+                                onChange={() => {
+                                    const newSel = selectedPopularBreed === b ? '' : b;
+                                    setSelectedPopularBreed(newSel);
+                                    setSearch(newSel);
+                                    setBreadFilter(newSel);
+                                    setIsSuggestOpen(false);
+                                }}
+                            />
+                            <span>{b}</span>
+                        </label>
+                    ))}
+                </div>
+
+                {isSuggestOpen && filteredBreeds.length > 0 && (
+                    <div className="sug-wrap">
+                        <ul className="bread-suggestions">
+                            {filteredBreeds.map((b, i) => (
+                                <li
+                                    key={i}
+                                    className="bread-suggestion-item"
+                                    onClick={() => {
+                                        const val = b === '선택안함' ? '' : b;
+                                        setBreadFilter(val);
+                                        setSearch(val);
+                                        setIsSuggestOpen(false);
+                                        setSelectedPopularBreed(''); // 선택 해제
+                                    }}
+                                >
+                                    {b}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </div>
 
             <div className="pet-color">
@@ -358,44 +422,8 @@ export default function Filtering() {
             </div>
 
             <button className="apply-button" onClick={applyFilters}>
-                필터링 적용
+                필터 적용
             </button>
-
-            {/* 바텀시트 */}
-            {isSheetOpen && (
-                <BottomSheet initialPercent={0.9} maxPercent={0.9} minHeight={900}>
-                    <div style={{ padding: 16 }}>
-                        <div className="bread-sheet-header">
-                            <div className="bread-select">강아지 품종 선택</div>
-                            <img src={X} alt="X" className="bread-X" onClick={toggleSheet} />
-                        </div>
-                        <div className="bread-search">
-                            <input
-                                type="text"
-                                placeholder="찾을 종을 검색하세요"
-                                className="bread-input"
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                            />
-                        </div>
-                        <div className="bread-sheet-body">
-                            {filteredBreeds.map((breed, index) => (
-                                <div
-                                    className="bread-name"
-                                    key={index}
-                                    onClick={() => {
-                                        setBreadFilter(breed === '선택안함' ? '' : breed);
-                                        toggleSheet();
-                                        setSearch('');
-                                    }}
-                                >
-                                    {breed}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </BottomSheet>
-            )}
         </div>
     );
 }

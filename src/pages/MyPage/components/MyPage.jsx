@@ -1,5 +1,5 @@
 // src/pages/MyPage/components/MyPage.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
 import { FaCog, FaCamera } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -7,9 +7,41 @@ import '../MyPage.css';
 import user from '../../../assets/users.svg';
 import option from '../../../assets/options.svg';
 import BackHeader from '../../../shared/BackHeader/components/BackHeader';
+import axios from 'axios';
 
 export default function MyPage() {
     const navigate = useNavigate();
+    const [userInfo, setUserInfo] = useState(null);
+
+    // API : 회원정보 조회
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            const token = localStorage.getItem('accessToken');
+            console.log('토큰:', token);
+
+            if (!token) {
+                console.warn('토큰이 없습니다.');
+                return;
+            }
+
+            try {
+                const payloadBase64 = token.split('.')[1];
+                const payloadJson = atob(payloadBase64);
+                const payload = JSON.parse(payloadJson);
+
+                const id = payload.id;
+
+                const response = await axios.post('/api/member/info', { id });
+                setUserInfo(response.data);
+            } catch (err) {
+                console.error('토큰 파싱 에러:', err);
+            }
+        };
+
+        fetchUserInfo();
+    }, []);
+
+    console.log('회원 정보:', userInfo);
 
     return (
         <div className="my-page">
@@ -28,7 +60,13 @@ export default function MyPage() {
                 <div className="user-info">
                     <div className="user-text">
                         <div className="user-greeting">안녕하세요!</div>
-                        <div className="user-name">금오공대님</div>
+                        <div className="user-name">
+                            {userInfo ? (
+                                <p>{userInfo.nickname}님</p>
+                            ) : (
+                                <p>회원 정보를 불러오는 중...</p> // 또는 로딩 스피너 표시
+                            )}
+                        </div>
                     </div>
                 </div>
                 <button className="settings-button" aria-label="설정">
@@ -38,6 +76,7 @@ export default function MyPage() {
                 </button>
             </section>
 
+            {/* 내 정보 수정 */}
             <div className="menu-group1">
                 <div className="group-title">내 정보 수정</div>
                 <div className="menu-item" onClick={() => navigate('/change-password')}>
@@ -51,6 +90,7 @@ export default function MyPage() {
                 </div>
             </div>
 
+            {/* 이용안내 */}
             <div className="menu-group2">
                 <div className="group-title">이용안내</div>
                 <div className="menu-item" onClick={() => navigate('/app-version')}>
@@ -70,6 +110,7 @@ export default function MyPage() {
                 </div>
             </div>
 
+            {/* 기타 */}
             <div className="menu-group3">
                 <div className="group-title">기타</div>
                 <div className="menu-item" onClick={() => navigate('/privacy-settings')}>

@@ -5,7 +5,6 @@ import { GoChevronLeft } from 'react-icons/go';
 import { TiDelete } from 'react-icons/ti';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
-import { FaPhoneAlt, FaHospital } from 'react-icons/fa';
 import missing from '../../../assets/missing.svg';
 import missing2 from '../../../assets/missing2.svg';
 import sighting from '../../../assets/sighting.svg';
@@ -21,6 +20,7 @@ import pethospital from '../../../assets/pet-hospital.png';
 import axios from 'axios';
 import Footer from '../../../shared/Footer/Footer';
 import BottomSheet from './BottomSheet';
+import { MdMyLocation } from 'react-icons/md';
 import '../MapMain.css';
 
 export default function MapMain() {
@@ -61,9 +61,11 @@ export default function MapMain() {
     const [shelters, setShelters] = useState([]);
 
     //  바텀 시트
-    const snapPoints = [0.3, 0.5, 0.87];
+    const snapPoints = [0.3, 0, 0.87];
     const [snapIndex, setSnapIndex] = useState(1);
     const [percent, setPercent] = useState(snapPoints[0]);
+    const isFullyOpen = percent >= snapPoints[2];
+
     // ==================================================================================== useState 종료
     // ==================================================================================== useRef 시작
     // 지도 관련
@@ -756,7 +758,6 @@ export default function MapMain() {
     useEffect(() => {
         applyInitialMarkerFilter();
     }, [isMissing, isWitness, isShelter, isHospital]);
-
     // ==================================================================================== useEffect 종료
     // ==================================================================================== 렌더링 시작
     console.log('현재 percent 값:', percent);
@@ -812,7 +813,7 @@ export default function MapMain() {
                                 setIsMissing((prev) => !prev);
                             }}
                         >
-                            <img src={isMissing ? missing2 : missing} alt="실종" className="tag-img1" />
+                            <img src={isMissing ? missing : missing} alt="실종" className="tag-img1" />
                             실종
                         </span>
 
@@ -823,7 +824,7 @@ export default function MapMain() {
                                 setIsWitness((prev) => !prev);
                             }}
                         >
-                            <img src={isWitness ? sighting2 : sighting} alt="목격" className="tag-img1" />
+                            <img src={isWitness ? sighting : sighting} alt="목격" className="tag-img1" />
                             목격
                         </span>
 
@@ -832,7 +833,7 @@ export default function MapMain() {
                             className={`tag-wrap1 ${isHospital ? 'activeH' : ''}`}
                             onClick={() => setIsHospital((prev) => !prev)}
                         >
-                            <img src={isHospital ? hospital2 : hospital} alt="병원" className="tag-img1" />
+                            <img src={isHospital ? hospital : hospital} alt="병원" className="tag-img1" />
                             병원
                         </span>
                         {/* 1.4.보호소 태그 */}
@@ -840,11 +841,8 @@ export default function MapMain() {
                             className={`tag-wrap2 ${isShelter ? 'activeS' : ''}`}
                             onClick={() => setIsShelter((prev) => !prev)}
                         >
-                            <img src={isShelter ? shelter2 : shelter} alt="보호소" className="tag-img" />
+                            <img src={isShelter ? shelter : shelter} alt="보호소" className="tag-img" />
                             보호소
-                        </span>
-                        <span className="location-wrap" onClick={moveToMyLocation}>
-                            <img src={mylocation} alt="내 위치" className="location-img" />
                         </span>
                     </div>
                 </form>
@@ -901,65 +899,39 @@ export default function MapMain() {
                     </div>
                 </div>
             )}
-
-            <BottomSheet
-                percent={percent}
-                minPercent={snapPoints[1]}
-                maxPercent={snapPoints[2]}
-                onDragEnd={handleDragEnd}
-            >
-                {activeMarker ? (
-                    // 2. 마커 클릭 시 보여줄 내용
-                    <div>
-                        {/* 2.1. 실종 마커 선택 */}
-                        {activeMarker.type === 'missing' && (
-                            <div
-                                className="list-wrap"
-                                onClick={() =>
-                                    navigate(`/missingpostDetail/${activeMarker.data.id}`, {
-                                        state: { post: activeMarker.data },
-                                    })
-                                }
-                            >
-                                <div className="list-left">
-                                    <div className="state">
-                                        <img src={missing2} alt="missing2" className="sheet-img" />
-                                        실종
-                                    </div>
-                                    <div className="list-location">
-                                        {activeMarker.data.location} {/* 주소*/}
-                                        <p>{activeMarker.data.date}</p> {/* 글 등록 시간 */}
-                                    </div>
-                                </div>
-                                <div className="list-img">
-                                    <img
-                                        src={getImageUrl(activeMarker.data.imageUrl)}
-                                        alt="testdog"
-                                        className="sheet-nailimg"
-                                    />
-                                </div>
-                                <hr />
-                            </div>
-                        )}
-                        {/* 2.2. 목격 마커 선택 */}
-                        {activeMarker.type === 'witness' && (
-                            <>
+            <div className="map-bottom-wrapper">
+                {!isFullyOpen && (
+                    <span className="location-wrap" onClick={moveToMyLocation}>
+                        <MdMyLocation size={26} className="lo-img" />
+                    </span>
+                )}
+                <BottomSheet
+                    percent={percent}
+                    minPercent={snapPoints[1]}
+                    maxPercent={snapPoints[2]}
+                    onDragEnd={handleDragEnd}
+                >
+                    {activeMarker ? (
+                        // 2. 마커 클릭 시 보여줄 내용
+                        <div>
+                            {/* 2.1. 실종 마커 선택 */}
+                            {activeMarker.type === 'missing' && (
                                 <div
                                     className="list-wrap"
                                     onClick={() =>
-                                        navigate(`/witnesspostDetail/${activeMarker.data.id}`, {
-                                            state: { postId: activeMarker.data.id },
+                                        navigate(`/missingpostDetail/${activeMarker.data.id}`, {
+                                            state: { post: activeMarker.data },
                                         })
                                     }
                                 >
                                     <div className="list-left">
-                                        <div className="state-find">
+                                        <div className="state">
                                             <img src={missing2} alt="missing2" className="sheet-img" />
-                                            목격
+                                            실종
                                         </div>
                                         <div className="list-location">
-                                            {activeMarker.data.location}
-                                            <p>{activeMarker.data.date}</p>
+                                            {activeMarker.data.location} {/* 주소*/}
+                                            <p>{activeMarker.data.date}</p> {/* 글 등록 시간 */}
                                         </div>
                                     </div>
                                     <div className="list-img">
@@ -971,218 +943,250 @@ export default function MapMain() {
                                     </div>
                                     <hr />
                                 </div>
-                            </>
-                        )}
-                        {/* 2.3. 보호소 마커 선택 */}
-                        {activeMarker.type === 'shelter' && (
-                            <div
-                                className="list-wrap"
-                                onClick={() =>
-                                    navigate('/shelterdetail', {
-                                        state: {
-                                            shelters: shelters,
-                                            selectedShelter: activeMarker.data.fullShelter, // ← 여기
-                                        },
-                                    })
-                                }
-                            >
-                                <div>
-                                    <div className="shelter-wrap">
-                                        <img src={shelter2} alt="보호소" className="tag-img" />
-                                        보호소
-                                    </div>
-                                    <div className="list-left">
-                                        <div className="state-shelter">{activeMarker.data.fullShelter.shelterName}</div>
-                                        <div className="list-location">
-                                            {activeMarker.data.fullShelter.address}
-                                            {activeMarker.data.fullShelter.protectionLocation}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="list-img">
-                                    <img
-                                        src={activeMarker.data.fullShelter.imageUrl ?? '/default-image.png'}
-                                        alt="animal"
-                                        className="sheet-nailimg"
-                                    />
-                                </div>
-                            </div>
-                        )}
-                        {/* 2.4. 병원 마커 선택 */}
-                        {activeMarker.type === 'hospital' && (
-                            <div className="list-wrap">
-                                <div>
-                                    <div className="hospital-wrap">
-                                        <img src={hospital2} alt="병원" className="tag-img" />
-                                        병원
-                                    </div>
-                                    <div className="list-left">
-                                        <div className="state-hospital">{activeMarker.data.name}</div>
-                                        <div className="list-location">{activeMarker.data.location}</div>
-                                        <div className="list-location">{activeMarker.data.phone}</div>
-                                    </div>
-                                </div>
-                                <div className="list-img">
-                                    <img src={pethospital} alt="hospital" className="sheet-nailimg" />
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                ) : (
-                    // map 써서 받아온 리스트 쭉 보여주면 됨
-                    // 3. 리스트
-                    <div>
-                        <div className="list-header">
-                            <div className="post-count">
-                                {(isMissing ? missingPosts.length : 0) +
-                                    (isWitness ? witnessPosts.length : 0) +
-                                    (isShelter ? shelters.length : 0) +
-                                    (isHospital ? hospitals.length : 0)}
-                                개의 게시글
-                            </div>
-                            <div
-                                className={`sort-toggle ${!isLatest ? 'reversed' : ''}`}
-                                onClick={() => setIsLatest((prev) => !prev)}
-                            >
-                                {isLatest ? '최근작성순' : '오래된 순'}
-                                <img src={change} alt="변경" />
-                            </div>
-                        </div>
-
-                        <div className="list-wrap-group">
-                            {/* 3.1. 실종 리스트 */}
-                            {isMissing &&
-                                missingPosts
-                                    .slice()
-                                    .sort((a, b) =>
-                                        isLatest
-                                            ? new Date(b.missingDatetime) - new Date(a.missingDatetime)
-                                            : new Date(a.missingDatetime) - new Date(b.missingDatetime)
-                                    )
-                                    .map((post) => (
-                                        <div
-                                            key={`missing-${post.id}`}
-                                            className="list-wrap"
-                                            onClick={() => navigate(`/missingpostDetail/${post.id}`)}
-                                        >
-                                            <div className="list-left">
-                                                <div className="state">
-                                                    <img src={missing2} alt="missing2" className="sheet-img" />
-                                                    실종
-                                                </div>
-                                                <div className="list-location">
-                                                    {post.missingLocation}
-                                                    <p>{new Date(post.missingDatetime).toLocaleString()}</p>
-                                                </div>
-                                            </div>
-                                            <div className="list-img">
-                                                <img
-                                                    src={getImageUrl(post.photoUrl)}
-                                                    alt="dog"
-                                                    className="sheet-nailimg"
-                                                />
-                                            </div>
-                                            <hr />
-                                        </div>
-                                    ))}
-
-                            {/* 3.2. 목격 리스트 */}
-                            {isWitness &&
-                                witnessPosts
-                                    .slice()
-                                    .sort((a, b) =>
-                                        isLatest
-                                            ? new Date(b.witnessDatetime) - new Date(a.witnessDatetime)
-                                            : new Date(a.witnessDatetime) - new Date(b.witnessDatetime)
-                                    )
-                                    .map((post) => (
-                                        <div
-                                            key={`witness-${post.id}`}
-                                            className="list-wrap"
-                                            onClick={() => navigate(`/witnesspostDetail/${post.id}`)}
-                                        >
-                                            <div className="list-left">
-                                                <div className="state-find">
-                                                    <img src={sighting2} alt="witness" className="sheet-img" />
-                                                    목격
-                                                </div>
-                                                <div className="list-location">
-                                                    {post.witnessLocation}
-                                                    <p>{new Date(post.witnessDatetime).toLocaleString()}</p>
-                                                </div>
-                                            </div>
-                                            <div className="list-img">
-                                                <img
-                                                    src={getImageUrl(post.photoUrl.split(',')[0])} // 첫 번째 경로만 사용
-                                                    alt="dog"
-                                                    className="sheet-nailimg"
-                                                />
-                                            </div>
-                                            <hr />
-                                        </div>
-                                    ))}
-
-                            {/* 3.3. 보호소 리스트 */}
-                            {isShelter &&
-                                shelters.map((shelter, index) => (
+                            )}
+                            {/* 2.2. 목격 마커 선택 */}
+                            {activeMarker.type === 'witness' && (
+                                <>
                                     <div
-                                        key={`shelter-${index}`}
                                         className="list-wrap"
                                         onClick={() =>
-                                            navigate('/shelterdetail', {
-                                                state: {
-                                                    shelters: shelters,
-                                                    selectedShelter: shelter,
-                                                },
+                                            navigate(`/witnesspostDetail/${activeMarker.data.id}`, {
+                                                state: { postId: activeMarker.data.id },
                                             })
                                         }
                                     >
-                                        <div>
-                                            <div className={`shelter-wrap`}>
-                                                <img src={shelter2} alt="보호소" className="tag-img" />
-                                                보호소
+                                        <div className="list-left">
+                                            <div className="state-find">
+                                                <img src={missing2} alt="missing2" className="sheet-img" />
+                                                목격
                                             </div>
-                                            <div className="list-left">
-                                                <div className="state-shelter">{shelter.shelterName}</div>
-                                                <div className="list-location">{shelter.protectionLocation}</div>
+                                            <div className="list-location">
+                                                {activeMarker.data.location}
+                                                <p>{activeMarker.data.date}</p>
                                             </div>
                                         </div>
                                         <div className="list-img">
                                             <img
-                                                src={shelter.imageUrls?.split(';')[0] || '/default-image.png'}
-                                                alt="animal"
+                                                src={getImageUrl(activeMarker.data.imageUrl)}
+                                                alt="testdog"
                                                 className="sheet-nailimg"
                                             />
                                         </div>
                                         <hr />
                                     </div>
-                                ))}
-
-                            {/* 3.4. 병원 리스트 */}
-                            {isHospital &&
-                                hospitals.map((hospital, index) => (
-                                    <div key={`hospital-${index}`} className="list-wrap">
-                                        <div>
-                                            <div className={`hospital-wrap`}>
-                                                <img src={hospital2} alt="병원" className="tag-img" />
-                                                병원
+                                </>
+                            )}
+                            {/* 2.3. 보호소 마커 선택 */}
+                            {activeMarker.type === 'shelter' && (
+                                <div
+                                    className="list-wrap"
+                                    onClick={() =>
+                                        navigate('/shelterdetail', {
+                                            state: {
+                                                shelters: shelters,
+                                                selectedShelter: activeMarker.data.fullShelter, // ← 여기
+                                            },
+                                        })
+                                    }
+                                >
+                                    <div>
+                                        <div className="shelter-wrap">
+                                            <img src={shelter2} alt="보호소" className="tag-img" />
+                                            보호소
+                                        </div>
+                                        <div className="list-lefts">
+                                            <div className="state-shelter">
+                                                {activeMarker.data.fullShelter.shelterName}
                                             </div>
-                                            <div className="list-left">
-                                                <div className="state-hospital">{hospital.name}</div>
-                                                <div className="list-location">{hospital.address}</div>
-                                                <div className="list-location">{hospital.phone}</div>
+                                            <div className="list-location">
+                                                {activeMarker.data.fullShelter.address}
+                                                {activeMarker.data.fullShelter.protectionLocation}
                                             </div>
                                         </div>
-                                        <div className="list-img">
-                                            <img src={pethospital} alt="hospital" className="sheet-nailimg" />
-                                        </div>
-                                        <hr />
                                     </div>
-                                ))}
+                                    <div className="list-img">
+                                        <img
+                                            src={activeMarker.data.fullShelter.imageUrl ?? '/default-image.png'}
+                                            alt="animal"
+                                            className="sheet-nailimg"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                            {/* 2.4. 병원 마커 선택 */}
+                            {activeMarker.type === 'hospital' && (
+                                <div className="list-wrap">
+                                    <div>
+                                        <div className="hospital-wrap">
+                                            <img src={hospital2} alt="병원" className="tag-img" />
+                                            병원
+                                        </div>
+                                        <div className="list-left">
+                                            <div className="state-hospital">{activeMarker.data.name}</div>
+                                            <div className="list-locationh">{activeMarker.data.location}</div>
+                                            <div className="list-locationh">{activeMarker.data.phone}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                    </div>
-                )}
-            </BottomSheet>
+                    ) : (
+                        // map 써서 받아온 리스트 쭉 보여주면 됨
+                        // 3. 리스트
+                        <div>
+                            <div className="list-header">
+                                <div className="post-count">
+                                    {(isMissing ? missingPosts.length : 0) +
+                                        (isWitness ? witnessPosts.length : 0) +
+                                        (isShelter ? shelters.length : 0) +
+                                        (isHospital ? hospitals.length : 0)}
+                                    개의 게시글
+                                </div>
+                                <div
+                                    className={`sort-toggle ${!isLatest ? 'reversed' : ''}`}
+                                    onClick={() => setIsLatest((prev) => !prev)}
+                                >
+                                    {isLatest ? '최근작성순' : '오래된 순'}
+                                    <img src={change} alt="변경" />
+                                </div>
+                            </div>
+
+                            <div className="list-wrap-group">
+                                {/* 3.1. 실종 리스트 */}
+                                {isMissing &&
+                                    missingPosts
+                                        .slice()
+                                        .sort((a, b) =>
+                                            isLatest
+                                                ? new Date(b.missingDatetime) - new Date(a.missingDatetime)
+                                                : new Date(a.missingDatetime) - new Date(b.missingDatetime)
+                                        )
+                                        .map((post) => (
+                                            <div
+                                                key={`missing-${post.id}`}
+                                                className="list-wrap"
+                                                onClick={() => navigate(`/missingpostDetail/${post.id}`)}
+                                            >
+                                                <div className="list-left">
+                                                    <div className="state">
+                                                        <img src={missing2} alt="missing2" className="sheet-img" />
+                                                        실종
+                                                    </div>
+                                                    <div className="list-location">
+                                                        {post.missingLocation}
+                                                        <p>{new Date(post.missingDatetime).toLocaleString()}</p>
+                                                    </div>
+                                                    {/* 댓글 개수 */}
+                                                    <div>{`댓글 ${post.commentCount}개`}</div>
+                                                </div>
+                                                <div className="list-img">
+                                                    <img
+                                                        src={getImageUrl(post.photoUrl)}
+                                                        alt="dog"
+                                                        className="sheet-nailimg"
+                                                    />
+                                                </div>
+                                                <hr />
+                                            </div>
+                                        ))}
+
+                                {/* 3.2. 목격 리스트 */}
+                                {isWitness &&
+                                    witnessPosts
+                                        .slice()
+                                        .sort((a, b) =>
+                                            isLatest
+                                                ? new Date(b.witnessDatetime) - new Date(a.witnessDatetime)
+                                                : new Date(a.witnessDatetime) - new Date(b.witnessDatetime)
+                                        )
+                                        .map((post) => (
+                                            <div
+                                                key={`witness-${post.id}`}
+                                                className="list-wrap"
+                                                onClick={() => navigate(`/witnesspostDetail/${post.id}`)}
+                                            >
+                                                <div className="list-left">
+                                                    <div className="state-find">
+                                                        <img src={sighting2} alt="witness" className="sheet-img" />
+                                                        목격
+                                                    </div>
+                                                    <div className="list-location">
+                                                        {post.witnessLocation}
+                                                        <p>{new Date(post.witnessDatetime).toLocaleString()}</p>
+                                                    </div>
+                                                    {/* 댓글 개수 */}
+                                                    <div>{`댓글 ${post.commentCount}개`}</div>
+                                                </div>
+                                                <div className="list-img">
+                                                    <img
+                                                        src={getImageUrl(post.photoUrl.split(',')[0])} // 첫 번째 경로만 사용
+                                                        alt="dog"
+                                                        className="sheet-nailimg"
+                                                    />
+                                                </div>
+                                                <hr />
+                                            </div>
+                                        ))}
+
+                                {/* 3.3. 보호소 리스트 */}
+                                {isShelter &&
+                                    shelters.map((shelter, index) => (
+                                        <div
+                                            key={`shelter-${index}`}
+                                            className="list-wrap"
+                                            onClick={() =>
+                                                navigate('/shelterdetail', {
+                                                    state: {
+                                                        shelters: shelters,
+                                                        selectedShelter: shelter,
+                                                    },
+                                                })
+                                            }
+                                        >
+                                            <div>
+                                                <div className={`shelter-wrap`}>
+                                                    <img src={shelter2} alt="보호소" className="tag-img" />
+                                                    보호소
+                                                </div>
+                                                <div className="list-lefts">
+                                                    <div className="state-shelter">{shelter.shelterName}</div>
+                                                    <div className="list-location">{shelter.protectionLocation}</div>
+                                                </div>
+                                            </div>
+                                            <div className="list-img">
+                                                <img
+                                                    src={shelter.imageUrls?.split(';')[0] || '/default-image.png'}
+                                                    alt="animal"
+                                                    className="sheet-nailimg"
+                                                />
+                                            </div>
+                                            <hr />
+                                        </div>
+                                    ))}
+
+                                {/* 3.4. 병원 리스트 */}
+                                {isHospital &&
+                                    hospitals.map((hospital, index) => (
+                                        <div key={`hospital-${index}`} className="list-wrap">
+                                            <div>
+                                                <div className={`hospital-wrap`}>
+                                                    <img src={hospital2} alt="병원" className="tag-img" />
+                                                    병원
+                                                </div>
+                                                <div className="list-lefth">
+                                                    <div className="state-hospital">{hospital.name}</div>
+                                                    <div className="list-locationh">{hospital.address}</div>
+                                                    <div className="list-locationh">{hospital.phone}</div>
+                                                </div>
+                                            </div>
+                                            <hr />
+                                        </div>
+                                    ))}
+                            </div>
+                        </div>
+                    )}
+                </BottomSheet>
+            </div>
 
             <Footer />
         </div>

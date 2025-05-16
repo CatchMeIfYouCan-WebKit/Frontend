@@ -14,19 +14,17 @@ import user from '../../../assets/users.svg';
 
 export default function MissingPostDetail() {
     const navigate = useNavigate();
+    const mapRef = useRef(null);
+
     const { id } = useParams();
     const [post, setPost] = useState(null);
     const [fadeOut, setFadeOut] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [commentInput, setCommentInput] = useState('');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [commentList, setCommentList] = useState([
-        {
-            author: '조진혁',
-            date: '2025년 10월 21일',
-            content: '빨리 찾았으면 좋겠네요!',
-        },
-    ]);
+    const [commentInput, setCommentInput] = useState('');
+    const [replyTargetId, setReplyTargetId] = useState(null);
+    const [replyInput, setReplyInput] = useState('');
+    const [commentList, setCommentList] = useState([]);
 
     const post2 = { images: [testdog, testdog, testdog] };
 
@@ -41,19 +39,6 @@ export default function MissingPostDetail() {
         setCurrentImageIndex(Math.round(scrollLeft / width));
     };
 
-    const handleCommentSubmit = () => {
-        if (!commentInput.trim()) return;
-
-        const newComment = {
-            author: '익명',
-            date: new Date().toISOString().split('T')[0],
-            content: commentInput,
-        };
-
-        setCommentList((prev) => [...prev, newComment]);
-        setCommentInput('');
-    };
-
     const getImageUrl = (path) => {
         if (!path) return '/default-image.png';
         const host = window.location.hostname;
@@ -61,9 +46,87 @@ export default function MissingPostDetail() {
         return `http://${host}:${port}${path}`;
     };
 
+    // 현재 사용자의 id 가져오기
+    function getCurrentUserId() {
+        const token = localStorage.getItem('accessToken');
+        console.log('토큰:', token);
+
+        if (!token) {
+            console.warn('토큰이 없습니다.');
+            return;
+        }
+
+        try {
+            const payloadBase64 = token.split('.')[1];
+            const payloadJson = atob(payloadBase64);
+            const payload = JSON.parse(payloadJson);
+
+            return payload.id; // 바로 id만 반환
+        } catch (err) {
+            console.error('토큰 파싱 에러:', err);
+            return null;
+        }
+    }
+
+    // API : 댓글 등록
+    const handleCommentSubmit = async () => {
+        if (!commentInput.trim()) return;
+
+        try {
+            await axios.post('/api/comments', {
+                postId: Number(id), // 게시글 ID
+                userId: getCurrentUserId(), // 현재 로그인된 사용자 ID 동적 할당
+                content: commentInput,
+            });
+
+            console.log('✅ 댓글 작성 성공'); // 성공 로그 추가
+            setCommentInput('');
+
+            // 댓글 다시 조회
+            const response = await axios.get(`/api/comments/post/${id}`);
+            const sortedComments = response.data.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+            setCommentList(sortedComments);
+        } catch (err) {
+            console.error('댓글 작성 실패:', err.response?.data?.error || err.message);
+        }
+    };
+
+    // API : 대댓글 등록
+    const handleReplySubmit = async (parentCommentId) => {
+        if (!replyInput.trim()) return;
+
+        try {
+            await axios.post('/api/comments', {
+                postId: Number(id),
+                userId: getCurrentUserId(),
+                content: replyInput,
+                parentCommentId: parentCommentId,
+            });
+
+            console.log('대댓글 작성 성공');
+
+            setReplyInput('');
+            setReplyTargetId(null); // 입력창 닫기
+
+            // 댓글 목록 새로고침
+            const response = await axios.get(`/api/comments/post/${id}`);
+            const sortedComments = response.data.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+            setCommentList(sortedComments);
+        } catch (err) {
+            console.error('대댓글 작성 실패:', err.response?.data?.error || err.message);
+        }
+    };
+
+    // 대댓글 추가 버튼
+    const handleReplyClick = (commentId) => {
+        setReplyTargetId((prevId) => (prevId === commentId ? null : commentId));
+    };
+
+    // ?분 전
     const calculateTimeAgo = (createdAt) => {
         const now = new Date();
-        const createdDate = new Date(createdAt);
+        const isoDateStr = createdAt.replace(' ', 'T') + '+09:00';
+        const createdDate = new Date(isoDateStr);
 
         const diffMs = now - createdDate;
         const diffMinutes = Math.floor(diffMs / (1000 * 60));
@@ -76,24 +139,48 @@ export default function MissingPostDetail() {
         return `${diffDays}일 전`;
     };
 
+
     // ❌ 실제 API 호출 제거 → ✅ 테스트용 데이터 강제 지정
+=======
+    // 날짜 변환
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+    }
+    // ======================================================================================== useEffect
+    // API : 실종 게시글
+
+//     useEffect(() => {
+//         const testData = {
+//             userNickname: '홍길동',
+//             dogName: '코코',
+//             breed: '말티즈',
+//             createdAt: new Date().toISOString(),
+//             missingDatetime: new Date().toISOString(),
+//             postType: 'missing',
+//             missingLocation: '서울특별시 강남구 개포동',
+//             detailDescription: '산책 중이던 강아지가 사라졌습니다. 흰색에 활발한 성격입니다.',
+//             photoUrl: testdog, // 여기!
+//         };
+//         setPost(testData);
+//     }, []);
+
+    // API : 댓글 조회
     useEffect(() => {
-        const testData = {
-            userNickname: '홍길동',
-            dogName: '코코',
-            breed: '말티즈',
-            createdAt: new Date().toISOString(),
-            missingDatetime: new Date().toISOString(),
-            postType: 'missing',
-            missingLocation: '서울특별시 강남구 개포동',
-            detailDescription: '산책 중이던 강아지가 사라졌습니다. 흰색에 활발한 성격입니다.',
-            photoUrl: testdog, // 여기!
+        const fetchComments = async () => {
+            try {
+                const response = await axios.get(`/api/comments/post/${id}`);
+                setCommentList(response.data);
+                console.log('댓글 목록 조회 성공: ', response.data);
+            } catch (err) {
+                console.error('댓글 목록 조회 실패: ', err.response?.data?.error || err.message);
+            }
         };
-        setPost(testData);
-    }, []);
 
-    const mapRef = useRef(null);
+        fetchComments();
+    }, [id]);
 
+    // 지도 로드
     useEffect(() => {
         if (!post || !post.missingLocation) return;
 
@@ -133,7 +220,7 @@ export default function MissingPostDetail() {
     }, [post]);
 
     if (!post) return <div>Loading...</div>;
-
+    // ======================================================================================== useEffect
     return (
         <>
             <header className="missing-header">
@@ -223,6 +310,7 @@ export default function MissingPostDetail() {
 
                 <div className="missing-comment-section">
                     <div className="missing-comment-count">댓글 {commentList.length}개</div>
+
                     {commentList.map((cmt, idx) => (
                         <div className="missing-comment" key={idx}>
                             <div className="missing-comment-content">
@@ -236,21 +324,98 @@ export default function MissingPostDetail() {
                             </div>
                         </div>
                     ))}
+
+                    {commentList
+                        .filter((comment) => !comment.parentCommentId)
+                        .map((parent, idx) => (
+                            <React.Fragment key={idx}>
+                                {/* 부모 댓글 */}
+                                <div
+                                    className={`missing-comment ${replyTargetId === parent.id ? 'reply-input' : ''}`}
+                                    onClick={() => handleReplyClick(parent.id)}
+                                >
+                                    <img src={user} alt="작성자" className="missing-comment-profile-circle" />
+                                    <div className="missing-comment-content">
+                                        <div className="missing-comment-meta">
+                                            <span className="missing-comment-author">
+                                                {parent.nickname}
+                                                {parent.userId === post.userId && (
+                                                    <span className="missing-comment-author-writer"> (글쓴이)</span>
+                                                )}
+                                            </span>
+                                            <span className="missing-comment-date">{formatDate(parent.createdAt)}</span>
+                                            <span className="missing-comment-date">
+                                                ({calculateTimeAgo(parent.createdAt)})
+                                            </span>
+                                        </div>
+                                        <div className="missing-comment-text">{parent.content}</div>
+                                    </div>
+                                </div>
+
+                                {/* 대댓글 */}
+                                {commentList
+                                    .filter((comment) => comment.parentCommentId === parent.id)
+                                    .map((child, cIdx) => (
+                                        <div key={`child-${cIdx}`} className="missing-comment reply-comment">
+                                            <img src={user} alt="작성자" className="missing-comment-profile-circle" />
+                                            <div className="missing-comment-content">
+                                                <div className="missing-comment-meta">
+                                                    <span className="missing-comment-author">
+                                                        {child.nickname}
+                                                        {child.userId === post.userId && (
+                                                            <span className="missing-comment-author-writer">
+                                                                {' '}
+                                                                (글쓴이)
+                                                            </span>
+                                                        )}
+                                                    </span>
+                                                    <span className="missing-comment-date">
+                                                        {formatDate(child.createdAt)}
+                                                    </span>
+                                                    <span className="missing-comment-date">
+                                                        ({calculateTimeAgo(child.createdAt)})
+                                                    </span>
+                                                </div>
+                                                <div className="missing-comment-text">{child.content}</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                            </React.Fragment>
+                        ))}
                 </div>
 
                 <div className="missing-comment-input-box">
                     <input
                         type="text"
-                        placeholder="댓글을 작성해주세요"
+                        placeholder={replyTargetId ? '답글을 입력하세요' : '댓글을 작성해주세요'}
                         className="missing-comment-input"
-                        value={commentInput}
-                        onChange={(e) => setCommentInput(e.target.value)}
+                        value={replyTargetId ? replyInput : commentInput}
+                        onChange={(e) =>
+                            replyTargetId ? setReplyInput(e.target.value) : setCommentInput(e.target.value)
+                        }
                     />
-                    <button className="missing-submit-btn" onClick={handleCommentSubmit}>
+                    <button
+                        className="missing-submit-btn"
+                        onClick={() => (replyTargetId ? handleReplySubmit(replyTargetId) : handleCommentSubmit())}
+                    >
                         <img src={send} alt="send" className="missing-send-image" />
                     </button>
                 </div>
             </div>
         </>
     );
+}
+
+{
+    /* 답글 쓰기 버튼 */
+}
+{
+    /* {!comment.parentCommentId && (
+                                    <button
+                                        className="missing-comment-reply-btn"
+                                        onClick={() => handleReplyClick(comment.id)}
+                                    >
+                                        {replyTargetId === comment.id ? '답글 취소' : '답글 쓰기'}
+                                    </button>
+                                )} */
 }

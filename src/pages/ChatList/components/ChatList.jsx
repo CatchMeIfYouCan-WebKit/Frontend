@@ -3,6 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faUser } from '@fortawesome/free-regular-svg-icons';
+import Header from '../../../shared/Header/components/Header';
 
 // shared Header의 스타일을 그대로 쓰기 위해 CSS만 불러옵니다.
 import '../../../shared/Header/Header.css';
@@ -26,20 +27,7 @@ export default function ChatList() {
     return (
         <div className="chatlist-container">
             {/* === Header 시작 === */}
-            <header className="main-header2">
-                <div className="logo-section">
-                    {/* 원래 logo <img> 대신 brand 텍스트를 “채팅”으로 */}
-                    <span className="brand2">채팅</span>
-                </div>
-                <div className="icons">
-                    <button className="icon-button" onClick={() => navigate('/notifications')} aria-label="알림">
-                        <FontAwesomeIcon icon={faBell} style={{ color: '#111111' }} />
-                    </button>
-                    <button className="icon-button" onClick={() => navigate('/mypage')} aria-label="마이페이지">
-                        <FontAwesomeIcon icon={faUser} style={{ color: '#111111' }} />
-                    </button>
-                </div>
-            </header>
+            <Header/>
             {/* === Header 끝 === */}
 
             <div className="chatlist-alert">

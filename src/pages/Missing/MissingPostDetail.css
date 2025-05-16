@@ -224,10 +224,40 @@
     margin-left: 15px;
 }
 
+/* 원댓글 */
 .missing-comment {
     display: flex;
+
     align-items: flex-start; /* 수정: 위쪽 정렬로 텍스트 정렬 개선 */
     margin-bottom: 16px;
+
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+/* 대댓글 */
+.reply-comment {
+    position: relative;
+    background-color: #eee;
+    border-radius: 15px;
+    padding: 10px;
+    margin: 0 30px 16px 60px; /* 위 오른 아래 왼 */
+}
+
+.reply-comment::before {
+    content: 'ㄴ';
+    position: absolute;
+    left: -30px;
+    top: 12px; /* 원하는 위치로 조정 */
+    color: #000;
+    font-size: 16px;
+}
+
+/* 대댓글 등록 시 */
+.reply-input {
+    background-color: #b66;
+    padding: 5px;
+
 }
 
 .missing-comment-profile-circle {
@@ -246,6 +276,7 @@
 }
 
 .missing-comment-meta {
+
     font-size: 20px;
     color: #8c8c8c;
     font-weight: bold;
@@ -255,6 +286,25 @@
     color: #111111;
     letter-spacing: -0.5px;
     margin-left: 8px;
+=======
+    font-size: 16px;
+    color: #888;
+}
+
+/* 댓글 작성자 */
+.missing-comment-author {
+    font-weight: bold;
+    color: #333;
+    margin-right: 6px;
+    text-align: left;
+    margin-top: 10px;
+    margin-left: 5px;
+}
+
+/* 글 작성자(글쓴이) */
+.missing-comment-author-writer {
+    color: #33d;
+
 }
 
 .missing-comment-text {
@@ -312,6 +362,7 @@
     color: #8c8a8c;
     font-weight: normal;
 }
+
 .missing-comment-input::placeholder {
     padding-top: 10px; /* 위 공간 확보 */
     letter-spacing: -0.5px;
@@ -319,6 +370,9 @@
     color: #8c8c8c; /* 필요하면 색상도 조정 */
     font-weight: normal;
 }
+
+
+
 .missing-submit-btn {
     background: none;
     border: none;
