@@ -9,9 +9,6 @@ import silvercircle from '../../../assets/silvercircle.svg';
 import browncircle from '../../../assets/browncircle.svg';
 import darkgoldcircle from '../../../assets/darkgoldcircle.svg';
 import whitecircle from '../../../assets/whitecircle.svg';
-import downbtn from '../../../assets/downbtn.svg';
-import BottomSheet from './BottomSheet';
-import X from '../../../assets/X.svg';
 import { FaCheck } from 'react-icons/fa';
 
 export default function Filtering() {
@@ -28,15 +25,6 @@ export default function Filtering() {
     const [selectedColors, setSelectedColors] = useState(Array.isArray(init.colorFiltering) ? init.colorFiltering : []);
     const toggleColor = (color) => {
         setSelectedColors((prev) => (prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]));
-    };
-
-    const colorMap = {
-        검은색: '#000000',
-        하얀색: '#F1F1F1',
-        회색: '#808080',
-        브라운: '#A52A2A',
-        붉은색: '#FF0000',
-        골드: '#FFD700',
     };
     //--------------
 
@@ -276,7 +264,7 @@ export default function Filtering() {
             <section>
                 <div className="label-wrap">
                     <div className="tag-title">
-                        마커 필터링 *{' '}
+                        마커 필터링 <span className="required">*</span>{' '}
                         <div className="label-comment">체크 박스를 클릭하면 필터링을 중복으로 적용할 수 있어요.</div>
                     </div>
                     <label>
@@ -328,7 +316,7 @@ export default function Filtering() {
 
             <div className="breed" ref={wrapperRef}>
                 <div className="breed-title">
-                    강아지 품종 *{' '}
+                    강아지 품종 <span className="required">*</span>{' '}
                     <div className="label-comment">품종은 한 개만 선택 가능합니다.</div>
                 </div>
                 {/* onClick을 toggleSheet로 수정했습니다 */}
@@ -390,7 +378,8 @@ export default function Filtering() {
 
             <div className="pet-color">
                 <div className="pet-color-title">
-                    털색 *<span className="pet-color-comment">털 색상이 한 가지가 아닌경우 중복 선택 가능합니다.</span>
+                    털색 <span className="required">*</span>
+                    <span className="pet-color-comment">털 색상이 한 가지가 아닌경우 중복 선택 가능합니다.</span>
                 </div>
                 <div className="color-container">
                     {[

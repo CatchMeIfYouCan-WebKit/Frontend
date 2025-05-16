@@ -140,105 +140,109 @@ export default function WitnessPostForm() {
     };
 
     // 사진 업로드
+    let isImageUploadPopupOpen = false;
+
     const handleMorpheusImageUpload = () => {
         if (files.length >= 5) {
             showToast('사진은 최대 5장까지 등록할 수 있습니다.');
             return;
         }
-        const userChoice = confirm('사진을 촬영하시겠습니까?');
 
-        const handleAddPhoto = (newFile, newPreviewUrl) => {
-            setFiles([...files, newFile]);
-            setPreviewUrls([...previewUrls, newPreviewUrl]);
-        };
+        if (isImageUploadPopupOpen) {
+            console.log('[이미지 업로드] 팝업이 이미 열려있습니다.');
+            return;
+        }
 
-        const uploadImage = async (localPath) => {
-            const fileExt = localPath.split('.').pop().toLowerCase();
-            const mimeTypeMap = {
-                jpg: 'image/jpeg',
-                jpeg: 'image/jpeg',
-                png: 'image/png',
-                gif: 'image/gif',
-            };
-            const mimeType = mimeTypeMap[fileExt] || 'image/jpeg';
+        isImageUploadPopupOpen = true;
 
-            const response = await fetch(localPath);
-            const blob = await response.blob();
-            const file = new File([blob], `profile.${fileExt}`, { type: mimeType });
+        M.pop.alert({
+            title: '사진 업로드',
+            message: '원하는 방법을 선택하세요.',
+            buttons: ['촬영하기', '취소', '앨범에서 선택'],
+            callback: (index) => {
+                isImageUploadPopupOpen = false;
 
-            const formData = new FormData();
-            formData.append('file', file);
+                switch (parseInt(index, 10)) {
+                    case 0:
+                        M.media.camera({
+                            mediaType: 'PHOTO',
+                            path: '/media',
+                            saveAlbum: true,
+                            callback: handleResult,
+                        });
+                        break;
+                    case 2:
+                        M.media.picker({
+                            mode: 'SINGLE',
+                            mediaType: 'ALL',
+                            path: '/media',
+                            column: 3,
+                            callback: handleResult,
+                        });
+                        break;
+                    default:
+                        console.log('[이미지 업로드] 취소 또는 잘못된 선택');
+                }
+            },
+        });
+    };
 
-            const uploadUrl = `http://${window.location.hostname}:8080/api/posts/witness/image-upload`;
+    const handleResult = (status, result) => {
+        if (status !== 'SUCCESS' || !result.path) {
+            alert('사진 선택 실패');
+            return;
+        }
 
-            const res = await axios.post(uploadUrl, formData, {
-                headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
-                },
-            });
+        const path = result.fullpath || result.path;
+        if (!/\.(jpg|jpeg|png|gif)$/i.test(path)) {
+            alert('이미지 파일만 선택해주세요.');
+            return;
+        }
 
-            console.log('🚀 localPath:', localPath);
-            console.log('🚀 mimeType:', mimeType);
-            console.log('🚀 uploadUrl:', uploadUrl);
-            console.log('📸 previewUrls:', previewUrls);
+        uploadImage(path);
+    };
 
-            M.net.http.upload({
-                url: `http://${window.location.hostname}:8080/api/animal-profile/image-upload`,
-                method: 'POST',
-                header: {
-                    Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
-                },
-                body: [
-                    {
-                        name: 'file',
-                        content: localPath, // ex: /sdcard/...
-                        type: 'FILE', // MIME type
-                    },
-                ],
-                indicator: false,
-                finish: (status, header, body) => {
+    const uploadImage = (localPath) => {
+        const uploadUrl = `http://${window.location.hostname}:8080/api/posts/witness/image-upload`;
+
+        M.net.http.upload({
+            url: uploadUrl,
+            method: 'POST',
+            header: {
+                Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+            },
+            body: [{ name: 'file', content: localPath, type: 'FILE' }],
+            indicator: false,
+            finish: (status, header, body) => {
+                try {
                     const result = JSON.parse(body);
                     const uploadedPath = result.photoPath;
+                    const previewUrl = getImageUrl(uploadedPath);
 
-                    handleAddPhoto(file, getImageUrl(uploadedPath));
+                    const fileExt = localPath.split('.').pop().toLowerCase();
+                    const mimeTypeMap = {
+                        jpg: 'image/jpeg',
+                        jpeg: 'image/jpeg',
+                        png: 'image/png',
+                        gif: 'image/gif',
+                    };
+                    const mimeType = mimeTypeMap[fileExt] || 'image/jpeg';
 
-                    console.log('🔥 업로드 응답:', result);
-                    console.log('🔥 저장된 경로:', result.photoPath);
-                },
-            });
-        };
+                    fetch(localPath)
+                        .then((res) => res.blob())
+                        .then((blob) => {
+                            const file = new File([blob], `photo.${fileExt}`, { type: mimeType });
+                            setFiles((prev) => [...prev, file]);
+                            setPreviewUrls((prev) => [...prev, previewUrl]);
+                        });
 
-        const handleResult = (status, result) => {
-            if (status !== 'SUCCESS' || !result.path) {
-                alert('사진 선택 실패');
-                return;
-            }
-
-            const path = result.fullpath || result.path;
-            if (!/\.(jpg|jpeg|png|gif)$/i.test(path)) {
-                alert('이미지 파일만 선택해주세요.');
-                return;
-            }
-
-            uploadImage(path);
-        };
-
-        if (userChoice) {
-            M.media.camera({
-                mediaType: 'PHOTO',
-                path: '/media',
-                saveAlbum: true,
-                callback: handleResult,
-            });
-        } else {
-            M.media.picker({
-                mode: 'SINGLE',
-                mediaType: 'ALL',
-                path: '/media',
-                column: 3,
-                callback: handleResult,
-            });
-        }
+                    console.log('🔥 업로드 완료:', uploadedPath);
+                } catch (e) {
+                    console.error('🔥 업로드 응답 파싱 실패:', e);
+                    alert('업로드 실패');
+                }
+            },
+        });
     };
 
     // 사진 삭제

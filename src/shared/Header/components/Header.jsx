@@ -15,7 +15,8 @@ export default function Header() {
                 <span className="brand">CatchMe</span>
             </div>
             <div className="icons">
-                <button className="icon-button" onClick={() => navigate('/missingpostDetail/6')}>
+                <button className="icon-button" onClick={() => navigate('/notifications')}>
+                    {' '}
                     <FontAwesomeIcon icon={faBell} style={{ color: '#ffffff' }} />
                 </button>
 

@@ -61,7 +61,8 @@ export default function MapMain() {
     const [shelters, setShelters] = useState([]);
 
     //  바텀 시트
-    const snapPoints = [0.3, 0, 0.87];
+    const snapPoints = [0.3, 0.7, 0.87];
+
     const [snapIndex, setSnapIndex] = useState(1);
     const [percent, setPercent] = useState(snapPoints[0]);
     const isFullyOpen = percent >= snapPoints[2];
@@ -153,6 +154,17 @@ export default function MapMain() {
     };
     // ==================================================================================== 핸들러함수 종료
     // ==================================================================================== 로직함수 시작
+    // 마커 색상 변경 및 삭제
+    const getMarkerAgeClass = (datetime) => {
+        const createdAt = new Date(datetime);
+        const now = new Date();
+        const diffDays = (now - createdAt) / (1000 * 60 * 60 * 24);
+
+        if (diffDays < 3) return; // 3일 이내면 그대로
+        if (diffDays < 7) return 'marker-3'; // 7일 이내면 흐리게
+        return;
+    };
+
     // 거리 계산
     const getDistance = (lat1, lon1, lat2, lon2) => {
         const toRad = (d) => (d * Math.PI) / 180;
@@ -343,19 +355,21 @@ export default function MapMain() {
                     clustererRef.current?.clear(); // 클러스터러 비우고
 
                     markersRef.current.forEach(({ type, overlay }) => {
-                        const shouldShow =
-                            (type === 'missing' && isMissing) ||
-                            (type === 'witness' && isWitness) ||
-                            (type === 'shelter' && isShelter) ||
-                            (type === 'hospital' && isHospital);
-
                         if (level > 7) {
                             // 마커는 숨기고 클러스터만 표시
                             markersRef.current.forEach(({ overlay }) => overlay.setMap(null));
                             clustererRef.current?.addMarkers(markersRef.current.map(({ overlay }) => overlay));
                         } else {
-                            // 마커 표시 + 클러스터 적용
-                            markersRef.current.forEach(({ overlay }) => overlay.setMap(map));
+                            // 마커 표시, 클러스터 유지
+                            markersRef.current.forEach(({ type, overlay }) => {
+                                const shouldShow =
+                                    (type === 'missing' && isMissing) ||
+                                    (type === 'witness' && isWitness) ||
+                                    (type === 'shelter' && isShelter) ||
+                                    (type === 'hospital' && isHospital);
+
+                                overlay.setMap(shouldShow ? map : null);
+                            });
                             clustererRef.current?.addMarkers(markersRef.current.map(({ overlay }) => overlay));
                         }
                     });
@@ -411,12 +425,12 @@ export default function MapMain() {
         const createMarker = (post) => {
             return new Promise((resolve) => {
                 const div = document.createElement('div');
-                div.className = 'custom-marker-container missing';
+                div.className = `custom-marker-container missing ${getMarkerAgeClass(post.missingDatetime)}`;
                 div.innerHTML = `
                 <div class="marker-circle">
                     <img src="${getImageUrl(post.photoUrl)}" class="marker-img" />
                 </div>
-                <div class="marker-label">실종</div>
+                <div class="marker-label ${getMarkerAgeClass(post.missingDatetime)}">실종</div>
             `;
 
                 div.addEventListener('click', (e) => {
@@ -453,7 +467,29 @@ export default function MapMain() {
 
         removeExistingMarkers();
 
-        Promise.all(missingPosts.filter((post) => post.postType === 'missing').map(createMarker)).then(() => {
+        Promise.all(
+            missingPosts
+                .filter((post) => {
+                    if (post.postType !== 'missing') return false;
+
+                    const createdAt = new Date(post.missingDatetime);
+                    const now = new Date();
+                    const diffDays = (now - createdAt) / (1000 * 60 * 60 * 24);
+
+                    if (diffDays >= 7) {
+                        // 7일 이상 → 삭제 요청
+                        axios
+                            .delete(`/api/posts/missing/${post.id}`)
+                            .then(() => console.log(`삭제 완료: ${post.id}`))
+                            .catch((err) => console.error(`삭제 실패: ${post.id}`, err));
+                        return false; // 마커 생성하지 않음
+                    }
+
+                    return true; // 마커 생성
+                })
+
+                .map(createMarker)
+        ).then(() => {
             console.log('[Marker] 실종 마커 생성 완료.');
             setMarkerStatus((prev) => ({ ...prev, missing: true }));
         });
@@ -481,12 +517,12 @@ export default function MapMain() {
                 const imageUrl = post.photoUrl ? post.photoUrl.split(',')[0] : '/default-image.png';
 
                 const div = document.createElement('div');
-                div.className = 'custom-marker-container sighting';
+                div.className = `custom-marker-container sighting  ${getMarkerAgeClass(post.witnessDatetime)}`;
                 div.innerHTML = `
                 <div class="marker-circle">
                     <img src="${getImageUrl(imageUrl)}" class="marker-img" />
                 </div>
-                <div class="marker-label">목격</div>
+                <div class="marker-label ${getMarkerAgeClass(post.witnessDatetime)}">실종</div>
             `;
 
                 div.addEventListener('click', (e) => {
@@ -523,7 +559,28 @@ export default function MapMain() {
 
         removeExistingMarkers();
 
-        Promise.all(witnessPosts.filter((post) => post.postType === 'witness').map(createMarker)).then(() => {
+        Promise.all(
+            witnessPosts
+                .filter((post) => {
+                    if (post.postType !== 'witness') return false;
+
+                    const createdAt = new Date(post.witnessDatetime);
+                    const now = new Date();
+                    const diffDays = (now - createdAt) / (1000 * 60 * 60 * 24);
+
+                    if (diffDays >= 7) {
+                        // 7일 이상 → 삭제 요청
+                        axios
+                            .delete(`/api/posts/witness/${post.id}`)
+                            .then(() => console.log(`목격 게시글 삭제 완료: ${post.id}`))
+                            .catch((err) => console.error(`목격 게시글 삭제 실패: ${post.id}`, err));
+                        return false; // 마커 생성 안 함
+                    }
+
+                    return true; // 마커 생성
+                })
+                .map(createMarker)
+        ).then(() => {
             console.log('[Marker] 목격 마커 생성 완료.');
             setMarkerStatus((prev) => ({ ...prev, witness: true }));
         });
@@ -760,7 +817,7 @@ export default function MapMain() {
     }, [isMissing, isWitness, isShelter, isHospital]);
     // ==================================================================================== useEffect 종료
     // ==================================================================================== 렌더링 시작
-    console.log('현재 percent 값:', percent);
+    // console.log('현재 percent 값:', percent);
 
     return (
         <div className="mappage-container">
@@ -1074,7 +1131,15 @@ export default function MapMain() {
                                                     </div>
                                                     <div className="list-location">
                                                         {post.missingLocation}
-                                                        <p>{new Date(post.missingDatetime).toLocaleString()}</p>
+                                                        <p>
+                                                            {new Date(post.missingDatetime).toLocaleString('ko-KR', {
+                                                                year: 'numeric',
+                                                                month: 'long',
+                                                                day: 'numeric',
+                                                                hour: 'numeric',
+                                                                minute: 'numeric',
+                                                            })}
+                                                        </p>
                                                     </div>
                                                     {/* 댓글 개수 */}
                                                     <div>{`댓글 ${post.commentCount}개`}</div>
@@ -1112,7 +1177,15 @@ export default function MapMain() {
                                                     </div>
                                                     <div className="list-location">
                                                         {post.witnessLocation}
-                                                        <p>{new Date(post.witnessDatetime).toLocaleString()}</p>
+                                                        <p>
+                                                            {new Date(post.witnessDatetime).toLocaleString('ko-KR', {
+                                                                year: 'numeric',
+                                                                month: 'long',
+                                                                day: 'numeric',
+                                                                hour: 'numeric',
+                                                                minute: 'numeric',
+                                                            })}
+                                                        </p>
                                                     </div>
                                                     {/* 댓글 개수 */}
                                                     <div>{`댓글 ${post.commentCount}개`}</div>

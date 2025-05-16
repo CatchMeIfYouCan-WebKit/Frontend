@@ -241,97 +241,85 @@ export default function AnimalProfile() {
     const openRegSheet = () => setIsRegSheetOpen(true);
     const closeRegSheet = () => setIsRegSheetOpen(false);
 
+    let isImageUploadPopupOpen = false;
+
     // 사진 업로드
     const handleMorpheusImageUpload = () => {
-        const userChoice = confirm('사진을 촬영하시겠습니까?');
-
-        const uploadImage = async (localPath) => {
-            const fileExt = localPath.split('.').pop().toLowerCase();
-            const mimeTypeMap = {
-                jpg: 'image/jpeg',
-                jpeg: 'image/jpeg',
-                png: 'image/png',
-                gif: 'image/gif',
-            };
-            const mimeType = mimeTypeMap[fileExt] || 'image/jpeg';
-
-            const response = await fetch(localPath);
-            const blob = await response.blob();
-            const file = new File([blob], `profile.${fileExt}`, { type: mimeType });
-
-            const formData = new FormData();
-            formData.append('file', file);
-
-            const uploadUrl = `http://${window.location.hostname}:8080/api/animal-profile/image-upload`;
-
-            const res = await axios.post(uploadUrl, formData, {
-                headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-
-            console.log('🚀 localPath:', localPath);
-            console.log('🚀 mimeType:', mimeType);
-            console.log('🚀 uploadUrl:', uploadUrl);
-            console.log('📸 morpheusImagePath:', morpheusImagePath);
-
-            M.net.http.upload({
-                url: `http://${window.location.hostname}:8080/api/animal-profile/image-upload`,
-                method: 'POST',
-                header: {
-                    Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
-                },
-                body: [
-                    {
-                        name: 'file',
-                        content: localPath, // ex: /sdcard/...
-                        type: 'FILE', // MIME type
-                    },
-                ],
-                finish: (status, header, body) => {
-                    const result = JSON.parse(body);
-                    const uploadedPath = result.photoPath;
-
-                    setMorpheusImagePath(uploadedPath);
-                    setPreviewUrl(getImageUrl(uploadedPath));
-                    console.log('🔥 업로드 응답:', result);
-                    console.log('🔥 저장된 경로:', result.photoPath);
-                },
-            });
-        };
-
-        const handleResult = (status, result) => {
-            if (status !== 'SUCCESS' || !result.path) {
-                alert('사진 선택 실패');
-                return;
-            }
-
-            const path = result.fullpath || result.path;
-            if (!/\.(jpg|jpeg|png|gif)$/i.test(path)) {
-                alert('이미지 파일만 선택해주세요.');
-                return;
-            }
-
-            uploadImage(path);
-        };
-
-        if (userChoice) {
-            M.media.camera({
-                path: '/media',
-                mediaType: 'PHOTO',
-                saveAlbum: true,
-                callback: handleResult,
-            });
-        } else {
-            M.media.picker({
-                mode: 'SINGLE',
-                mediaType: 'ALL',
-                path: '/media',
-                column: 3,
-                callback: handleResult,
-            });
+        if (isImageUploadPopupOpen) {
+            console.log('[이미지 업로드] 팝업이 이미 열려있습니다.');
+            return;
         }
+
+        isImageUploadPopupOpen = true;
+
+        M.pop.alert({
+            title: '사진 업로드',
+            message: '원하는 방법을 선택하세요.',
+            buttons: ['촬영하기', '취소', '앨범에서 선택'],
+            callback: function (index) {
+                isImageUploadPopupOpen = false;
+
+                switch (parseInt(index, 10)) {
+                    case 0:
+                        openCamera();
+                        break;
+                    case 1:
+                        console.log('[이미지 업로드] 취소');
+                        break;
+                    case 2:
+                        openGallery();
+                        break;
+                    default:
+                        console.log('[이미지 업로드] 알 수 없는 선택지');
+                }
+            },
+        });
+    };
+
+    const openCamera = () => {
+        M.media.camera({ path: '/media', mediaType: 'PHOTO', saveAlbum: true, callback: handleResult });
+    };
+
+    const openGallery = () => {
+        M.media.picker({ mode: 'SINGLE', mediaType: 'ALL', path: '/media', column: 3, callback: handleResult });
+    };
+
+    const handleResult = (status, result) => {
+        if (status !== 'SUCCESS' || !result.path) {
+            alert('사진 선택 실패');
+            return;
+        }
+
+        const path = result.fullpath || result.path;
+        if (!/\.(jpg|jpeg|png|gif)$/i.test(path)) {
+            alert('이미지 파일만 선택해주세요.');
+            return;
+        }
+
+        uploadImage(path);
+    };
+
+    const uploadImage = (localPath) => {
+        const uploadUrl = `http://${window.location.hostname}:8080/api/animal-profile/image-upload`;
+
+        M.net.http.upload({
+            url: uploadUrl,
+            method: 'POST',
+            header: {
+                Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+            },
+            body: [{ name: 'file', content: localPath, type: 'FILE' }],
+            indicator: false,
+            finish: (status, header, body) => {
+                const result = JSON.parse(body);
+                const uploadedPath = result.photoPath;
+
+                setMorpheusImagePath(uploadedPath);
+                setPreviewUrl(getImageUrl(uploadedPath));
+
+                console.log('🔥 업로드 완료:', uploadedPath);
+            },
+        });
     };
 
     // 프로필 등록 api 호출
@@ -419,6 +407,7 @@ export default function AnimalProfile() {
                 body: fileList,
                 method: isEditMode ? 'PUT' : 'POST',
                 encoding: 'UTF-8',
+                indicator: false,
                 finish: function (status, header, body) {
                     console.log('status:', status);
                     console.log('body:', body);
