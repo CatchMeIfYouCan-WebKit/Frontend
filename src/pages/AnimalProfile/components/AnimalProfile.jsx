@@ -19,7 +19,7 @@ import browncircle from '../../../assets/browncircle.svg';
 import darkgoldcircle from '../../../assets/darkgoldcircle.svg';
 import whitecircle from '../../../assets/whitecircle.svg';
 import { FaCheck } from 'react-icons/fa';
-import BackHeader from '../../../shared/BackHeader/components/BackHeader';
+
 const prioritizedBreeds = [
     '선택안함',
     '믹스견',
@@ -518,10 +518,17 @@ export default function AnimalProfile() {
     useEffect(() => {
         console.log('📸 previewUrl:', previewUrl);
     }, [previewUrl]);
-
+    const goBack = () => {
+        navigate('/mapmain');
+    };
     return (
         <div className="animal-profile">
-            <BackHeader title="강아지 프로필 등록" />
+            <div className="filtering-header">
+                <div className="back-button2" onClick={goBack}>
+                    <IoIosArrowBack size={32} />
+                </div>
+                <div className="filtering-title">필터링</div>
+            </div>
 
             <div className="animal-profile-content">
                 <div className="form-group photo-group">

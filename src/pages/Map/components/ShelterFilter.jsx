@@ -9,6 +9,7 @@ import browncircle from '../../../assets/browncircle.svg';
 import darkgoldcircle from '../../../assets/darkgoldcircle.svg';
 import whitecircle from '../../../assets/whitecircle.svg';
 import { FaCheck } from 'react-icons/fa';
+import { IoIosArrowBack } from 'react-icons/io';
 
 const breedsMock = [
     { id: 1, ko: '말티즈', en: 'Maltese' },
@@ -270,24 +271,18 @@ export default function ShelterFilter() {
             },
         });
     };
-
+    const goBack = () => {
+        navigate('/mapmain');
+    };
     return (
         <div className="shelter-filter">
             <div className="sf-header">
-                <h3 style={{ display: 'inline-block' }}>필터링</h3>
-                <span
-                    onClick={onApplyFilter}
-                    style={{
-                        float: 'right',
-                        cursor: 'pointer',
-                        fontSize: '20px',
-                        fontWeight: 'bold',
-                        marginTop: '4px',
-                    }}
-                >
-                    x
-                </span>
+                <div className="back-button2" onClick={goBack}>
+                    <IoIosArrowBack size={32} />
+                </div>
+                <div className="filtering-title">필터링</div>
             </div>
+
             <hr />
 
             {/* 보호소 */}
@@ -378,7 +373,7 @@ export default function ShelterFilter() {
                                         <label>
                                             <input
                                                 type="checkbox"
-                                                name="breed" 
+                                                name="breed"
                                                 value={b.ko}
                                                 checked={selectedBreeds[0] === b.ko}
                                                 onChange={() => {
@@ -387,7 +382,7 @@ export default function ShelterFilter() {
                                                     } else {
                                                         setSelectedBreeds([b.ko]);
                                                     }
-                                                }} 
+                                                }}
                                             />
                                             <span className="ko">{b.ko}</span>
                                             <span className="en">{b.en}</span>
@@ -402,7 +397,9 @@ export default function ShelterFilter() {
             {/* 성별 */}
             <div className="sf-section">
                 <div className="sf-sec-header" onClick={() => setOpenGender((o) => !o)}>
-                    <span>성별* <span className="pet-color-comment">성별을 선택해 주세요.</span></span>
+                    <span>
+                        성별* <span className="pet-color-comment">성별을 선택해 주세요.</span>
+                    </span>
                     {openGender ? <IoIosArrowUp /> : <IoIosArrowDown />}
                 </div>
                 {openGender && (
