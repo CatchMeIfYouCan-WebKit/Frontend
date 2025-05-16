@@ -600,11 +600,18 @@
     height: 30px;
 }
 
+/* ============ 마커 ============ */
 .custom-marker-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     cursor: pointer;
+}
+
+/* 3일 이후 */
+.marker-3 .marker-circle,
+.marker-3 .marker-label {
+    opacity: 0.4;
 }
 
 .marker-circle {
