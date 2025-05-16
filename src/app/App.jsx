@@ -136,9 +136,9 @@ function App() {
                 <Route path="/report-found/select-location" element={<WitnessLocationSelect />} />
 
                 {/* ✅ 실시간 채팅방 */}
+                <Route path="/chatlist" element={<ChatList />} />
                 <Route path="/chat/:type/:relatedId" element={<ChatRoom />} />
                 <Route path="/chat/test" element={<ChatRoomTest />} />
-                <Route path="/chatlist" element={<ChatList />} />
 
                 <Route path="/medical" element={<MedicalPage />} />
                 <Route path="/reservation" element={<ReservationPage />} />

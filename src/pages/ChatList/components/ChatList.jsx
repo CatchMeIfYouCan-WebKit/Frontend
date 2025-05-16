@@ -27,7 +27,7 @@ export default function ChatList() {
     return (
         <div className="chatlist-container">
             {/* === Header 시작 === */}
-            <Header/>
+            <Header />
             {/* === Header 끝 === */}
 
             <div className="chatlist-alert">
@@ -36,7 +36,7 @@ export default function ChatList() {
 
             <div className="chatlist-list">
                 {chatData.map((item) => (
-                    <div key={item.id} className="chat-item">
+                    <div key={item.id} className="chat-item" onClick={() => navigate('/chat/test')}>
                         <img src={item.avatar} alt="avatar" className="chat-avatar" />
                         <div className="chat-content">
                             <div className="chat-info">
