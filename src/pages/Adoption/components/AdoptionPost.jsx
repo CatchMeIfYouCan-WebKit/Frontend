@@ -4,13 +4,17 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import '../AdoptionPost.css';
 import { FaCamera, FaPlus } from 'react-icons/fa';
 import { FaRegCalendarAlt } from 'react-icons/fa';
-import X from '../../../assets/X.svg';
-import BottomSheet from '../../Map/components/BottomSheet';
+import browncircle from '../../../assets/browncircle.svg';
+import blackcircle from '../../../assets/blackcircle.svg';
+import lightgoldcircle from '../../../assets/lightgoldcircle.svg';
+import silvercircle from '../../../assets/silvercircle.svg';
+import darkgoldcircle from '../../../assets/darkgoldcircle.svg';
+import whitecircle from '../../../assets/whitecircle.svg';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
-
+import { FaCheck } from 'react-icons/fa';
 
 // 등록된 반려동물 입양글 등록 시 반려동물 이름, 사진 , 품종, 털색 성별, 중성화 여부, 생일, 몸무게, 동물 등록번호 있으면 받아오기
 
@@ -201,18 +205,14 @@ export default function AdoptionPost() {
 
     const imageList = uploadedFiles;
 
-
-
     // ✅ 털색 값 → color value 배열 변환
     const initialColor = useMemo(() => {
         const labels = (petData.coatColor || '').split('+');
-        return colorOptions
-            .filter(opt => labels.includes(opt.label))
-            .map(opt => opt.value);
+        return colorOptions.filter((opt) => labels.includes(opt.label)).map((opt) => opt.value);
     }, [petData.coatColor]);
 
     // ✅ 성별 텍스트 변환
-    const convertGender = (g) => g === '남' ? '남아' : g === '여' ? '여아' : '';
+    const convertGender = (g) => (g === '남' ? '남아' : g === '여' ? '여아' : '');
 
     // ✅ 상태 정의
     const [petName, setPetName] = useState(petData.name || '');
@@ -229,7 +229,6 @@ export default function AdoptionPost() {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [search, setSearch] = useState('');
 
-
     // ✅ 유효성 검사
     const isPhoneValid = /^010\d{8}$/.test(phone);
     const isRegValid = /^\d{12}$/.test(regNumber);
@@ -241,11 +240,11 @@ export default function AdoptionPost() {
     }, [search]);
 
     // ✅ 품종 선택 시 BottomSheet 토글
-    const toggleSheet = () => setIsSheetOpen(prev => !prev);
+    const toggleSheet = () => setIsSheetOpen((prev) => !prev);
 
     // ✅ 이미지 삭제 핸들러
     const handleImageDelete = (urlToDelete) => {
-        setUploadedFiles(prev => prev.filter(img => img.url !== urlToDelete));
+        setUploadedFiles((prev) => prev.filter((img) => img.url !== urlToDelete));
     };
 
     // ✅ 앱에서 촬영 or 갤러리 선택 시 실행
@@ -254,7 +253,6 @@ export default function AdoptionPost() {
         const base = 'http://10.0.2.2:8080'; // 에뮬레이터에서 PC의 localhost를 바라보는 고정 주소
         return path.startsWith('http') ? path : `${base}${path}`;
     };
-    
 
     const handleMorpheusImageUpload = () => {
         const userChoice = confirm('사진을 촬영하시겠습니까?');
@@ -336,228 +334,271 @@ export default function AdoptionPost() {
         }
     };
 
-
-
-
-
-
-
     // ✅ 컴포넌트 마운트 시 서버 이미지 있을 경우 미리보기 세팅
     useEffect(() => {
         if (petData?.image && uploadedFiles.length === 0) {
             const petImages = (petData.image || '')
                 .split(',')
-                .filter(url => url.trim() !== '')
-                .map(url => ({
+                .filter((url) => url.trim() !== '')
+                .map((url) => ({
                     url: url.startsWith('http') ? url : getImageUrl(url),
-                    file: null
+                    file: null,
                 }));
             setUploadedFiles(petImages);
         }
     }, [petData?.image]);
 
+    // 추가 ---------------------
+    const [isSuggestOpen, setIsSuggestOpen] = useState(false);
+    const wrapperRef = useRef(null);
+    const popularBreeds = ['믹스견', '말티즈', '푸들', '포메라니안', '진돗개', '시츄', '골든 리트리버', '치와와'];
+    const [selectedPopularBreed, setSelectedPopularBreed] = useState('');
 
+    // 초기 털색: petData.coatColor 기반
+    const [selectedColors, setSelectedColors] = useState(initialColor);
+    const toggleColor = (label) => {
+        setSelectedColors((prev) => (prev.includes(label) ? prev.filter((c) => c !== label) : [...prev, label]));
+    };
+    // 뷰용 털색 옵션 (이미지 src + 라벨)
+    const furColorOptions = [
+        [blackcircle, '검은색'],
+        [whitecircle, '하얀색'],
+        [silvercircle, '회색'],
+        [browncircle, '브라운'],
+        [darkgoldcircle, '어두운 골드'],
+        [lightgoldcircle, '밝은 골드'],
+    ];
 
     return (
         <div className="adoption-post">
-            <header className="header">
-                <button className="rp-back" onClick={() => navigate(-1)}>
-                    <IoIosArrowBack size={24} />
+            <div className="header">
+                <button className="rp-back" onClick={() => navigate('/adoptionpost')}>
+                    <IoIosArrowBack size={32} />
                 </button>
                 <h4>동물정보입력</h4>
-            </header>
+            </div>
 
             <section className="profile-pics">
-                {imageList.length > 0 ? (
-                    imageList.map((img, index) => (
-                        <div
-                            key={index}
-                            className="profile-placeholder"
-                            onClick={() => handleImageDelete(img.url)} // ✅ 이미지 클릭 시 삭제
-                        >
-                            <img
-                                src={img.url}
-                                alt={`pet-${index}`}
-                                style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'cover',
-                                    borderRadius: '8px',
-                                    cursor: 'pointer'
-                                }}
-                            />
+                <div className="w-88" style={{ display: 'flex' }}>
+                    {imageList.length > 0 ? (
+                        imageList.map((img, index) => (
+                            <div
+                                key={index}
+                                className="profile-placeholder"
+                                onClick={() => handleImageDelete(img.url)} // ✅ 이미지 클릭 시 삭제
+                            >
+                                <img
+                                    src={img.url}
+                                    alt={`pet-${index}`}
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                        borderRadius: '8px',
+                                        cursor: 'pointer',
+                                    }}
+                                />
+                            </div>
+                        ))
+                    ) : (
+                        <div className="profile-placeholder">
+                            <FaCamera size={24} />
+                            <span>사진</span>
                         </div>
-                    ))
-                ) : (
-                    <div className="profile-placeholder">
-                        <FaCamera size={24} />
-                        <span>사진</span>
-                    </div>
-                )}
+                    )}
 
-                {[...Array(Math.max(0, 4 - imageList.length))].map((_, i) => (
-                    <div
-                        key={i}
-                        className="add-pic"
-                        onClick={handleMorpheusImageUpload}
-                    >
-                        <FaPlus size={24} />
-                    </div>
-                ))}
+                    {[...Array(Math.max(0, 4 - imageList.length))].map((_, i) => (
+                        <div key={i} className="add-pic" onClick={handleMorpheusImageUpload}>
+                            <FaPlus size={24} />
+                        </div>
+                    ))}
+                </div>
             </section>
-
-
-
 
             <form className="post-form">
                 {/* 반려동물 이름 */}
                 <div className="form-group">
-                    <label>반려동물 이름*</label>
-                    <input
-                        type="text"
-                        placeholder="반려동물 이름을 입력하세요."
-                        value={petName}
-                        onChange={(e) => setPetName(e.target.value)}
-                    />
-                </div>
-
-                {/* 품종 선택 */}
-                <div className="form-group">
-                    <label>강아지 품종*</label>
-                    <div className={`breed-select ${!selectedBreed ? 'empty' : ''}`} onClick={toggleSheet}>
-                        {selectedBreed || '품종을 선택하세요'}
-                        <span className="breed-arrow">▼</span>
+                    <div className="w-88">
+                        <label>
+                            반려동물 이름<span className="required">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="반려동물 이름을 입력하세요."
+                            value={petName}
+                            onChange={(e) => setPetName(e.target.value)}
+                        />
                     </div>
                 </div>
 
-                {/* 품종 선택용 BottomSheet → Custom Overlay */}
-                {isSheetOpen && (
-                    <div className="sheet-overlay2" onClick={() => setIsSheetOpen(false)}>
-                        <div className="sheet-container2" onClick={(e) => e.stopPropagation()}>
-                            <div className="bread-sheet-header">
-                                <div className="bread-select">강아지 품종 선택</div>
-                                <img src={X} alt="닫기" className="bread-X" onClick={() => setIsSheetOpen(false)} />
-                            </div>
+                <div className="breed" ref={wrapperRef} style={{ marginLeft: '1.1%' }}>
+                    <div className="breed-title">
+                        강아지 품종<span className="required">*</span>{' '}
+                        <div className="label-comment">품종은 한 개만 선택 가능합니다.</div>
+                    </div>
 
-                            <div className="bread-search">
-                                <input
-                                    type="text"
-                                    placeholder="찾을 종을 검색하세요"
-                                    className="bread-input"
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                />
-                            </div>
+                    <div className="bread-input-wrap">
+                        <input
+                            type="text"
+                            className="bread-input"
+                            placeholder={selectedBreed || '품종을 선택하세요'}
+                            value={search}
+                            onChange={(e) => {
+                                setSearch(e.target.value);
+                                setIsSuggestOpen(true);
+                            }}
+                            onFocus={() => setIsSuggestOpen(true)}
+                        />
+                        <div className="breed-search">검색</div>
+                    </div>
 
-                            <div className="bread-sheet-body">
-                                {filteredBreeds.map((b, idx) => (
-                                    <div
-                                        key={idx}
-                                        className="bread-name"
+                    {isSuggestOpen && filteredBreeds.length > 0 && (
+                        <div className="sug-wrap">
+                            <ul className="bread-suggestions">
+                                {filteredBreeds.map((b, i) => (
+                                    <li
+                                        key={i}
+                                        className="bread-suggestion-item"
                                         onClick={() => {
-                                            setSelectedBreed(b === '선택안함' ? '' : b);
-                                            setSearch('');
-                                            setIsSheetOpen(false);
+                                            const val = b === '선택안함' ? '' : b;
+                                            setSelectedBreed(val);
+                                            setSearch(val);
+                                            setIsSuggestOpen(false);
+                                            setSelectedPopularBreed('');
                                         }}
                                     >
                                         {b}
-                                    </div>
+                                    </li>
                                 ))}
-                            </div>
+                            </ul>
                         </div>
+                    )}
+
+                    <div className="popular-breeds">
+                        {popularBreeds.map((b) => (
+                            <label key={b} className="popular-breed-btn">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedPopularBreed === b}
+                                    onChange={() => {
+                                        const newSel = selectedPopularBreed === b ? '' : b;
+                                        setSelectedPopularBreed(newSel);
+                                        setSearch(newSel);
+                                        setSelectedBreed(newSel);
+                                        setIsSuggestOpen(false);
+                                    }}
+                                />
+                                <span>{b}</span>
+                            </label>
+                        ))}
                     </div>
-                )}
+                </div>
 
                 <div className="form-group color-group">
-                    <label>털색*</label>
-                    <div className="color-options">
-                        {colorOptions.map((c) => {
-                            const isSelected = color.includes(c.value);
-                            return (
-                                <div
-                                    key={c.value}
-                                    className="color-box"
-                                    onClick={() => {
-                                        const newColor = color.includes(c.value)
-                                            ? color.filter((v) => v !== c.value)
-                                            : [...color, c.value];
-
-                                        setColor(newColor);
-                                    }}
-                                >
-
-                                    <span className="dot" style={{ backgroundColor: c.hex }}>
-                                        {isSelected && <span className="color-check2">✔</span>}
-                                    </span>
-                                    <span className="color-label">{c.label}</span>
-                                </div>
-                            );
-                        })}
+                    <div className="w-88">
+                        <label style={{ display: 'flex', marginTop: '16px' }}>
+                            털색<span className="required">*</span>
+                            <div className="label-comment">색상은 중복선택 가능합니다.</div>
+                        </label>
+                        <div className="color-container">
+                            {furColorOptions.map(([src, label]) => {
+                                const isSelected = selectedColors.includes(label);
+                                return (
+                                    <div
+                                        key={label}
+                                        className={`color-item ${isSelected ? 'selected' : ''}`}
+                                        onClick={() => toggleColor(label)}
+                                    >
+                                        <img src={src} alt={label} />
+                                        {isSelected && (
+                                            <div className={`color-check ${label === '하얀색' ? 'white-check' : ''}`}>
+                                                <FaCheck />
+                                            </div>
+                                        )}
+                                        <p className="color-comment">{label}</p>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
 
                 {/* 성별 + 중성화 */}
                 <div className="form-group gender-group">
-                    <label>성별*</label>
-                    <div className="gender-options">
-                        <div
-                            className={gender === '남아' ? 'gender-box-select' : 'gender-box'}
-                            onClick={() => setGender((g) => (g === '남아' ? '' : '남아'))}
-                        >
-                            남아
-                        </div>
-                        <div
-                            className={gender === '여아' ? 'gender-box-select' : 'gender-box'}
-                            onClick={() => setGender((g) => (g === '여아' ? '' : '여아'))}
-                        >
-                            여아
-                        </div>
-                        <div
-                            className={`sex-select ${neutered ? 'selected' : ''}`}
-                            onClick={() => setNeutered((n) => !n)}
-                        >
-                            <div className="icon">✓</div>
-                            <div className="label">중성화 했어요</div>
+                    <div className="w-88">
+                        <label>
+                            성별<span className="required">*</span>
+                        </label>
+                        <div className="gender-options">
+                            <div
+                                className={gender === '남아' ? 'gender-box-select' : 'gender-box'}
+                                onClick={() => setGender((g) => (g === '남아' ? '' : '남아'))}
+                            >
+                                남아
+                            </div>
+                            <div
+                                className={gender === '여아' ? 'gender-box-select' : 'gender-box'}
+                                onClick={() => setGender((g) => (g === '여아' ? '' : '여아'))}
+                            >
+                                여아
+                            </div>
+                            <div
+                                className={`sex-select ${neutered ? 'selected' : ''}`}
+                                onClick={() => setNeutered((n) => !n)}
+                            >
+                                <div className="icon">✓</div>
+                                <div className="label">중성화 했어요</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* 생년 */}
                 <div className="form-group">
-                    <label>생일*</label>
-                    <div className="react-datepicker__input-container">
-                        <DatePicker
-                            selected={birthDate}
-                            onChange={(date) => setBirthDate(date)}
-                            dateFormat="yyyy-MM-dd"
-                            placeholderText="생년월일을 선택하세요"
-                        />
-                        <FaRegCalendarAlt className="date-picker-icon" />
+                    <div className="w-88">
+                        <label>
+                            생일<span className="required">*</span>
+                        </label>
+                        <div className="react-datepicker__input-container">
+                            <DatePicker
+                                selected={birthDate}
+                                onChange={(date) => setBirthDate(date)}
+                                dateFormat="yyyy-MM-dd"
+                                placeholderText="생년월일을 선택하세요"
+                            />
+                            <FaRegCalendarAlt className="date-picker-icon" />
+                        </div>
                     </div>
                 </div>
 
                 {/* 몸무게 */}
                 <div className="form-group">
-                    <label>몸무게*</label>
-                    <input
-                        type="text"
-                        placeholder="몸무게를 입력하세요. 예) 4.3kg"
-                        value={weight}
-                        onChange={(e) => setWeight(e.target.value)}
-                    />
+                    <div className="w-88">
+                        <label>
+                            몸무게<span className="required">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="몸무게를 입력하세요. 예) 4.3kg"
+                            value={weight}
+                            onChange={(e) => setWeight(e.target.value)}
+                        />
+                    </div>
                 </div>
 
                 {/* 동물등록번호 */}
                 <div className="form-group">
-                    <label>동물등록번호</label>
-                    <button
-                        type="button"
-                        className="reg-button"
-                        onClick={() => setIsRegSheetOpen(true)}
-                        disabled={isVerified}
-                    >
-                        {isVerified ? '동물등록번호 인증완료' : '동물등록번호 인증하기'}
-                    </button>
+                    <div className="w-88">
+                        <label>동물등록번호</label>
+                        <button
+                            type="button"
+                            className="reg-button"
+                            onClick={() => setIsRegSheetOpen(true)}
+                            disabled={isVerified}
+                        >
+                            {isVerified ? '동물등록번호 인증완료' : '동물등록번호 인증하기'}
+                        </button>
+                    </div>
                 </div>
 
                 {/* type="button" 으로 바꿔서 form submit 방지 */}
@@ -580,7 +621,7 @@ export default function AdoptionPost() {
                             userId: userId,
                             petName,
                             breed: selectedBreed,
-                            colors: color, // 배열
+                            colors: selectedColors, // 배열
                             gender,
                             neutered,
                             birth: birthDate, // 💡 PostDetail은 birth라고 받음
@@ -600,15 +641,12 @@ export default function AdoptionPost() {
                         };
                         console.log('🟢 넘겨주는 post:', post);
                         navigate('/adoptionpost/add/details', {
-                            state: { post, },
+                            state: { post },
                         });
                     }}
                 >
                     다음
                 </button>
-
-
-
 
                 {/* 인증용 BottomSheet → Custom Overlay */}
                 {isRegSheetOpen && (
@@ -665,8 +703,6 @@ export default function AdoptionPost() {
                     </div>
                 )}
             </form>
-
-            file
         </div>
     );
 }

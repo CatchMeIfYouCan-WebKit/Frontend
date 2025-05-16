@@ -7,21 +7,25 @@
     background: #fff;
 }
 
-.header {
-    position: relative;
+.adoption-post .header {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 6px;
+    padding: 18px;
     border-bottom: 1px solid #eee;
-    background: #fafafa;
+    background: #ffffff;
     margin-bottom: 10px;
+    height: 73px;
+}
+.adoption-post .header h4 {
+    margin-top: 10px;
 }
 
 .profile-pics {
     display: flex;
     gap: 8px;
     margin-bottom: 24px;
+    width: 100%;
 }
 
 .profile-placeholder,
@@ -37,16 +41,23 @@
     color: #aaa;
     cursor: pointer;
 }
+.post-form {
+    width: 100%;
+}
 
 .post-form .form-group {
     margin-bottom: 16px;
+    width: 100%;
+}
+.adoption-post .breed {
+    margin-left: 3%;
 }
 
 .post-form label {
     display: block;
     margin-bottom: 4px;
-    font-size: 14px;
-    color: #333;
+    font-size: 16px;
+    color: #000000;
 }
 
 .post-form input[type='text'],
@@ -154,18 +165,6 @@
     overflow-y: auto;
 }
 
-.bread-name {
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
-    font-size: 14px;
-    color: #333;
-}
-
-.bread-name:last-child {
-    border-bottom: none;
-}
-
 /* --- 색상 선택 부분 --- */
 .color-options {
     display: flex;
@@ -271,7 +270,7 @@
 }
 
 .next-btn {
-    width: 100%;
+    width: 93%;
     padding: 12px;
     background-color: #000000;
     color: white;
@@ -279,6 +278,7 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
+    margin-bottom: 16px;
 }
 
 .next-btn:disabled {
@@ -343,7 +343,6 @@
     align-items: center;
     justify-content: center;
     padding: 16px 24px;
-    border-bottom: 1px solid #eee;
     background-color: white;
     position: relative;
 }
@@ -374,16 +373,15 @@
 }
 
 /* Form 그룹 공통 */
-.form-group {
+.post-form .form-group {
     margin-bottom: 20px;
     text-align: left;
-    border-bottom: 1px solid #ccc;
     padding-bottom: 16px;
 }
 .form-group label {
     display: block;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 400;
     margin-bottom: 6px;
 }
 .required {
@@ -472,6 +470,10 @@
     flex: 1;
     min-width: 60px;
 }
+.color-group .color-container{
+    padding-left: 0px;
+    padding-right: 0px;
+}
 .color-circle {
     width: 36px;
     height: 36px;
@@ -479,16 +481,12 @@
     margin-bottom: 4px;
     border: 1px solid #ccc;
 }
-.color-check2 {
-    color: blue;
-    font-size: 18px;
-    font-weight: bold;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-  }
+.color-check{
+    color: #ffffff;
+}
+.white-check{
+    color: #000;
+}
 
 .selected-colors {
     display: flex;
@@ -507,6 +505,11 @@
     display: flex;
     gap: 10px;
     margin-bottom: 8px;
+
+}
+.w-88{
+    width: 92%;
+    margin-left: 4%;
 }
 .gender-button {
     flex: 1;
@@ -647,7 +650,6 @@
     padding: 16px 16px 8px;
     font-size: 20px !important;
     font-weight: bold;
-    border-bottom: 1px solid #eee;
 }
 
 /* 입력 컨테이너 */

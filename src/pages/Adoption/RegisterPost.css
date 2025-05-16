@@ -18,6 +18,7 @@
     padding: 16px;
     border-bottom: 1px solid #eee;
     background: #fafafa;
+    height: 73px;
 }
 
 .rp-back {
@@ -30,7 +31,7 @@
 }
 
 .rp-title {
-    font-size: 18px;
+    font-size: 22px;
     font-weight: bold;
     margin: 0;
     color: #000000;
