@@ -50,7 +50,6 @@ import LocationSelect from '../pages/Adoption/components/LocationSelect';
 import PostDetail from '../pages/Adoption/components/PostDetail';
 
 import ChatRoom from '../pages/Chat/components/ChatRoom';
-import ChatRoomTest from '../pages/Chat/components/ChatRoomTest';
 import ChatList from '../pages/ChatList/components/ChatList';
 import AdoptionPostEdit from '../pages/Adoption/components/AdoptionPostEdit';
 
@@ -58,7 +57,7 @@ import MissingLocationSelect from '../pages/MissingForm/components/MissingLocati
 import WitnessLocationSelect from '../pages/WitnessForm/components/WitnessLocationSelect';
 import ShelterPostDetail from '../pages/Map/components/ShelterPostDetail';
 
-// ***** 👇 진료 페이지 임포트 추가 *****
+// ***** 👇 진료 페이지 임포트 추가 *****c
 // 경로 예시: src/pages/MedicalPage/MedicalPage.jsx
 // 실제 파일 위치에 따라 경로를 정확하게 수정해주세요.
 // 예: import MedicalPage from "../pages/진료페이지/MedicalPage";
@@ -136,9 +135,8 @@ function App() {
                 <Route path="/report-found/select-location" element={<WitnessLocationSelect />} />
 
                 {/* ✅ 실시간 채팅방 */}
-                <Route path="/chatlist" element={<ChatList />} />
                 <Route path="/chat/:type/:relatedId" element={<ChatRoom />} />
-                <Route path="/chat/test" element={<ChatRoomTest />} />
+                <Route path="/chatlist" element={<ChatList />} />
 
                 <Route path="/medical" element={<MedicalPage />} />
                 <Route path="/reservation" element={<ReservationPage />} />
