@@ -26,7 +26,6 @@ export default function Filtering() {
     const toggleColor = (color) => {
         setSelectedColors((prev) => (prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]));
     };
-    //--------------
 
     // 동물 품종
     const [breadFilter, setBreadFilter] = useState(init.breedFiltering ?? '강아지 품종을 선택해주세요.');
@@ -230,6 +229,8 @@ export default function Filtering() {
         '해리어',
     ];
 
+    // ============================================================= method
+
     const sortedOthers = otherBreeds
         .filter((b) => !prioritizedBreeds.includes(b))
         .sort((a, b) => a.localeCompare(b, 'ko'));
@@ -241,6 +242,10 @@ export default function Filtering() {
         if (!search.trim()) return allBreeds;
         return allBreeds.filter((b) => b.includes(search.trim()));
     }, [search, allBreeds]);
+
+    // ============================================================= method
+    // ============================================================= useState
+
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
@@ -250,8 +255,8 @@ export default function Filtering() {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
-    //--------------------------------------
 
+    // ============================================================= useState
     return (
         <div className="filter-page">
             <div className="filtering-header">
@@ -264,7 +269,9 @@ export default function Filtering() {
             <section>
                 <div className="label-wrap">
                     <div className="tag-title">
-                        마커 필터링 <span className="required">*</span>{' '}
+                        <div>
+                            마커 필터링 <span className="required">*</span>
+                        </div>
                         <div className="label-comment">체크 박스를 클릭하면 필터링을 중복으로 적용할 수 있어요.</div>
                     </div>
                     <label>
@@ -316,7 +323,9 @@ export default function Filtering() {
 
             <div className="breed" ref={wrapperRef}>
                 <div className="breed-title">
-                    강아지 품종 <span className="required">*</span>{' '}
+                    <div>
+                        강아지 품종 <span className="required">*</span>
+                    </div>
                     <div className="label-comment">품종은 한 개만 선택 가능합니다.</div>
                 </div>
                 {/* onClick을 toggleSheet로 수정했습니다 */}
@@ -378,7 +387,9 @@ export default function Filtering() {
 
             <div className="pet-color">
                 <div className="pet-color-title">
-                    털색 <span className="required">*</span>
+                    <div>
+                        털색 <span className="required">*</span>
+                    </div>
                     <span className="pet-color-comment">털 색상이 한 가지가 아닌경우 중복 선택 가능합니다.</span>
                 </div>
                 <div className="color-container">
