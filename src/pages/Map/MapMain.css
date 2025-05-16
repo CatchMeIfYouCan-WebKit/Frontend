@@ -120,23 +120,21 @@
     height: 40px;
     justify-content: flex-start; /* 왼쪽 정렬 */
 }
-.location-wrap{
+.location-wrap {
     background-color: #ffffff;
     border-radius: 50%;
     width: 39px;
     height: 39px;
     box-shadow: 0.9px 3px 6px rgba(0, 0, 0, 0.4);
-
 }
-.state-hospital{
+.state-hospital {
     color: #000000;
     font-size: 18px;
 }
-.list-locationh{
+.list-locationh {
     font-size: 13px;
-
 }
-.lo-img{
+.lo-img {
     margin-top: 6px;
 }
 .hospital-wrap {
@@ -436,19 +434,19 @@
     transition: transform 0.3s ease;
 }
 
-  /* 바텀시트 위에 뜬 느낌으로 */
-  .map-bottom-wrapper .location-wrap {
+/* 바텀시트 위에 뜬 느낌으로 */
+.map-bottom-wrapper .location-wrap {
     position: absolute;
-    top: 840px;                /* 바텀시트의 handle 위로 얼마나 띄울지 */ 
-    right: 16px;               /* 오른쪽 여백 */
-    z-index: 10;               /* 바텀시트보다 위로 */
+    top: 840px; /* 바텀시트의 handle 위로 얼마나 띄울지 */
+    right: 16px; /* 오른쪽 여백 */
+    z-index: 10; /* 바텀시트보다 위로 */
     cursor: pointer;
     background-color: #ffffff;
     border-radius: 50%;
     width: 39px;
     height: 39px;
     box-shadow: 0.9px 3px 6px rgba(0, 0, 0, 0.4);
-  }
+}
 .list-left {
     text-align: left;
     width: 320px;
@@ -457,7 +455,7 @@
     margin-bottom: 10px;
     margin-top: 10px;
 }
-.list-lefts{
+.list-lefts {
     text-align: left;
     width: 320px;
     flex: 1;
@@ -465,11 +463,11 @@
     margin-bottom: 34px;
     margin-top: 10px;
 }
-.list-lefts .list-location{
+.list-lefts .list-location {
     font-size: 11px;
     color: #000000;
 }
-.list-lefth{
+.list-lefth {
     text-align: left;
     width: 320px;
     flex: 1;

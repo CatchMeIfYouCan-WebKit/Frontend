@@ -98,7 +98,6 @@ function App() {
                 <Route path="/shelterdetail" element={<ShelterDetail />} />
                 <Route path="/shelterdetail/filter" element={<ShelterFilter />} />
                 <Route path="/shelterdetail/:id" element={<ShelterPostDetail />} />
-                <Route path="/shelterdetail/dumy" element={<ShelterPostDetail />} />
 
                 {/* 입양 게시판 */}
                 <Route path="/adoptionpost" element={<Adoption />} />

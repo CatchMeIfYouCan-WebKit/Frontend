@@ -74,7 +74,6 @@ export default function ShelterDetail() {
                 <h2 className="header-title4">보호소 동물현황</h2>
             </div>
 
-
             {/* 필터 요약 */}
             <div className="filters">
                 <div className={`filter ${shelterLabel !== '보호소이름' ? 'applied' : ''}`}>

@@ -34,7 +34,7 @@ export default function MyPage() {
                 const response = await axios.post('/api/member/info', { id });
                 setUserInfo(response.data);
             } catch (err) {
-                console.error('에러:', err);
+                console.error('토큰 파싱 에러:', err);
             }
         };
 

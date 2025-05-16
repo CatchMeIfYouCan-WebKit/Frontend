@@ -62,6 +62,7 @@ export default function MapMain() {
 
     //  바텀 시트
     const snapPoints = [0.3, 0.7, 0.87];
+
     const [snapIndex, setSnapIndex] = useState(1);
     const [percent, setPercent] = useState(snapPoints[0]);
     const isFullyOpen = percent >= snapPoints[2];
@@ -343,19 +344,21 @@ export default function MapMain() {
                     clustererRef.current?.clear(); // 클러스터러 비우고
 
                     markersRef.current.forEach(({ type, overlay }) => {
-                        const shouldShow =
-                            (type === 'missing' && isMissing) ||
-                            (type === 'witness' && isWitness) ||
-                            (type === 'shelter' && isShelter) ||
-                            (type === 'hospital' && isHospital);
-
                         if (level > 7) {
                             // 마커는 숨기고 클러스터만 표시
                             markersRef.current.forEach(({ overlay }) => overlay.setMap(null));
                             clustererRef.current?.addMarkers(markersRef.current.map(({ overlay }) => overlay));
                         } else {
-                            // 마커 표시 + 클러스터 적용
-                            markersRef.current.forEach(({ overlay }) => overlay.setMap(map));
+                            // 마커 표시, 클러스터 유지
+                            markersRef.current.forEach(({ type, overlay }) => {
+                                const shouldShow =
+                                    (type === 'missing' && isMissing) ||
+                                    (type === 'witness' && isWitness) ||
+                                    (type === 'shelter' && isShelter) ||
+                                    (type === 'hospital' && isHospital);
+
+                                overlay.setMap(shouldShow ? map : null);
+                            });
                             clustererRef.current?.addMarkers(markersRef.current.map(({ overlay }) => overlay));
                         }
                     });
@@ -758,7 +761,6 @@ export default function MapMain() {
     useEffect(() => {
         applyInitialMarkerFilter();
     }, [isMissing, isWitness, isShelter, isHospital]);
-
     // ==================================================================================== useEffect 종료
     // ==================================================================================== 렌더링 시작
     console.log('현재 percent 값:', percent);
@@ -1075,8 +1077,18 @@ export default function MapMain() {
                                                     </div>
                                                     <div className="list-location">
                                                         {post.missingLocation}
-                                                        <p>{new Date(post.missingDatetime).toLocaleString()}</p>
+                                                        <p>
+                                                            {new Date(post.missingDatetime).toLocaleString('ko-KR', {
+                                                                year: 'numeric',
+                                                                month: 'long',
+                                                                day: 'numeric',
+                                                                hour: 'numeric',
+                                                                minute: 'numeric',
+                                                            })}
+                                                        </p>
                                                     </div>
+                                                    {/* 댓글 개수 */}
+                                                    <div>{`댓글 ${post.commentCount}개`}</div>
                                                 </div>
                                                 <div className="list-img">
                                                     <img
@@ -1111,8 +1123,18 @@ export default function MapMain() {
                                                     </div>
                                                     <div className="list-location">
                                                         {post.witnessLocation}
-                                                        <p>{new Date(post.witnessDatetime).toLocaleString()}</p>
+                                                        <p>
+                                                            {new Date(post.witnessDatetime).toLocaleString('ko-KR', {
+                                                                year: 'numeric',
+                                                                month: 'long',
+                                                                day: 'numeric',
+                                                                hour: 'numeric',
+                                                                minute: 'numeric',
+                                                            })}
+                                                        </p>
                                                     </div>
+                                                    {/* 댓글 개수 */}
+                                                    <div>{`댓글 ${post.commentCount}개`}</div>
                                                 </div>
                                                 <div className="list-img">
                                                     <img

@@ -165,7 +165,7 @@ export default function Main() {
                     {/* 마지막 “추가하기” 카드 */}
                     <section className="pet-card center" key="add" onClick={() => navigate('/animal-profile')}>
                         <img src={plusIcon} alt="추가하기" className="pet-add-icon" />
-                        <button className="register-button">반려동물 추가하기</button>
+                        <p className="add-pet-text">반려동물 추가하기</p>
                     </section>
                 </section>
 
