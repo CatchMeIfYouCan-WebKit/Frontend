@@ -61,7 +61,8 @@ export default function MapMain() {
     const [shelters, setShelters] = useState([]);
 
     //  바텀 시트
-    const snapPoints = [0.3, 0, 0.87];
+    const snapPoints = [0.3, 0.7, 0.87];
+
     const [snapIndex, setSnapIndex] = useState(1);
     const [percent, setPercent] = useState(snapPoints[0]);
     const isFullyOpen = percent >= snapPoints[2];
