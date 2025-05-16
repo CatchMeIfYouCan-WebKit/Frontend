@@ -1,26 +1,40 @@
 /* AdoptionFilterSheet.css */
-
+.filter-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end; /* 아래에서 올라오게 */
+  border-radius: 0px;
+}
 .filter-page {
   min-height: 100vh;
   background-color: white;
   font-family: sans-serif;
-  width: 100%;
+  width: 101.5%;
   box-sizing: border-box;
   padding-bottom: 24px;
 }
 
-.filtering-header {
+.filter-page .filtering-header {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
+  padding: 14px 17px;
   border-bottom: 1px solid #ddd;
+  height: 73px;
+}
+.filter-page .filtering-header .back-button2{
+  margin-left: 0px;
 }
 
-.header-title {
+.filter-page .filtering-header .header-title {
   flex: 1;
-  font-size: 20px;
+  font-size: 26px;
   font-weight: bold;
   text-align: center;
+  margin-right: 38px;
 }
 
 .bread-X {
@@ -81,12 +95,13 @@ section label {
   height: 20px;
 }
 
-.pet-color {
-  margin-bottom: 90px;
+.filter-modal .pet-color {
+  margin-bottom: 125px;
   margin-top: 16px;
 }
 
 .pet-color-title {
+  display: flex;
   margin-left: 16px;
   font-size: 16px;
   font-weight: 600;
@@ -136,12 +151,12 @@ section label {
   margin: 0 auto;
   width: 90%;
   height: 50px;
-  background-color: #f29b30;
+  background-color: #000000;
   color: white;
   font-size: 18px;
   font-weight: 600;
   border: none;
-  border-radius: 8px;
+  border-radius: 4px;
   display: block;
 }
 
@@ -165,7 +180,7 @@ section label {
   padding: 8px;
   border: none;
   background: transparent;
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 .bread-input::placeholder {
@@ -197,4 +212,22 @@ section label {
   border-top-right-radius: 16px;
   overflow-y: auto;
   transition: transform 0.3s ease;
+}
+.lo-f-input{
+  margin-left: 16px;
+  width: 75%;
+  font-size: 16px;
+  padding: 8px;
+  border: 1px solid rgb(179, 179, 179);
+  background: transparent;
+  color: rgb(0, 0, 0);
+height: 35px;
+border-radius: 4px;
+}
+.lo-f{
+  border-bottom: 1px solid rgb(220, 220, 220);
+  padding-bottom: 24px;
+}
+.sug-wrap{
+  width: 89.7%;
 }

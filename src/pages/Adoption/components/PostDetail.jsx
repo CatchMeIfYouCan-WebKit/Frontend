@@ -88,12 +88,12 @@ export default function PostDetail() {
 
     // 색상 한글 변환
     const COLOR_LABELS = {
-        black: '검은색',
-        white: '하얀색',
-        gray: '회색',
-        brown: '갈색',
-        red: '붉은색',
-        gold: '골드',
+        검은색: '검은색',
+        하얀색: '하얀색',
+        회색: '회색',
+        브라운: '브라운',
+        어두운골드: '어두운골드',
+        밝은골드: '밝은골드',
     };
     // ✅ 색상 한글 매핑 또는 그대로 출력
     const rawColors = colors || post.coatColor || post.pet?.coatColor || '';

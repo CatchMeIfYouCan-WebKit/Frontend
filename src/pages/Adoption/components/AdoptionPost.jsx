@@ -15,12 +15,12 @@ import { IoIosArrowBack } from 'react-icons/io';
 // 등록된 반려동물 입양글 등록 시 반려동물 이름, 사진 , 품종, 털색 성별, 중성화 여부, 생일, 몸무게, 동물 등록번호 있으면 받아오기
 
 const colorOptions = [
-    { label: '검은색', value: 'black', hex: '#000000' },
-    { label: '하얀색', value: 'white', hex: '#FFFFFF' },
-    { label: '회색', value: 'gray', hex: '#7E7E7E' },
-    { label: '갈색', value: 'brown', hex: '#8B4513' },
-    { label: '붉은색', value: 'red', hex: '#E74C3C' },
-    { label: '골드', value: 'gold', hex: '#F8DF65' },
+    { label: '검은색', value: '검은색', hex: '#000000' },
+    { label: '하얀색', value: '하얀색', hex: '#FFFFFF' },
+    { label: '회색', value: '회색', hex: '#7E7E7E' },
+    { label: '브라운', value: '브라운', hex: '#8B4513' },
+    { label: '어두운골드', value: '어두운골드', hex: '#E74C3C' },
+    { label: '밝은골드', value: '밝은골드', hex: '#F8DF65' },
 ];
 
 const otherBreeds = [
