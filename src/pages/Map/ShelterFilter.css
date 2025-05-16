@@ -1,18 +1,36 @@
 .shelter-filter {
     width: 100%;
     background: #fff;
-    font-family: 'Noto Sans KR', sans-serif;
-    color: #000000;
+    font-family: 'Pretendard';
+    color: #111111;
 }
 
-.sf-header {
+.shelter-filter .sf-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    color: #000000; /* 주황색 포인트 */
-    margin: 16px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    min-width: 360px;
+    height: 67px;
+    margin-bottom: -16px;
 }
-
+.shelter-filter .back-button2 {
+    border: none;
+    font-size: 24px;
+    padding: 0;
+    margin-bottom: 5px;
+    margin-right: 0px;
+    margin-left: 4px;
+    cursor: pointer;
+}
+.shelter-filter .filtering-title {
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px;
+    letter-spacing: -0.5px;
+    margin-left: 5px;
+}
 .sf-header h3 {
     margin: 0;
     font-size: 1.2rem;

@@ -60,7 +60,6 @@ export default function PostDetail() {
         }
     }, [post]);
 
-
     // 이미지 리스트 준비
     const imageList = post ? (Array.isArray(post.images) && post.images.length > 0 ? post.images : [post.image]) : [];
     const totalImages = imageList.length;
@@ -85,7 +84,6 @@ export default function PostDetail() {
         longitude,
     } = post || {};
 
-
     // 색상 한글 변환
     const COLOR_LABELS = {
         검은색: '검은색',
@@ -101,12 +99,11 @@ export default function PostDetail() {
     const displayColors = Array.isArray(rawColors)
         ? rawColors.map((c) => COLOR_LABELS[c] || c).join(', ')
         : rawColors.includes('+') // 다중 색상 처리
-            ? rawColors
-                .split('+')
-                .map((c) => COLOR_LABELS[c.trim()] || c.trim())
-                .join(', ')
-            : COLOR_LABELS[rawColors.trim()] || rawColors.trim();
-
+        ? rawColors
+              .split('+')
+              .map((c) => COLOR_LABELS[c.trim()] || c.trim())
+              .join(', ')
+        : COLOR_LABELS[rawColors.trim()] || rawColors.trim();
 
     // meetText 파싱
     let mapLat = latitude,
@@ -179,27 +176,25 @@ export default function PostDetail() {
     };
     const handleDelete = async () => {
         if (!window.confirm('정말 삭제하시겠습니까?')) return;
-    
+
         try {
             const token = localStorage.getItem('accessToken');
             if (!token) {
                 alert('로그인이 필요합니다.');
                 return;
             }
-    
+
             const isWeb = typeof window !== 'undefined' && window?.location?.hostname;
-            const baseUrl = isWeb
-                ? `http://${window.location.hostname}:8080`
-                : 'http://10.0.2.2:8080';
-    
+            const baseUrl = isWeb ? `http://${window.location.hostname}:8080` : 'http://10.0.2.2:8080';
+
             const deleteUrl = `${baseUrl}/api/adopt/${id}`;
-    
+
             await axios.delete(deleteUrl, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-    
+
             alert('게시글이 삭제되었습니다.');
             navigate('/adoptionpost');
         } catch (error) {
@@ -207,10 +202,6 @@ export default function PostDetail() {
             alert('게시글 삭제 중 오류가 발생했습니다.');
         }
     };
-    
-    
-    
-    
 
     return (
         <div className="pd-page">
@@ -257,10 +248,8 @@ export default function PostDetail() {
                                 </button>
                             </div>
                         )}
-
                     </div>
                 </header>
-
                 {/* 이미지 캐러셀 */}
                 <div className="pd-carousel">
                     {imageList.length > 0 && <img src={imageList[currentIndex]} alt={petName} className="pd-image" />}
@@ -280,7 +269,6 @@ export default function PostDetail() {
                         </div>
                     )}
                 </div>
-
                 {/* 제목 & 검증배지 */}
                 <div className="pd-title-section">
                     <div className="pd-petname">
@@ -288,7 +276,6 @@ export default function PostDetail() {
                         {isVerified && <img src={markIcon} alt="인증" className="pd-verified" />}
                     </div>
                 </div>
-
                 {/* 상단 태그 */}
                 <div className="pd-tags">
                     <div className="pd-tag">
@@ -313,9 +300,7 @@ export default function PostDetail() {
                         </div>
                     </div>
                 </div>
-
                 <div className="null-space" />
-
                 {/* 설명 */}
                 <div className="pd-description-section">
                     {/* 분양 상태 선택 */}
@@ -354,16 +339,13 @@ export default function PostDetail() {
                     <div className="pd-timeago">{timeAgo}</div>
                     <p className="pd-description-text">{description}</p>
                 </div>
-
                 {/* 만날 곳 */}
                 <div className="pd-meet-section">
                     <div className="pd-meet-label">아이와 만날곳</div>
                     <div ref={mapRef} className="pd-map" />
                     {address && <div className="pd-meet-address">{address}</div>}
                 </div>
-
                 <div className="null-space" />
-
                 {/* 상세 정보 */}
                 <ul className="pd-info-list">
                     <li className="pd-info-item">
@@ -387,14 +369,18 @@ export default function PostDetail() {
                         <div className="pd-info-value">{registrationNo ? 'O' : 'X'}</div>
                     </li>
                 </ul>
-
-                {/* 채팅 버튼 */}
+                {/* 채팅 버튼 */}+{' '}
                 {status === '분양중' ? (
-                    <Chat
-                        onClick={() => {
-                            /* 채팅 열기 */
-                        }}
-                    />
+                    <div
+                        className="pd-chat-button"
+                        onClick={() =>
+                            navigate(`/chat/ADOPTION/${id}`, {
+                                state: { receiverId: post.member.id },
+                            })
+                        }
+                    >
+                        <Chat />
+                    </div>
                 ) : (
                     <button className="pd-chat-disabled" disabled>
                         채팅 불가

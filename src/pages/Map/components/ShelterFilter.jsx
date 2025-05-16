@@ -9,6 +9,7 @@ import browncircle from '../../../assets/browncircle.svg';
 import darkgoldcircle from '../../../assets/darkgoldcircle.svg';
 import whitecircle from '../../../assets/whitecircle.svg';
 import { FaCheck } from 'react-icons/fa';
+import { IoIosArrowBack } from 'react-icons/io';
 
 const breedsMock = [
     { id: 1, ko: '말티즈', en: 'Maltese' },
@@ -311,24 +312,19 @@ export default function ShelterFilter() {
     }, []);
 
     // ======================================== useEffect
+    const goBack = () => {
+        navigate('/mapmain');
+    };
     return (
         <div className="shelter-filter">
             {/* 헤더 */}
             <div className="sf-header">
-                <h3 style={{ display: 'inline-block' }}>필터링</h3>
-                <span
-                    onClick={onApplyFilter}
-                    style={{
-                        float: 'right',
-                        cursor: 'pointer',
-                        fontSize: '20px',
-                        fontWeight: 'bold',
-                        marginTop: '4px',
-                    }}
-                >
-                    x
-                </span>
+                <div className="back-button2" onClick={goBack}>
+                    <IoIosArrowBack size={32} />
+                </div>
+                <div className="filtering-title">필터링</div>
             </div>
+
             <hr />
 
             {/* 1. 보호소 */}
