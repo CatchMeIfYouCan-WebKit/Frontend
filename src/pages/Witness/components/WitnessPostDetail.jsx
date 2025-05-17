@@ -24,6 +24,7 @@ export default function WitnessPostDetail() {
     const [replyInput, setReplyInput] = useState('');
     const [commentList, setCommentList] = useState([]);
     const [recommendations, setRecommendations] = useState([]);
+    const [nickname, setNickname] = useState('');
 
     const post2 = { images: [testdog, testdog, testdog] };
 
@@ -182,6 +183,26 @@ export default function WitnessPostDetail() {
             })
             .catch((err) => console.error('추천 게시글 조회 실패:', err));
     }, [id]);
+    useEffect(() => {
+        axios
+            .get(`/api/posts/witness/${id}`)
+            .then((response) => {
+                setPost(response.data);
+
+                // 닉네임 요청도 여기서 함께 처리
+                return axios.post('/api/member/info', {
+                    id: response.data.userId.toString(),
+                });
+            })
+            .then((res) => {
+                console.log('✅ 닉네임 응답:', res.data);
+                setNickname(res.data.nickname || '알 수 없음');
+            })
+            .catch((err) => {
+                console.error('게시글 or 닉네임 조회 실패:', err);
+                setNickname('알 수 없음');
+            });
+    }, [id]);
 
     // 지도 로드
     useEffect(() => {
@@ -219,6 +240,15 @@ export default function WitnessPostDetail() {
             document.head.removeChild(script);
         };
     }, [post]);
+    useEffect(() => {
+        axios
+            .get(`/api/posts/witness/${id}`)
+            .then((response) => {
+                console.log('📌 포스트:', response.data); // 추가
+                setPost(response.data);
+            })
+            .catch((err) => console.error(err));
+    }, [id]);
 
     if (!post) return <div>Loading...</div>;
     function isWithinOneDay(dateString) {
@@ -228,20 +258,21 @@ export default function WitnessPostDetail() {
         const diffInHours = diffInMs / (1000 * 60 * 60); // ms → hours
         return diffInHours < 24;
     }
+
     return (
         <>
-            <div className="sf-header">
-                <div className="back-button2" onClick={goBack}>
+            <div className="witness-header">
+                <div className="witness-back-button" onClick={goBack}>
                     <IoIosArrowBack size={32} />
                 </div>
-                <div className="filtering-title">목격게시글</div>
+                <div className="witness-filtering-title">목격게시글</div>
             </div>
             <div className={`witness-detail-container ${fadeOut ? 'witness-fade-out' : ''}`}>
                 <div className="witness-user-info">
                     <div className="witness-top-row">
                         <img src={user} alt="프로필" className="witness-profile-circle" />
                         <div className="witness-nickname-section">
-                            <span className="witness-nickname">{post.userNickname}</span>
+                            <span className="witness-nickname">{nickname}</span>
                         </div>
                         <button className="witness-more-btn" onClick={() => setIsDropdownOpen((prev) => !prev)}>
                             &#8942;
@@ -260,8 +291,8 @@ export default function WitnessPostDetail() {
 
                     <div className="witness-bottom-row">
                         <div className="witness-dog-info">
-                            <span className="witness-dog-name">{post.dogName}</span>
-                            <span className="witness-breed">{post.breed}</span>
+                            <span className="witness-dog-name">{post.petName}</span>
+                            <span className="witness-breed">{post.petBreed}</span>
                         </div>
                         <div className="witness-time-ago">{calculateTimeAgo(post.createdAt)}</div>
                     </div>
@@ -304,7 +335,7 @@ export default function WitnessPostDetail() {
 
                 {/* ✅ 지도 */}
                 <div className="witness-map-section">
-                    <div ref={mapRef} className="witness-map-image" />
+                    <div ref={mapRef} className="witness-witness-map-image" />
                 </div>
                 <p className="witness-similar-info-text1">목격된 반려견과 유사한 실종정보에요!</p>
 
@@ -389,7 +420,7 @@ export default function WitnessPostDetail() {
                                     {commentList
                                         .filter((comment) => comment.parentCommentId === parent.id)
                                         .map((child) => (
-                                            <div key={child.id} className="witness-comment reply-comment">
+                                            <div key={child.id} className="witness-comment witness-reply-comment">
                                                 <img
                                                     src={user}
                                                     alt="작성자"

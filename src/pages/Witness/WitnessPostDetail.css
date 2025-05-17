@@ -2,10 +2,7 @@
 
 .witness-detail-container {
     width: 100%;
-    max-width: 540px;
-    padding: 0 0 40px;
-    background-color: #fff;
-    font-family: 'Arial', sans-serif;
+    /* padding: 0 0 40px; */
     transition: opacity 0.4s ease;
 }
 
@@ -13,7 +10,7 @@
     opacity: 0;
 }
 
-.sf-header {
+.witness-header {
     display: flex;
     align-items: center;
     padding-top: 7px;
@@ -24,7 +21,7 @@
     margin-top: 4px;
 }
 
-.back-button2 {
+.witness-back-button {
     border: none;
     font-size: 24px;
     padding: 0;
@@ -34,7 +31,7 @@
     cursor: pointer;
 }
 
-.filtering-title {
+.witness-filtering-title {
     font-size: 22px;
     font-style: normal;
     font-weight: 700;
@@ -166,9 +163,9 @@
     right: 14px;
     background-color: rgba(217, 217, 217, 0.7);
     color: #111111;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 16px;
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-size: 20px;
     letter-spacing: -0.45px;
     font-weight: bold;
 }
@@ -272,9 +269,9 @@
 }
 
 .witness-description {
-    margin-left: 16px;
+    margin-left: 20px;
     margin-right: 16px;
-    margin-top: 24px;
+    margin-top: 12px;
     line-height: 1.5;
     font-size: 22px;
     font-weight: normal;
@@ -284,14 +281,15 @@
 }
 
 .witness-map-section {
-    margin: 48px 4px;
+    margin: 36px 4px;
+    border-radius: 2px;
 }
 
-.witness-map-image {
-    width: 88%;
-    border-radius: 12px;
-    display: block;
+.witness-witness-map-image {
+    height: 200px;
+    width: 95%;
     margin: 0 auto;
+    border-radius: 4px;
 }
 .witness-comment-section {
     margin-top: 48px;
@@ -300,11 +298,10 @@
 
 .witness-comment-count {
     font-size: 22px;
-
     font-weight: bold;
     margin-bottom: 24px;
     text-align: left;
-    margin-left: 15px;
+    margin-left: 16px;
 }
 
 /* 원댓글 */
@@ -315,19 +312,16 @@
 }
 
 /* 대댓글 */
-.reply-comment {
+.witness-reply-comment {
     position: relative;
     background-color: #f0eeee !important;
     border-radius: 6px !important;
-    padding: 10px;
-    /* margin: 0px 30px 16px 60px !important; */
+    padding: 12px;
+    margin: 0px 16px 16px 60px !important;
     border-bottom: 1px solid #f0eeee;
     margin-bottom: 8px !important;
-    /* margin-left: 32px !important; */
     padding-left: 0px !important;
     padding-top: 16px !important;
-    padding-right: px !important;
-    
 }
 
 .reply-comment::before {
@@ -372,7 +366,7 @@
     color: #111111;
     letter-spacing: -0.5px;
     margin-left: 4px;
-    font-size: 18px;
+    font-size: 20px;
 }
 
 .witness-comment-text {
@@ -381,9 +375,9 @@
     color: #111111;
     text-align: left;
     line-height: 1.4;
-    margin-top: 16px;
+    margin-top: 20px;
     font-weight: normal;
-    letter-spacing: -0.5px;
+    letter-spacing: -0.55px;
 
     /* 💡 아래 3줄을 추가하세요 */
     word-break: break-word; /* 단어가 길어지면 줄바꿈 */
@@ -394,7 +388,7 @@
 
 .witness-comment-date {
     margin-left: -50px;
-    font-size: 16px;
+    font-size: 14px;
     color: #8c8c8c;
     letter-spacing: -0.5px;
     margin-top: 8px;
@@ -487,6 +481,7 @@
     text-align: left;
     margin-left: 16px;
     margin-bottom: 6px;
+    margin-top: 4px;
 }
 .witness-similar {
     background-color: #ffffff;

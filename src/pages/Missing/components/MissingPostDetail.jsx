@@ -27,7 +27,6 @@ export default function MissingPostDetail() {
     const [commentList, setCommentList] = useState([]);
     const [recommendations, setRecommendations] = useState([]);
 
-
     const post2 = { images: [testdog, testdog, testdog] };
 
     const goBack = () => {
@@ -170,14 +169,13 @@ export default function MissingPostDetail() {
         fetchComments();
     }, [id]);
 
-    //목격 추천 api 
+    //목격 추천 api
     useEffect(() => {
         axios
             .get(`/api/posts/missing/${id}/recommendations`)
             .then((res) => setRecommendations(res.data))
             .catch((err) => console.error('추천 게시글 조회 실패:', err));
     }, [id]);
-
 
     // 지도 로드
     useEffect(() => {
@@ -324,7 +322,6 @@ export default function MissingPostDetail() {
                         >
                             <img src={getImageUrl(item.photoUrl)} alt={`썸네일${idx}`} />
                             <div className="missing-thumbnail-text">
-
                                 <div>목격 - {formatDate(item.witnessDatetime || item.missingDatetime)}</div>
                                 <div>{item.predictedBreed || '품종 정보 없음'}</div>
                                 <div>{item.predictedColor || '털색 정보 없음'}</div>
@@ -333,7 +330,6 @@ export default function MissingPostDetail() {
                         </div>
                     ))}
                 </div>
-
 
                 {/* ✅ 댓글 섹션 */}
 
