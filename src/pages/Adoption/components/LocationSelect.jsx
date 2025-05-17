@@ -8,6 +8,7 @@ import '../LocationSelect.css';
 export default function LocationSelect() {
     const navigate = useNavigate();
     const location = useLocation();
+    const { postType } = location.state || {};
 
     const mapDiv = useRef(null);
     const mapRef = useRef(null);
@@ -20,6 +21,7 @@ export default function LocationSelect() {
 
     const KAKAO_MAP_SDK =
         'https://dapi.kakao.com/v2/maps/sdk.js?appkey=9402031e36074f7a2da9f3094bc383e7&autoload=false&libraries=services';
+
 
     useEffect(() => {
         const script = document.createElement('script');
@@ -94,20 +96,24 @@ export default function LocationSelect() {
     const handleBack = () => navigate(-1);
     const handleConfirm = () => {
         if (!selectedPos) return;
-        navigate('/report-missing', {
+        navigate('/adoptionpost/add/details', {
             replace: true,
             state: {
-                ...location.state,
+              ...location.state,
+              post: {
+                ...location.state.post,
                 latitude: selectedPos.lat,
                 longitude: selectedPos.lng,
+              },
             },
-        });
+          });
+          
     };
 
     return (
         <div className="location-select">
             <header className="ls-header">
-                <div className="ls-back" onClick={handleBack} style={{marginLeft:'0px'}}>
+                <div className="ls-back" onClick={handleBack} style={{ marginLeft: '0px' }}>
                     <IoIosArrowBack size={33} style={{ marginBottom: '8px' }} />
                 </div>
 

@@ -13,7 +13,7 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 export default function WitnessPostForm() {
     const navigate = useNavigate();
     const locationState = useLocation();
-    const pet = locationState.state?.pet;
+    // const pet = locationState.state?.pet;
 
     const [date, setDate] = useState(locationState.state?.date);
     const [location, setLocation] = useState(null);
@@ -103,7 +103,6 @@ export default function WitnessPostForm() {
 
         try {
             const formData = new FormData();
-
             const formattedDate = format(date, "yyyy-MM-dd'T'HH:mm");
 
             const witnessData = {
@@ -111,19 +110,34 @@ export default function WitnessPostForm() {
                 witnessDatetime: formattedDate,
                 witnessLocation: location,
                 detailDescription: desc,
+                latitude,
+                longitude
             };
 
             formData.append('post', JSON.stringify(witnessData));
-            files.forEach((file) => formData.append('files', file));
+            formData.append('photoUrls', JSON.stringify(files));
 
+
+            // 1. 목격 게시글 등록 요청
             const res = await axios.post('/api/posts/witness', formData, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                 },
             });
 
-            console.log({ location, date, desc, files });
-            alert('목격 신고를 했습니다.');
+            const { postId, photoUrls } = res.data; // ✅ 서버 응답에 포함되어야 함
+
+            // 2. 대표 이미지로 AI 예측 요청 (첫 번째 이미지 기준)
+            if (photoUrls && photoUrls.length > 0) {
+                await axios.post('http://10.0.2.2:8081/ai/predict-from-path', {
+                    photo_url: photoUrls[0],
+                    pet_id: null, // 목격 게시글은 반려동물 ID 없음
+                    post_type: 'witness',
+                    post_id: postId,
+                });
+            }
+
+            alert('목격 신고 및 AI 예측 완료');
             navigate('/main');
         } catch (error) {
             console.error('등록 실패:', error);
@@ -219,22 +233,9 @@ export default function WitnessPostForm() {
                     const uploadedPath = result.photoPath;
                     const previewUrl = getImageUrl(uploadedPath);
 
-                    const fileExt = localPath.split('.').pop().toLowerCase();
-                    const mimeTypeMap = {
-                        jpg: 'image/jpeg',
-                        jpeg: 'image/jpeg',
-                        png: 'image/png',
-                        gif: 'image/gif',
-                    };
-                    const mimeType = mimeTypeMap[fileExt] || 'image/jpeg';
-
-                    fetch(localPath)
-                        .then((res) => res.blob())
-                        .then((blob) => {
-                            const file = new File([blob], `photo.${fileExt}`, { type: mimeType });
-                            setFiles((prev) => [...prev, file]);
-                            setPreviewUrls((prev) => [...prev, previewUrl]);
-                        });
+                    // ✅ 더 이상 File 객체 만들지 않고, 경로만 저장
+                    setPreviewUrls((prev) => [...prev, previewUrl]);
+                    setFiles((prev) => [...prev, uploadedPath]); // 이제는 '파일'이 아니라 '경로'
 
                     console.log('🔥 업로드 완료:', uploadedPath);
                 } catch (e) {
@@ -244,6 +245,7 @@ export default function WitnessPostForm() {
             },
         });
     };
+
 
     // 사진 삭제
     const handleRemovePhoto = (index) => {

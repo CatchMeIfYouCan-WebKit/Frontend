@@ -1,110 +1,166 @@
-/* src/pages/Chat/components/ChatRoomStyled.css */
-
-.chat-room-container {
+.message-container {
     display: flex;
     flex-direction: column;
-    height: 100%;
-}
-
-/* 메시지 영역 */
-.chat-box {
-    flex: 1;
+    gap: 8px;
     padding: 16px;
-    overflow-y: auto;
-    background-color: #e6f7ff;
 }
 
-/* 말풍선 래퍼: mine/other 에 따라 좌우 정렬 */
+.chat-room-container {
+    background: rgba(240, 250, 255, 0.2);
+}
+.sf-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    max-width: 540px;
+    margin: 0 auto;
+    height: 67px;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 0 16px;
+    z-index: 100;
+    border-bottom: 1px solid #eee;
+}
+.back-button2 {
+    border: none;
+    font-size: 24px;
+    padding: 0;
+    margin-bottom: 5px;
+    margin-right: 0px;
+    margin-left: -8px;
+    cursor: pointer;
+}
+
+.filtering-title {
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px;
+    letter-spacing: -0.5px;
+    margin-left: 5px;
+}
+.chat-room-container {
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto;
+    padding: 0; /* 좌우 패딩 제거 */
+}
+.chat-box {
+    align-items: flex-start; /* 💡 이게 좌측 정렬의 핵심 */
+    flex: 1;
+    padding: 12px 0;
+    padding-bottom: 80px; /* 입력창 가려지지 않게 공간 확보 */
+    overflow-y: auto;
+    background-color: rgba(240, 250, 255, 0.2);
+}
+
 .chat-bubble-wrapper {
     display: flex;
     align-items: flex-end;
-    margin-bottom: 8px;
-}
-.chat-bubble-wrapper.mine {
-    justify-content: flex-end; /* 오른쪽 정렬 */
-}
-.chat-bubble-wrapper.other {
-    justify-content: flex-start; /* 왼쪽 정렬 */
+    margin-bottom: 12px;
+    width: 100%;
+    padding: 0 12px; /* 좌우 padding만 살짝 */
+    box-sizing: border-box;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
 }
 
-/* 상대방 프로필/닉네임 (other only) */
+.chat-bubble-wrapper.mine {
+    text-align: left;
+    justify-content: flex-end;
+}
+
+.chat-bubble-wrapper.other {
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.chat-bubble {
+    max-width: 90%; /* 기존보다 훨씬 넓게 */
+    padding: 8px 12px;
+    letter-spacing: -0.45px;
+    font-size: 18px;
+    border-radius: 6px;
+    word-break: break-word;
+    font-weight: normal;
+}
+
+.chat-bubble.mine {
+    align-self: flex-start; /* 좌측 정렬 */
+    background-color: #8c8c8c;
+    color: #fff;
+}
+
+.chat-bubble.other {
+    background-color: #dbdbdb;
+    color: #111111;
+
+    border-top-left-radius: 6px;
+}
+
 .profile-area {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-right: 8px;
+    border-radius: 50%;
+    /* border: 1px solid #111; */
 }
+
 .profile-image {
     width: 32px;
     height: 32px;
     border-radius: 50%;
     object-fit: cover;
 }
+
 .chat-nickname {
-    font-size: 0.75rem;
-    color: #555;
+    font-size: 12px;
+    color: #888;
     margin-top: 2px;
 }
 
-/* 말풍선 */
-.chat-bubble {
-    max-width: 70%;
-    padding: 8px 12px;
-    border-radius: 16px;
-    word-break: break-word;
-    line-height: 1.4;
-}
-
-/* 내가 보낸 메시지 (mine) */
-.chat-bubble.mine {
-    background-color: #ffd666;
-    color: #333;
-    border-top-right-radius: 4px;
-    border-top-left-radius: 16px;
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
-}
-
-/* 상대방 메시지 (other) */
-.chat-bubble.other {
-    background-color: #fff;
-    color: #333;
-    border: 1px solid #ccc;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 16px;
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
-}
-
-/* 오른쪽 밀어주기용 빈 엘리먼트 */
-.spacer {
-    flex: 1;
-}
-
-/* 입력창 영역 */
-.chat-input-wrapper {
-    display: flex;
-    padding: 8px;
-    border-top: 1px solid #ddd;
-    background-color: #fafafa;
+.missing-comment-input::placeholder {
+    padding-top: 10px; /* 위 공간 확보 */
+    letter-spacing: -0.5px;
+    font-size: 20px; /* 원하는 크기로 조절 */
+    color: #8c8c8c; /* 필요하면 색상도 조정 */
+    font-weight: normal;
 }
 .chat-input {
     flex: 1;
-    padding: 8px 12px;
+    padding: 12px 16px;
     border: 1px solid #ccc;
-    border-radius: 20px;
+    border-radius: 4px;
+    font-size: 16px;
     outline: none;
+    background-color: rgba(229, 228, 232, 0.3);
+    color: #111;
+    letter-spacing: -0.4px;
 }
+
+.chat-input::placeholder {
+    color: #8c8c8c;
+}
+
 .send-button {
-    margin-left: 8px;
-    padding: 0 16px;
-    background-color: #1890ff;
-    color: white;
+    background-color: #ff7e36;
     border: none;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
     border-radius: 20px;
+    padding: 10px 16px;
     cursor: pointer;
 }
+
 .send-button:disabled {
-    background-color: #a0d911;
+    background-color: #ffc2a0;
     cursor: not-allowed;
 }

@@ -21,60 +21,18 @@ export default function Filtering() {
     const [shelter, setShelter] = useState(init.shelterFiltering ?? false);
     const [hospital, setHospital] = useState(init.hospitalFiltering ?? false);
 
-    // 동물 색상 선택
-    const [selectedColors, setSelectedColors] = useState(Array.isArray(init.colorFiltering) ? init.colorFiltering : []);
-    const toggleColor = (color) => {
-        setSelectedColors((prev) => (prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]));
-    };
-    //--------------
-
-    // 동물 품종
-    const [breadFilter, setBreadFilter] = useState(init.breedFiltering ?? '강아지 품종을 선택해주세요.');
-
-    // 바텀 시트 상태
-    const [isSheetOpen, setIsSheetOpen] = useState(false);
-    const toggleSheet = () => setIsSheetOpen((open) => !open);
-
-    const applyFilters = () => {
-        navigate('/mapmain', {
-            state: {
-                missFiltering: miss,
-                seeFiltering: see,
-                shelterFiltering: shelter,
-                hospitalFiltering: hospital,
-                breedFiltering: breadFilter,
-                colorFiltering: selectedColors,
-            },
-        });
-    };
-    // 추가된 상태
-    const [isSuggestOpen, setIsSuggestOpen] = useState(false);
-    const wrapperRef = useRef(null);
-
-    const goBack = () => {
-        navigate('/mapmain');
-    };
-
-    // 입력창 자동완성
-    const [search, setSearch] = useState('');
-
-    //----------------
-    // 강아지 품종 리스트
-    const [selectedPopularBreed, setSelectedPopularBreed] = useState('');
-
     const prioritizedBreeds = [
         '선택안함',
         '믹스견',
         '말티즈',
         '푸들',
         '포메라니안',
-        '짓돗개',
+        '진돗개',
         '시츄',
         '골든 리트리버',
         '치와와',
     ];
-    // (이전 훅들 아래쯤)
-    const popularBreeds = ['믹스견', '말티즈', '푸들', '포메라니안', '짓돗개', '시츄', '골든 리트리버', '치와와'];
+    const popularBreeds = ['믹스견', '말티즈', '푸들', '포메라니안', '진돗개', '시츄', '골든 리트리버', '치와와'];
 
     const otherBreeds = [
         '그레이하운드',
@@ -230,6 +188,56 @@ export default function Filtering() {
         '해리어',
     ];
 
+    // 동물 색상 선택
+    const [selectedColors, setSelectedColors] = useState(Array.isArray(init.colorFiltering) ? init.colorFiltering : []);
+    const toggleColor = (color) => {
+        setSelectedColors((prev) => (prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]));
+    };
+
+    // 동물 품종
+    const [breedFilter, setBreedFilter] = useState(init.breedFiltering ?? '강아지 품종을 선택해주세요.');
+
+    // 바텀 시트 상태
+    const [isSheetOpen, setIsSheetOpen] = useState(false);
+    const toggleSheet = () => setIsSheetOpen((open) => !open);
+
+    // 추가된 상태
+    const [isSuggestOpen, setIsSuggestOpen] = useState(false);
+    const wrapperRef = useRef(null);
+
+    const goBack = () => {
+        navigate('/mapmain');
+    };
+
+    // 입력창 자동완성
+    const [search, setSearch] = useState(init.breedFiltering ?? '');
+    const [selectedPopularBreed, setSelectedPopularBreed] = useState(
+        popularBreeds.includes(init.breedFiltering) ? init.breedFiltering : ''
+    );
+    // ============================================================= method
+
+    const applyFilters = () => {
+        console.log('[필터 적용] 상태값:', {
+            missFiltering: miss,
+            seeFiltering: see,
+            shelterFiltering: shelter,
+            hospitalFiltering: hospital,
+            breedFiltering: breedFilter,
+            colorFiltering: selectedColors,
+        });
+
+        navigate('/mapmain', {
+            state: {
+                missFiltering: miss,
+                seeFiltering: see,
+                shelterFiltering: shelter,
+                hospitalFiltering: hospital,
+                breedFiltering: breedFilter,
+                colorFiltering: selectedColors,
+            },
+        });
+    };
+
     const sortedOthers = otherBreeds
         .filter((b) => !prioritizedBreeds.includes(b))
         .sort((a, b) => a.localeCompare(b, 'ko'));
@@ -241,6 +249,10 @@ export default function Filtering() {
         if (!search.trim()) return allBreeds;
         return allBreeds.filter((b) => b.includes(search.trim()));
     }, [search, allBreeds]);
+
+    // ============================================================= method
+    // ============================================================= useState
+
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
@@ -250,10 +262,12 @@ export default function Filtering() {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
-    //--------------------------------------
 
+    // ============================================================= useState
+    // ============================================================= return
     return (
         <div className="filter-page">
+            {/* 1. 헤더 */}
             <div className="filtering-header">
                 <div className="back-button2" onClick={goBack}>
                     <IoIosArrowBack size={32} />
@@ -261,10 +275,13 @@ export default function Filtering() {
                 <div className="filtering-title">필터링</div>
             </div>
 
+            {/* 2. 마커 필터링 */}
             <section>
                 <div className="label-wrap">
                     <div className="tag-title">
-                        마커 필터링 <span className="required">*</span>{' '}
+                        <div>
+                            마커 필터링 <span className="required">*</span>
+                        </div>
                         <div className="label-comment">체크 박스를 클릭하면 필터링을 중복으로 적용할 수 있어요.</div>
                     </div>
                     <label>
@@ -314,12 +331,16 @@ export default function Filtering() {
                 </div>
             </section>
 
+            {/* 3. 품종 필터링 */}
             <div className="breed" ref={wrapperRef}>
                 <div className="breed-title">
-                    강아지 품종 <span className="required">*</span>{' '}
+                    <div>
+                        강아지 품종 <span className="required">*</span>
+                    </div>
                     <div className="label-comment">품종은 한 개만 선택 가능합니다.</div>
                 </div>
                 {/* onClick을 toggleSheet로 수정했습니다 */}
+                {/* 검색창 */}
                 <div className="bread-input-wrap">
                     <input
                         type="text"
@@ -327,8 +348,10 @@ export default function Filtering() {
                         placeholder="강아지 품종을 선택해주세요"
                         value={search}
                         onChange={(e) => {
-                            setSearch(e.target.value);
+                            const value = e.target.value; // 추가
+                            setSearch(value);
                             setIsSuggestOpen(true);
+                            setBreedFilter(value); // 검색어를 바로 필터에 반영
                         }}
                         onFocus={() => setIsSuggestOpen(true)}
                     />
@@ -343,7 +366,7 @@ export default function Filtering() {
                                     className="bread-suggestion-item"
                                     onClick={() => {
                                         const val = b === '선택안함' ? '' : b;
-                                        setBreadFilter(val);
+                                        setBreedFilter(val);
                                         setSearch(val);
                                         setIsSuggestOpen(false);
                                         setSelectedPopularBreed(''); // 선택 해제
@@ -375,9 +398,12 @@ export default function Filtering() {
                 </div>
             </div>
 
+            {/* 4. 털색 필터링 */}
             <div className="pet-color">
                 <div className="pet-color-title">
-                    털색 <span className="required">*</span>
+                    <div>
+                        털색 <span className="required">*</span>
+                    </div>
                     <span className="pet-color-comment">털 색상이 한 가지가 아닌경우 중복 선택 가능합니다.</span>
                 </div>
                 <div className="color-container">

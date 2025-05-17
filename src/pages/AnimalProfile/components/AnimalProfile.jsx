@@ -507,16 +507,18 @@ export default function AnimalProfile() {
     useEffect(() => {
         console.log('📸 previewUrl:', previewUrl);
     }, [previewUrl]);
+
     const goBack = () => {
-        navigate('/mapmain');
+        navigate('/main');
     };
+
     return (
         <div className="animal-profile">
             <div className="filtering-header">
                 <div className="back-button2" onClick={goBack}>
                     <IoIosArrowBack size={32} />
                 </div>
-                <div className="filtering-title">필터링</div>
+                <div className="filtering-title">반려견 정보 입력</div>
             </div>
 
             <div className="animal-profile-content">

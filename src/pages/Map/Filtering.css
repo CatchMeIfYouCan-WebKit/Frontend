@@ -205,6 +205,7 @@
 /* 자동완성 래퍼를 인풋과 같은 너비로, 바로 아래에 배치 */
 .sug-wrap {
     position: absolute;
+    top: 67%;
     left: 3.1%;
     width: 88.2%;
     z-index: 1000;

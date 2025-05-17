@@ -76,6 +76,7 @@ export default function MissingPostForm() {
         const formattedDate = format(date, "yyyy-MM-dd'T'HH:mm");
 
         try {
+            // 1. 게시글 데이터 전송
             const formData = new FormData();
             const missingData = {
                 petId: pet.id,
@@ -83,6 +84,8 @@ export default function MissingPostForm() {
                 missingDatetime: formattedDate,
                 missingLocation: locationString,
                 detailDescription: desc,
+                latitude,      // 추가
+                longitude,     // 추가
             };
 
             if (!file && pet?.photoPath) {
@@ -92,14 +95,27 @@ export default function MissingPostForm() {
             formData.append('post', new Blob([JSON.stringify(missingData)], { type: 'application/json' }));
             formData.append('file', file);
 
-            await axios.post('/api/posts/missing', formData, {
+            const response = await axios.post('/api/posts/missing', formData, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                     'Content-Type': 'multipart/form-data',
                 },
             });
 
-            alert('실종 신고를 했습니다.');
+            // 2. 응답에서 postId 확인
+            const { postId, photoUrl } = response.data; // 백엔드가 postId를 응답해야 함
+
+            // 3. FastAPI로 예측 요청
+            const fastApiRes = await axios.post('http://10.0.2.2:8081/ai/predict-from-path', {
+                photo_url: photoUrl || pet.photoPath,
+                pet_id: pet.id,
+                post_type: 'missing',
+                post_id: postId,
+            });
+
+            console.log('✅ 예측 결과:', fastApiRes.data);
+
+            alert('실종 신고 및 AI 예측 완료');
             navigate('/main');
         } catch (err) {
             console.error(err);
@@ -111,7 +127,7 @@ export default function MissingPostForm() {
         <>
             <div className="missingpost-header">
                 <div className="Hback-button" onClick={() => navigate('/main')}>
-                    <IoIosArrowBack size={36}/>
+                    <IoIosArrowBack size={36} />
                 </div>
                 <h1>실종게시글 작성</h1>
             </div>
