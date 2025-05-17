@@ -170,7 +170,16 @@ export default function WitnessPostDetail() {
     useEffect(() => {
         axios
             .get(`/api/posts/witness/${id}/recommendations`)
-            .then((res) => setRecommendations(res.data))
+            .then((res) => {
+                // res.data 가 배열인지, { recommendations: [...] } 형태인지, 그 외인지 판별
+                let recs = [];
+                if (Array.isArray(res.data)) {
+                    recs = res.data;
+                } else if (Array.isArray(res.data.recommendations)) {
+                    recs = res.data.recommendations;
+                }
+                setRecommendations(recs);
+            })
             .catch((err) => console.error('추천 게시글 조회 실패:', err));
     }, [id]);
 
@@ -301,7 +310,7 @@ export default function WitnessPostDetail() {
 
                 {/* ✅ 슬라이더를 댓글 바로 위로 이동 */}
                 <div className="witness-thumbnail-slider">
-                    {recommendations.map((item, idx) => (
+                    {(Array.isArray(recommendations) ? recommendations : []).map((item, idx) => (
                         <div
                             className="witness-thumbnail-card"
                             key={idx}
@@ -310,18 +319,14 @@ export default function WitnessPostDetail() {
                         >
                             <img src={getImageUrl(item.photoUrl)} alt={`썸네일${idx}`} />
                             <div className="witness-thumbnail-text">
-
                                 <div>실종 - {formatDate(item.missingDatetime || item.witnessDatetime)}</div>
                                 <div>{item.petBreed || '품종 정보 없음'}</div>
                                 <div>{item.petCoatColor || '털색 정보 없음'}</div>
                                 <div>{item.distance?.toFixed(1)}km 거리</div>
-
                             </div>
                         </div>
                     ))}
                 </div>
-
-
 
                 {/* ✅ 댓글 섹션 */}
                 <div className="witness-comment-section">

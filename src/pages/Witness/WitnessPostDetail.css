@@ -295,6 +295,7 @@
 }
 .witness-comment-section {
     margin-top: 48px;
+    margin-bottom: 90px;
 }
 
 .witness-comment-count {
@@ -326,6 +327,7 @@
     padding-left: 0px !important;
     padding-top: 16px !important;
     padding-right: px !important;
+    
 }
 
 .reply-comment::before {
