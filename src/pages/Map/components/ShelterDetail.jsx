@@ -143,7 +143,7 @@ export default function ShelterDetail() {
                     {shelters.length > 0 ? `${filteredShelters.length}개의 게시글` : '0개의 게시글'}
                 </div>
                 <div className={`sort-toggle ${!isLatest ? 'reversed' : ''}`} onClick={() => setIsLatest((p) => !p)}>
-                    {isLatest ? '최근작성순' : '오래된 순'}
+                    {isLatest ? '최신순' : '오래된순'}
                     <img src={change} alt="변경" />
                 </div>
             </div>
