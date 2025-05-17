@@ -9,7 +9,6 @@ import petcolor from '../../../assets/pet-color.svg';
 import Chat from './Chat';
 import '../PostDetail.css';
 import { FiMoreVertical, FiChevronDown } from 'react-icons/fi';
-import axios from 'axios'; // ← 추가
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 
@@ -43,29 +42,17 @@ export default function PostDetail() {
                 console.log('👤 현재 사용자 ID:', currentUserId);
                 console.log('📡 알림 구독 경로:', notifyPath);
 
-                // ✅ 기존 구독이 있으면 먼저 해제
                 if (subscriptionRef.current) {
                     client.unsubscribe(subscriptionRef.current);
                     console.log('🔄 기존 구독 해제:', subscriptionRef.current);
                 }
 
-                // ✅ 새로운 구독 등록
                 const subscription = client.subscribe(notifyPath, (message) => {
                     const data = JSON.parse(message.body);
                     alert(`📢 알림: ${data.message}`);
                 });
-                subscriptionRef.current = subscription.id; // ✅ 구독 ID 저장
 
-                // 채팅 구독
-                if (typeof chatRoomId !== 'undefined' && chatRoomId !== null) {
-                    const chatPath = `/topic/chat/${chatRoomId}`;
-                    console.log('📡 채팅 구독 경로:', chatPath);
-
-                    client.subscribe(chatPath, (message) => {
-                        const data = JSON.parse(message.body);
-                        console.log('📩 채팅 메시지 수신:', data);
-                    });
-                }
+                subscriptionRef.current = subscription.id;
             };
 
             clientRef.current = client;
@@ -83,8 +70,10 @@ export default function PostDetail() {
         console.log('💬 [handleChatClick] 버튼 클릭됨');
         console.log('📦 전송 대상 receiverId:', post.member.id);
 
+        const client = clientRef.current;
+
         function sendNotification() {
-            clientRef.current.publish({
+            client.publish({
                 destination: '/app/notify',
                 body: JSON.stringify({
                     receiverId: post.member.id,
@@ -94,21 +83,32 @@ export default function PostDetail() {
             console.log('✅ 알림 전송 요청 완료 (sendNotification 호출됨)');
         }
 
-        const client = clientRef.current;
         if (client?.connected) {
             sendNotification();
         } else {
             console.log('📡 WebSocket 미연결, 연결 시도 중...');
+            client.onConnect = () => {
+                console.log('✅ STOMP 연결 성공 (onConnect 호출됨)');
+                const token = localStorage.getItem('accessToken');
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const currentUserId = payload.userId || payload.id || payload.sub;
 
-            if (!client.active) {
-                client.onConnect = () => {
-                    console.log('✅ STOMP 연결 성공 (onConnect 호출됨)');
-                    sendNotification();
-                };
-                client.activate();
-            } else {
-                console.log('📡 이미 연결 시도 중입니다.');
-            }
+                const notifyPath = `/topic/notify/${currentUserId}`;
+
+                if (subscriptionRef.current) {
+                    client.unsubscribe(subscriptionRef.current);
+                }
+
+                const subscription = client.subscribe(notifyPath, (message) => {
+                    const data = JSON.parse(message.body);
+                    alert(`📢 알림: ${data.message}`);
+                });
+
+                subscriptionRef.current = subscription.id;
+
+                sendNotification();
+            };
+            client.activate();
         }
 
         navigate(`/chat/ADOPTION/${id}`, { state: { receiverId: post.member.id } });
@@ -302,21 +302,7 @@ export default function PostDetail() {
             alert('게시글 삭제 중 오류가 발생했습니다.');
         }
     };
-    // ✅ 분양 상태 업데이트 함수 추가
-    const handleStatusChange = async (newStatus) => {
-        try {
-            const token = localStorage.getItem('accessToken');
-            await axios.patch(
-                `/api/adopt/${id}/status`,
-                { status: newStatus }, // { status: '분양완료' } 또는 '분양중'
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            setStatus(newStatus);
-        } catch (err) {
-            console.error('분양 상태 변경 실패', err);
-            alert('상태 변경에 실패했습니다.');
-        }
-    };
+
     return (
         <div className="pd-page">
             {/* 워터마크 */}
@@ -437,8 +423,9 @@ export default function PostDetail() {
                                         key={s}
                                         className="pd-status-item"
                                         onClick={() => {
-                                            handleStatusChange(s);
+                                            setStatus(s);
                                             setStatusOpen(false);
+                                            // TODO: 필요하면 서버에 상태 변경 요청 추가
                                         }}
                                     >
                                         {s}
