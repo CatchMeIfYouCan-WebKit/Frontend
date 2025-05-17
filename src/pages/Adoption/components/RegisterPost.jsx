@@ -104,6 +104,7 @@ export default function RegisterPost() {
                                             title: postTitle,
                                             comments: description, // ✅ description을 post.comments로 덮어쓰기
                                         },
+                                        postType: 'adoption', 
                                     },
                                 })
                             }
