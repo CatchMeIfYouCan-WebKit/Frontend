@@ -219,7 +219,6 @@ export default function Adoption() {
                             <div className="post-title">
                                 {p.title}
                                 <span className="verified">
-                                    <img src={mark} alt="인증" />
                                 </span>
                             </div>
                             <div className="post-meta">

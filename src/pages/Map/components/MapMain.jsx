@@ -541,7 +541,7 @@ export default function MapMain() {
                 <div class="marker-circle">
                     <img src="${getImageUrl(imageUrl)}" class="marker-img" />
                 </div>
-                <div class="marker-label ${getMarkerAgeClass(post.witnessDatetime)}">실종</div>
+                <div class="marker-label ${getMarkerAgeClass(post.witnessDatetime)}">목격</div>
             `;
 
                 div.addEventListener('click', (e) => {
