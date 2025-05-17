@@ -291,7 +291,7 @@ export default function WitnessPostDetail() {
                             minute: 'numeric',
                             hour12: true,
                         })}
-                        <span className={`witness-post-type ${post.postType === 'witness' ? 'missing' : 'witness'}`}>
+                        <span className={`witness-post-type ${post.postType === 'witness' ? 'witness' : 'missing'}`}>
                             {post.postType === 'missing' ? '실종' : '목격'}
                         </span>
                     </div>
