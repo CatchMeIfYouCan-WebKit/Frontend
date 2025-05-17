@@ -66,6 +66,7 @@ import ReservationPage from '../pages/Reservation/components/ReservationPage';
 import NearbyHospitalPage from '../pages/NearbyHospital/components/NearbyHospitalPage';
 import HospitalDetailPage from '../pages/HospitalDetail/components/HospitalDetailPage.';
 import VetDetailPage from '../pages/VetDetail/components/VetDetailPage';
+import AiLandingPage from '../pages/Landing/components/AiLandingPage';
 function App() {
     return (
         <BrowserRouter>
@@ -143,6 +144,9 @@ function App() {
                 <Route path="/hospital/:id" element={<HospitalDetailPage />} />
                 <Route path="/vet/:id" element={<VetDetailPage />} />
                 <Route path="/nearby-hospital" element={<NearbyHospitalPage />} />
+
+                {/* Ai 랜딩페이지 */}
+                <Route path="/landingai" element={<AiLandingPage />} />
             </Routes>
         </BrowserRouter>
     );
