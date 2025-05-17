@@ -12,7 +12,6 @@ export default function ChatRoom() {
     const { state } = useLocation();
     const navigate = useNavigate();
     const receiverId = state?.receiverId;
-    const receiverNickname = state?.receiverNickname || '상대방';
 
     const token = localStorage.getItem('accessToken');
     const payload = token ? JSON.parse(atob(token.split('.')[1])) : {};
@@ -23,6 +22,7 @@ export default function ChatRoom() {
     const [message, setMessage] = useState('');
     const [connected, setConnected] = useState(false);
     const [fadeOut, setFadeOut] = useState(false);
+    const [receiverNickname, setReceiverNickname] = useState('상대방');
 
     const clientRef = useRef(client);
 
@@ -30,41 +30,57 @@ export default function ChatRoom() {
         if (!myId || !receiverId) return;
 
         async function initChat() {
-            const roomRes = await fetch('/api/chat/room', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    user1Id: myId,
-                    user2Id: Number(receiverId),
-                    type,
-                    relatedId: Number(relatedId),
-                }),
-            });
-            const room = await roomRes.json();
-            setRoomId(room.id);
-
-            const msgRes = await fetch(`/api/chat/rooms/${room.id}/messages`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            if (msgRes.ok) {
-                const history = await msgRes.json();
-                setMessages(Array.isArray(history) ? history : []);
-            }
-
-            clientRef.current.onConnect = () => {
-                setConnected(true);
-                clientRef.current.subscribe(`/topic/chat/${room.id}`, (frame) => {
-                    const incoming = JSON.parse(frame.body);
-                    setMessages((prev) => [...prev, incoming]);
+            try {
+                // 1) 채팅방 생성 또는 조회
+                const roomRes = await fetch('/api/chat/room', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        user1Id: myId,
+                        user2Id: Number(receiverId),
+                        type,
+                        relatedId: Number(relatedId),
+                    }),
                 });
-            };
-            clientRef.current.activate();
+                const room = await roomRes.json();
+                setRoomId(room.id);
+
+                // 2) 메시지 기록 불러오기
+                const msgRes = await fetch(`/api/chat/rooms/${room.id}/messages`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                if (msgRes.ok) {
+                    const history = await msgRes.json();
+                    setMessages(Array.isArray(history) ? history : []);
+                }
+
+                // 3) 상대방 닉네임 가져오기 //==============================================여기요
+                const nicknameRes = await fetch(`/api/users/${receiverId}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                if (nicknameRes.ok) {
+                    const user = await nicknameRes.json();
+                    setReceiverNickname(user.nickname || '상대방');
+                }
+
+                // 4) WebSocket 연결
+                clientRef.current.onConnect = () => {
+                    setConnected(true);
+                    clientRef.current.subscribe(`/topic/chat/${room.id}`, (frame) => {
+                        const incoming = JSON.parse(frame.body);
+                        setMessages((prev) => [...prev, incoming]);
+                    });
+                };
+                clientRef.current.activate();
+            } catch (error) {
+                console.error('채팅방 초기화 실패:', error);
+            }
         }
 
-        initChat().catch(console.error);
+        initChat();
 
         return () => {
             clientRef.current.deactivate();
@@ -117,7 +133,7 @@ export default function ChatRoom() {
                 })}
             </div>
 
-            {/* 입력 영역 */}
+            {/* 입력창 */}
             <div className="missing-comment-input-box">
                 <input
                     type="text"
