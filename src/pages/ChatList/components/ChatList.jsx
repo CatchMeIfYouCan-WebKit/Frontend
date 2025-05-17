@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+// src/pages/ChatList/components/ChatList.jsx
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../../shared/Header/components/Header';
 import Footer from '../../../shared/Footer/Footer';
@@ -15,68 +16,12 @@ function getMyId() {
 export default function ChatList() {
     const navigate = useNavigate();
     const myId = getMyId();
+
     const [rooms, setRooms] = useState([]);
-    const [selectedRoom, setSelectedRoom] = useState(null);
-    const [showModal, setShowModal] = useState(false);
     const [nicknames, setNicknames] = useState({});
-    useEffect(() => {
-        if (!myId) return;
-        fetch(`/api/chat/rooms?userId=${myId}`, {
-            headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
-        })
-            .then((r) => r.json())
-            .then(setRooms)
-            .catch(console.error);
-    }, [myId]);
+    const holdTimer = useRef(null);
 
-    const openChat = (room) => {
-        const otherId = room.user1Id === myId ? room.user2Id : room.user1Id;
-        navigate(`/chat/${room.type}/${room.relatedId}`, {
-            state: { receiverId: otherId },
-        });
-    };
-
-    const deleteRoom = async (roomId) => {
-        if (!window.confirm('정말 이 채팅방을 삭제하시겠습니까?')) return;
-        const res = await fetch(`/api/chat/rooms/${roomId}`, {
-            method: 'DELETE',
-            headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
-        });
-        if (res.ok) {
-            setRooms((prev) => prev.filter((r) => r.id !== roomId));
-        } else {
-            alert('삭제에 실패했습니다.');
-        }
-    };
-    function formatRelativeTime(dateString) {
-        const now = new Date();
-        const past = new Date(dateString);
-        const diffMs = now - past; // 차이(ms)
-        const diffSec = Math.floor(diffMs / 1000);
-        const diffMin = Math.floor(diffSec / 60);
-        const diffHour = Math.floor(diffMin / 60);
-        const diffDay = Math.floor(diffHour / 24);
-
-        if (diffMin < 1) return '방금 전';
-        if (diffMin < 60) return `${diffMin}분 전`;
-        if (diffHour < 24) return `${diffHour}시간 전`;
-        return `${diffDay}일 전`;
-    }
-
-    let holdTimer = null;
-    const handlePressStart = (room) => {
-        holdTimer = setTimeout(async () => {
-            const confirmed = window.confirm('정말 이 채팅방을 삭제하시겠습니까?');
-            if (confirmed) {
-                await deleteRoom(room.id);
-            }
-        }, 600); // 600ms 이상 누르면 confirm 창 띄움
-    };
-    const handlePressEnd = () => {
-        clearTimeout(holdTimer);
-    };
-
-    // 닉네임 불러오기
+    // 상대방 닉네임을 포함한 방 목록 가져오기
     useEffect(() => {
         if (!myId) return;
 
@@ -87,41 +32,92 @@ export default function ChatList() {
             .then(async (data) => {
                 setRooms(data);
 
-                // 닉네임 불러오기
-                const newNicknames = {};
+                // 상대방 닉네임 조회
+                const names = {};
                 for (const room of data) {
                     const otherId = room.user1Id === myId ? room.user2Id : room.user1Id;
-                    if (!newNicknames[otherId]) {
+                    if (!names[otherId]) {
                         try {
-                            const res = await fetch(`/api/users/${otherId}`, {
-                                headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+                            const res = await fetch(`/api/member/info`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                                },
+                                body: JSON.stringify({ id: String(otherId) }),
                             });
-                            if (res.ok) {
-                                const user = await res.json();
-                                newNicknames[otherId] = user.nickname || `User #${otherId}`;
-                            } else {
-                                newNicknames[otherId] = `User #${otherId}`;
-                            }
-                        } catch (err) {
-                            console.error('닉네임 불러오기 실패:', err);
-                            newNicknames[otherId] = `User #${otherId}`;
+                            const body = await res.json();
+                            names[otherId] = body.nickname || `User #${otherId}`;
+                        } catch {
+                            names[otherId] = `User #${otherId}`;
                         }
                     }
                 }
-                setNicknames(newNicknames);
+                setNicknames(names);
             })
             .catch(console.error);
     }, [myId]);
+
+    // 상대방과 방 이동
+    const openChat = (room) => {
+        const otherId = room.user1Id === myId ? room.user2Id : room.user1Id;
+        navigate(`/chat/${room.type}/${room.relatedId}`, {
+            state: { receiverId: otherId },
+        });
+    };
+
+    // 방 삭제 API 호출
+    const deleteRoom = async (roomId) => {
+        const res = await fetch(`/api/chat/rooms/${roomId}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+        });
+        if (res.ok) {
+            setRooms((prev) => prev.filter((r) => r.id !== roomId));
+        } else {
+            alert('삭제에 실패했습니다.');
+        }
+    };
+
+    // 롱프레스 시작
+    const handlePressStart = (room) => {
+        holdTimer.current = setTimeout(async () => {
+            if (window.confirm('정말 이 채팅방을 삭제하시겠습니까?')) {
+                await deleteRoom(room.id);
+            }
+        }, 600);
+    };
+
+    // 롱프레스 취소
+    const handlePressEnd = () => {
+        clearTimeout(holdTimer.current);
+    };
+
+    // 상대방 최근 시간 혹은 방 생성 시간 포맷
+    const formatRelativeTime = (dateString) => {
+        const now = new Date();
+        const past = new Date(dateString);
+        const diffSec = Math.floor((now - past) / 1000);
+        if (diffSec < 60) return '방금 전';
+        const diffMin = Math.floor(diffSec / 60);
+        if (diffMin < 60) return `${diffMin}분 전`;
+        const diffHour = Math.floor(diffMin / 60);
+        if (diffHour < 24) return `${diffHour}시간 전`;
+        const diffDay = Math.floor(diffHour / 24);
+        return `${diffDay}일 전`;
+    };
 
     return (
         <div className="chatlist-container">
             <Header />
 
+            {/* 알림 배너 */}
             <div className="chatlist-alert">
                 알림을 켜주세요.
                 <br />
                 알림이 ON 되어야 채팅 알림을 받을 수 있어요.
             </div>
+
             <div className="chatlist-list">
                 {rooms.map((room) => {
                     const otherId = room.user1Id === myId ? room.user2Id : room.user1Id;
@@ -135,17 +131,33 @@ export default function ChatList() {
                             onTouchStart={() => handlePressStart(room)}
                             onTouchEnd={handlePressEnd}
                         >
-                            <img src={dogAvatar} alt="" className="chat-avatar" />
+                            <img src={dogAvatar} alt="avatar" className="chat-avatar" />
+
                             <div className="chat-content" onClick={() => openChat(room)}>
                                 <div className="chat-info">
-                                    {/* 상대방 user정보 받아오기  */}
+                                    {/* 1. 상대방 닉네임 */}
                                     <span className="chat-name">{nicknames[otherId] || `User #${otherId}`}</span>
-
-                                    <span className="chat-time">{formatRelativeTime(room.createdAt)}</span>
+                                    {/* 2. 마지막 작성 시간 */}
+                                    <span className="chat-time">
+                                        {formatRelativeTime(room.lastMessageAt || room.createdAt)}
+                                    </span>
                                 </div>
-                                {/* 마지막으로 채팅한  message  //createdAt으로   */}
-                                <p className="chat-message">{room.lastMessage || ''}</p>
+                                {/* 3. 마지막 채팅 메시지 */}
+                                <p className="chat-message">{room.lastMessage || '아직 대화 내용이 없습니다.'}</p>
                             </div>
+
+                            {/* 삭제 버튼 */}
+                            <button
+                                className="chat-delete-button"
+                                onClick={async (e) => {
+                                    e.stopPropagation();
+                                    if (window.confirm('정말 이 채팅방을 삭제하시겠습니까?')) {
+                                        await deleteRoom(room.id);
+                                    }
+                                }}
+                            >
+                                ✕
+                            </button>
                         </div>
                     );
                 })}

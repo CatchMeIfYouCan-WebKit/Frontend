@@ -67,13 +67,19 @@ export default function ChatRoom() {
                     setMessages(Array.isArray(history) ? history : []);
                 }
 
-                // 3) 닉네임 불러오기
-                const nicknameRes = await fetch(`/api/users/${receiverId}`, {
-                    headers: { Authorization: `Bearer ${token}` },
+                // 3) 닉네임 불러오기 (기존 /api/member/info 재사용)
+                const infoRes = await fetch('/api/member/info', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ id: String(receiverId) }),
                 });
-                if (nicknameRes.ok) {
-                    const user = await nicknameRes.json();
-                    setReceiverNickname(user.nickname || '상대방');
+                if (infoRes.ok) {
+                    const info = await infoRes.json();
+                    // MemberController#info 의 반환값 바디에서 nickname 꺼내기
+                    setReceiverNickname(info.nickname || '상대방');
                 }
 
                 // 4) WebSocket 연결
