@@ -237,7 +237,7 @@ export default function MapMain() {
                 shouldShow = data.breed.includes(breedFiltering);
             }
 
-            // 색상 필터링 추가 (colorFiltering은 배열)
+            // 색상 필터링 추가
             if (shouldShow && Array.isArray(colorFiltering) && colorFiltering.length > 0 && data?.color) {
                 shouldShow = colorFiltering.some((color) => data.color.includes(color));
             }
@@ -263,7 +263,7 @@ export default function MapMain() {
         axios
             .get('/api/posts/missing/all')
             .then(({ data }) => {
-                // console.log('[API] 실종 게시글 응답:', data);
+                console.log('[API] 실종 게시글 응답:', data);
                 setMissingPosts(Array.isArray(data) ? data : []);
             })
             .catch((err) => console.error('[API] 실종 게시글 요청 실패:', err));
@@ -272,7 +272,7 @@ export default function MapMain() {
         axios
             .get('/api/posts/witness/all')
             .then(({ data }) => {
-                // console.log('[API] 목격 게시글 응답:', data);
+                console.log('[API] 목격 게시글 응답:', data);
                 setWitnessPosts(Array.isArray(data) ? data : []);
             })
             .catch((err) => console.error('[API] 목격 게시글 요청 실패:', err));
@@ -330,75 +330,74 @@ export default function MapMain() {
                     calculator: [10, 20, 30], // 원하는 구간(1-10, 11-20, 21-30, 31-)
                     styles: [
                         {
-                          width:            '40px',
-                          height:           '40px',
-                          borderRadius:     '50%',
-                          background:       'rgba(76,175,80,0.5)',
-                          border:           '3px solid #4CAF50',
-                          textColor:        '#4CAF50',
-                          textSize:         '16px',
-                          textWeight:       'bold',
-                          textOutlineColor: 'transparent',
-                          // ↓ 추가된 부분
-                          display:          'flex',
-                          justifyContent:   'center',
-                          alignItems:       'center',
-                          textAlign:        'center',
-                          textLineHeight:   '40px',   // 클러스터 숫자를 세로 중앙에
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '50%',
+                            background: 'rgba(76,175,80,0.5)',
+                            border: '3px solid #4CAF50',
+                            textColor: '#4CAF50',
+                            textSize: '16px',
+                            textWeight: 'bold',
+                            textOutlineColor: 'transparent',
+                            // ↓ 추가된 부분
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            textAlign: 'center',
+                            textLineHeight: '40px', // 클러스터 숫자를 세로 중앙에
                         },
                         {
-                          width:            '50px',
-                          height:           '50px',
-                          borderRadius:     '50%',
-                          background:       'rgba(33,150,243,0.5)',
-                          border:           '3px solid #2196F3',
-                          textColor:        '#2196F3',
-                          textSize:         '20px',
-                          textWeight:       'bold',
-                          textOutlineColor: 'transparent',
-                          // ↓ 추가
-                          display:          'flex',
-                          justifyContent:   'center',
-                          alignItems:       'center',
-                          textAlign:        'center',
-                          textLineHeight:   '50px',
+                            width: '50px',
+                            height: '50px',
+                            borderRadius: '50%',
+                            background: 'rgba(33,150,243,0.5)',
+                            border: '3px solid #2196F3',
+                            textColor: '#2196F3',
+                            textSize: '20px',
+                            textWeight: 'bold',
+                            textOutlineColor: 'transparent',
+                            // ↓ 추가
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            textAlign: 'center',
+                            textLineHeight: '50px',
                         },
                         {
-                          width:            '60px',
-                          height:           '60px',
-                          borderRadius:     '50%',
-                          background:       'rgba(255,193,7,0.5)',
-                          border:           '3px solid #FFC107',
-                          textColor:        '#FFC107',
-                          textSize:         '24px',
-                          textWeight:       'bold',
-                          textOutlineColor: 'transparent',
-                          // ↓ 추가
-                          display:          'flex',
-                          justifyContent:   'center',
-                          alignItems:       'center',
-                          textAlign:        'center',
-                          textLineHeight:   '60px',
+                            width: '60px',
+                            height: '60px',
+                            borderRadius: '50%',
+                            background: 'rgba(255,193,7,0.5)',
+                            border: '3px solid #FFC107',
+                            textColor: '#FFC107',
+                            textSize: '24px',
+                            textWeight: 'bold',
+                            textOutlineColor: 'transparent',
+                            // ↓ 추가
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            textAlign: 'center',
+                            textLineHeight: '60px',
                         },
                         {
-                          width:            '70px',
-                          height:           '70px',
-                          borderRadius:     '50%',
-                          background:       'rgba(244,67,54,0.5)',
-                          border:           '3px solid #F44336',
-                          textColor:        '#F44336',
-                          textSize:         '28px',
-                          textWeight:       'bold',
-                          textOutlineColor: 'transparent',
-                          // ↓ 추가
-                          display:          'flex',
-                          justifyContent:   'center',
-                          alignItems:       'center',
-                          textAlign:        'center',
-                          textLineHeight:   '70px',
+                            width: '70px',
+                            height: '70px',
+                            borderRadius: '50%',
+                            background: 'rgba(244,67,54,0.5)',
+                            border: '3px solid #F44336',
+                            textColor: '#F44336',
+                            textSize: '28px',
+                            textWeight: 'bold',
+                            textOutlineColor: 'transparent',
+                            // ↓ 추가
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            textAlign: 'center',
+                            textLineHeight: '70px',
                         },
-                      ]
-                    
+                    ],
                 });
 
                 // 클러스터링 실행 (모든 마커를 클러스터러에 등록)

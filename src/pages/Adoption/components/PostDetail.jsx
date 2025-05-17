@@ -10,8 +10,111 @@ import Chat from './Chat';
 import '../PostDetail.css';
 import { FiMoreVertical, FiChevronDown } from 'react-icons/fi';
 import axios from 'axios'; // ← 추가
+import SockJS from 'sockjs-client';
+import { Client } from '@stomp/stompjs';
 
 export default function PostDetail() {
+    const navigate = useNavigate();
+    const subscriptionRef = useRef(null); // ✅ 구독 ID 저장용
+    const { state } = useLocation();
+    const { post, ownerName } = state || {};
+
+    // =================================================== 알림
+
+    const socketRef = useRef(null);
+    const clientRef = useRef(null);
+
+    // 웹소켓 연결
+    useEffect(() => {
+        if (!clientRef.current) {
+            const client = new Client({
+                webSocketFactory: () => new SockJS('http://10.0.2.2:8080/ws'),
+                reconnectDelay: 5000,
+            });
+
+            client.onConnect = () => {
+                console.log('✅ STOMP 연결 성공');
+
+                const token = localStorage.getItem('accessToken');
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const currentUserId = payload.userId || payload.id || payload.sub;
+
+                const notifyPath = `/topic/notify/${currentUserId}`;
+                console.log('👤 현재 사용자 ID:', currentUserId);
+                console.log('📡 알림 구독 경로:', notifyPath);
+
+                // ✅ 기존 구독이 있으면 먼저 해제
+                if (subscriptionRef.current) {
+                    client.unsubscribe(subscriptionRef.current);
+                    console.log('🔄 기존 구독 해제:', subscriptionRef.current);
+                }
+
+                // ✅ 새로운 구독 등록
+                const subscription = client.subscribe(notifyPath, (message) => {
+                    const data = JSON.parse(message.body);
+                    alert(`📢 알림: ${data.message}`);
+                });
+                subscriptionRef.current = subscription.id; // ✅ 구독 ID 저장
+
+                // 채팅 구독
+                if (typeof chatRoomId !== 'undefined' && chatRoomId !== null) {
+                    const chatPath = `/topic/chat/${chatRoomId}`;
+                    console.log('📡 채팅 구독 경로:', chatPath);
+
+                    client.subscribe(chatPath, (message) => {
+                        const data = JSON.parse(message.body);
+                        console.log('📩 채팅 메시지 수신:', data);
+                    });
+                }
+            };
+
+            clientRef.current = client;
+            client.activate();
+
+            return () => {
+                client.deactivate();
+                subscriptionRef.current = null; // ✅ 구독 정보 정리
+            };
+        }
+    }, []);
+
+    // 채팅하기 버튼 클릭 시 알림 전송
+    const handleChatClick = () => {
+        console.log('💬 [handleChatClick] 버튼 클릭됨');
+        console.log('📦 전송 대상 receiverId:', post.member.id);
+
+        function sendNotification() {
+            clientRef.current.publish({
+                destination: '/app/notify',
+                body: JSON.stringify({
+                    receiverId: post.member.id,
+                    message: '채팅 요청이 도착했습니다!',
+                }),
+            });
+            console.log('✅ 알림 전송 요청 완료 (sendNotification 호출됨)');
+        }
+
+        const client = clientRef.current;
+        if (client?.connected) {
+            sendNotification();
+        } else {
+            console.log('📡 WebSocket 미연결, 연결 시도 중...');
+
+            if (!client.active) {
+                client.onConnect = () => {
+                    console.log('✅ STOMP 연결 성공 (onConnect 호출됨)');
+                    sendNotification();
+                };
+                client.activate();
+            } else {
+                console.log('📡 이미 연결 시도 중입니다.');
+            }
+        }
+
+        navigate(`/chat/ADOPTION/${id}`, { state: { receiverId: post.member.id } });
+    };
+
+    // =================================================== 알림
     // 주소(역지오코딩)
     const [address, setAddress] = useState('');
 
@@ -26,10 +129,6 @@ export default function PostDetail() {
 
     // 이미지 캐러셀
     const [currentIndex, setCurrentIndex] = useState(0);
-
-    const navigate = useNavigate();
-    const { state } = useLocation();
-    const { post, ownerName } = state || {};
 
     // post.status 초기화
     useEffect(() => {
@@ -385,14 +484,7 @@ export default function PostDetail() {
                 </ul>
                 {/* 채팅 버튼 */}+{' '}
                 {!isOwner && status === '분양중' ? (
-                    <div
-                        className="pd-chat-button"
-                        onClick={() =>
-                            navigate(`/chat/ADOPTION/${id}`, {
-                                state: { receiverId: post.member.id },
-                            })
-                        }
-                    >
+                    <div className="pd-chat-button" onClick={handleChatClick}>
                         <Chat />
                     </div>
                 ) : (

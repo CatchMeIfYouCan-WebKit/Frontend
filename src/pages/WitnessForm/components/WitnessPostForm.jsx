@@ -136,22 +136,23 @@ export default function WitnessPostForm() {
 
             // 2. 대표 이미지로 AI 예측 요청 (첫 번째 이미지 기준)
             const wait2s = new Promise((resolve) => setTimeout(resolve, 2000));
-        const aiPredict = (photoUrls && photoUrls.length > 0)
-            ? axios.post('http://10.0.2.2:8081/ai/predict-from-path', {
-                photo_url: photoUrls[0],
-                pet_id: null,
-                post_type: 'witness',
-                post_id: postId,
-              })
-            : Promise.resolve();
+            const aiPredict =
+                photoUrls && photoUrls.length > 0
+                    ? axios.post('http://10.0.2.2:8081/ai/predict-from-path', {
+                          photo_url: photoUrls[0],
+                          pet_id: null,
+                          post_type: 'witness',
+                          post_id: postId,
+                      })
+                    : Promise.resolve();
 
-        // 두 작업을 병렬로 수행
-        await Promise.all([wait2s, aiPredict]);
+            // 두 작업을 병렬로 수행
+            await Promise.all([wait2s, aiPredict]);
 
-        // 로딩 종료
-        setIsLoading(false);
-        navigate('/main');
-        alert('목격 신고 및 AI 예측 완료');
+            // 로딩 종료
+            setIsLoading(false);
+            navigate('/main');
+            alert('목격 신고 및 AI 예측 완료');
         } catch (error) {
             console.error('등록 실패:', error);
             alert('게시글 등록에 실패했습니다.');
