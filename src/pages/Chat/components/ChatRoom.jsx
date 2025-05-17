@@ -26,6 +26,15 @@ export default function ChatRoom() {
 
     const clientRef = useRef(client);
 
+    // receiverId 없을 경우 뒤로 보내기
+    useEffect(() => {
+        if (!receiverId) {
+            alert('채팅 상대 정보를 찾을 수 없습니다.');
+            navigate('/chatlist');
+        }
+    }, [receiverId]);
+
+    // 채팅방 초기화
     useEffect(() => {
         if (!myId || !receiverId) return;
 
@@ -45,10 +54,11 @@ export default function ChatRoom() {
                         relatedId: Number(relatedId),
                     }),
                 });
+
                 const room = await roomRes.json();
                 setRoomId(room.id);
 
-                // 2) 메시지 기록 불러오기
+                // 2) 메시지 불러오기
                 const msgRes = await fetch(`/api/chat/rooms/${room.id}/messages`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
@@ -57,7 +67,7 @@ export default function ChatRoom() {
                     setMessages(Array.isArray(history) ? history : []);
                 }
 
-                // 3) 상대방 닉네임 가져오기 //==============================================여기요
+                // 3) 닉네임 불러오기
                 const nicknameRes = await fetch(`/api/users/${receiverId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });

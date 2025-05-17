@@ -16,32 +16,17 @@ export default function ChatList() {
     const navigate = useNavigate();
     const myId = getMyId();
     const [rooms, setRooms] = useState([]);
-
-    // ✅ 더미 채팅방 데이터
-    const dummyRooms = [
-        {
-            id: 1,
-            user1Id: myId,
-            user2Id: 24,
-            type: 'ADOPTION',
-            relatedId: 101,
-            createdAt: new Date().toISOString(),
-            lastMessage: '입양 문의드립니다!',
-        },
-        {
-            id: 2,
-            user1Id: 99,
-            user2Id: myId,
-            type: 'WALK',
-            relatedId: 202,
-            createdAt: new Date(Date.now() - 86400000).toISOString(),
-            lastMessage: '산책 시간 괜찮으신가요?',
-        },
-    ];
-
+    const [selectedRoom, setSelectedRoom] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const [nicknames, setNicknames] = useState({});
     useEffect(() => {
-        // 임시로 더미 데이터 사용
-        if (myId) setRooms(dummyRooms);
+        if (!myId) return;
+        fetch(`/api/chat/rooms?userId=${myId}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+        })
+            .then((r) => r.json())
+            .then(setRooms)
+            .catch(console.error);
     }, [myId]);
 
     const openChat = (room) => {
@@ -77,19 +62,56 @@ export default function ChatList() {
         if (diffHour < 24) return `${diffHour}시간 전`;
         return `${diffDay}일 전`;
     }
-    const [selectedRoom, setSelectedRoom] = useState(null);
-    const [showModal, setShowModal] = useState(false);
+
     let holdTimer = null;
     const handlePressStart = (room) => {
-        holdTimer = setTimeout(() => {
-            setSelectedRoom(room);
-            setShowModal(true);
-        }, 600); // 600ms 이상 누르면 모달 열림
+        holdTimer = setTimeout(async () => {
+            const confirmed = window.confirm('정말 이 채팅방을 삭제하시겠습니까?');
+            if (confirmed) {
+                await deleteRoom(room.id);
+            }
+        }, 600); // 600ms 이상 누르면 confirm 창 띄움
     };
-
     const handlePressEnd = () => {
         clearTimeout(holdTimer);
     };
+
+    // 닉네임 불러오기
+    useEffect(() => {
+        if (!myId) return;
+
+        fetch(`/api/chat/rooms?userId=${myId}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+        })
+            .then((res) => res.json())
+            .then(async (data) => {
+                setRooms(data);
+
+                // 닉네임 불러오기
+                const newNicknames = {};
+                for (const room of data) {
+                    const otherId = room.user1Id === myId ? room.user2Id : room.user1Id;
+                    if (!newNicknames[otherId]) {
+                        try {
+                            const res = await fetch(`/api/users/${otherId}`, {
+                                headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+                            });
+                            if (res.ok) {
+                                const user = await res.json();
+                                newNicknames[otherId] = user.nickname || `User #${otherId}`;
+                            } else {
+                                newNicknames[otherId] = `User #${otherId}`;
+                            }
+                        } catch (err) {
+                            console.error('닉네임 불러오기 실패:', err);
+                            newNicknames[otherId] = `User #${otherId}`;
+                        }
+                    }
+                }
+                setNicknames(newNicknames);
+            })
+            .catch(console.error);
+    }, [myId]);
 
     return (
         <div className="chatlist-container">
@@ -117,7 +139,8 @@ export default function ChatList() {
                             <div className="chat-content" onClick={() => openChat(room)}>
                                 <div className="chat-info">
                                     {/* 상대방 user정보 받아오기  */}
-                                    <span className="chat-name">User</span>
+                                    <span className="chat-name">{nicknames[otherId] || `User #${otherId}`}</span>
+
                                     <span className="chat-time">{formatRelativeTime(room.createdAt)}</span>
                                 </div>
                                 {/* 마지막으로 채팅한  message  //createdAt으로   */}
@@ -126,42 +149,6 @@ export default function ChatList() {
                         </div>
                     );
                 })}
-                {showModal && selectedRoom && (
-                    <div className="modal-overlay">
-                        <div className="modal-content">
-                            <p>정말 이 채팅방을 삭제하시겠습니까?</p>
-                            <div className="modal-actions">
-                                <button
-                                    onClick={async () => {
-                                        const res = await fetch(`/api/chat/rooms/${selectedRoom.id}`, {
-                                            method: 'DELETE',
-                                            headers: {
-                                                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-                                            },
-                                        });
-                                        if (res.ok) {
-                                            setRooms((prev) => prev.filter((r) => r.id !== selectedRoom.id));
-                                            setShowModal(false);
-                                            setSelectedRoom(null);
-                                        } else {
-                                            alert('삭제에 실패했습니다.');
-                                        }
-                                    }}
-                                >
-                                    삭제
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        setShowModal(false);
-                                        setSelectedRoom(null);
-                                    }}
-                                >
-                                    취소
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
 
                 {rooms.length === 0 && <div style={{ padding: 16, color: '#666' }}>아직 열린 채팅방이 없습니다.</div>}
             </div>
