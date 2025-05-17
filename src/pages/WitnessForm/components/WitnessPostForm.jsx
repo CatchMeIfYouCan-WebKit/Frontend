@@ -5,6 +5,7 @@ import { FaRegCalendarAlt } from 'react-icons/fa';
 import { AiOutlineCamera } from 'react-icons/ai';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import AiLandingPage from '../../Landing/components/AiLandingPage';
 import '../WitnessPostForm.css';
 import { format } from 'date-fns';
 import axios from 'axios';
@@ -14,6 +15,8 @@ export default function WitnessPostForm() {
     const navigate = useNavigate();
     const locationState = useLocation();
     // const pet = locationState.state?.pet;
+
+    const [isLoading, setIsLoading] = useState(false);
 
     const [date, setDate] = useState(locationState.state?.date);
     const [location, setLocation] = useState(null);
@@ -86,18 +89,23 @@ export default function WitnessPostForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        setIsLoading(true);
+
         if (files.length === 0) {
             alert('사진을 첨부해주세요.');
+            setIsLoading(false);
             return;
         }
 
         if (!date) {
             alert('날짜 및 시간을 입력해주세요.');
+            setIsLoading(false);
             return;
         }
 
         if (!desc) {
             alert('상세설명을 입력해주세요.');
+            setIsLoading(false);
             return;
         }
 
@@ -111,12 +119,11 @@ export default function WitnessPostForm() {
                 witnessLocation: location,
                 detailDescription: desc,
                 latitude,
-                longitude
+                longitude,
             };
 
             formData.append('post', JSON.stringify(witnessData));
             formData.append('photoUrls', JSON.stringify(files));
-
 
             // 1. 목격 게시글 등록 요청
             const res = await axios.post('/api/posts/witness', formData, {
@@ -128,20 +135,27 @@ export default function WitnessPostForm() {
             const { postId, photoUrls } = res.data; // ✅ 서버 응답에 포함되어야 함
 
             // 2. 대표 이미지로 AI 예측 요청 (첫 번째 이미지 기준)
-            if (photoUrls && photoUrls.length > 0) {
-                await axios.post('http://10.0.2.2:8081/ai/predict-from-path', {
-                    photo_url: photoUrls[0],
-                    pet_id: null, // 목격 게시글은 반려동물 ID 없음
-                    post_type: 'witness',
-                    post_id: postId,
-                });
-            }
+            const wait2s = new Promise((resolve) => setTimeout(resolve, 2000));
+        const aiPredict = (photoUrls && photoUrls.length > 0)
+            ? axios.post('http://10.0.2.2:8081/ai/predict-from-path', {
+                photo_url: photoUrls[0],
+                pet_id: null,
+                post_type: 'witness',
+                post_id: postId,
+              })
+            : Promise.resolve();
 
-            alert('목격 신고 및 AI 예측 완료');
-            navigate('/main');
+        // 두 작업을 병렬로 수행
+        await Promise.all([wait2s, aiPredict]);
+
+        // 로딩 종료
+        setIsLoading(false);
+        navigate('/main');
+        alert('목격 신고 및 AI 예측 완료');
         } catch (error) {
             console.error('등록 실패:', error);
             alert('게시글 등록에 실패했습니다.');
+            setIsLoading(false);
         }
     };
 
@@ -246,7 +260,6 @@ export default function WitnessPostForm() {
         });
     };
 
-
     // 사진 삭제
     const handleRemovePhoto = (index) => {
         setFiles((prev) => prev.filter((_, i) => i !== index));
@@ -297,6 +310,8 @@ export default function WitnessPostForm() {
 
     return (
         <div className="mpf-containers">
+            {isLoading && <AiLandingPage />}
+
             <header className="missing-headers">
                 <button className="back-button" onClick={() => navigate(-1)}>
                     <IoIosArrowBack />
