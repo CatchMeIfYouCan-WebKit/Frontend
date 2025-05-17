@@ -82,7 +82,6 @@ export default function Adoption() {
             }
         }
 
-
         axios
             .get(`/api/adopt/filter?${query.toString()}`)
             .then((res) => {
@@ -205,12 +204,11 @@ export default function Adoption() {
                 {posts.map((p) => (
                     <div
                         key={p.id}
-                        className="post-card"
+                        // status 가 "분양완료" 이면 completed 클래스를 추가
+                        className={`post-card ${p.status === '분양완료' ? 'post-card--completed2' : ''}`}
                         onClick={() =>
                             navigate(`/adoptionpost/${p.id}`, {
-                                state: {
-                                    post: p, // ✅ 전체 게시글 객체 하나만 넘김
-                                },
+                                state: { post: p },
                             })
                         }
                     >
@@ -218,8 +216,7 @@ export default function Adoption() {
                         <div className="post-info">
                             <div className="post-title">
                                 {p.title}
-                                <span className="verified">
-                                </span>
+                                <span className="verified"></span>
                             </div>
                             <div className="post-meta">
                                 {p.breed}

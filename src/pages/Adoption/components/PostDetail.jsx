@@ -9,6 +9,7 @@ import petcolor from '../../../assets/pet-color.svg';
 import Chat from './Chat';
 import '../PostDetail.css';
 import { FiMoreVertical, FiChevronDown } from 'react-icons/fi';
+import axios from 'axios'; // ← 추가
 
 export default function PostDetail() {
     // 주소(역지오코딩)
@@ -99,11 +100,11 @@ export default function PostDetail() {
     const displayColors = Array.isArray(rawColors)
         ? rawColors.map((c) => COLOR_LABELS[c] || c).join(', ')
         : rawColors.includes('+') // 다중 색상 처리
-            ? rawColors
-                .split('+')
-                .map((c) => COLOR_LABELS[c.trim()] || c.trim())
-                .join(', ')
-            : COLOR_LABELS[rawColors.trim()] || rawColors.trim();
+        ? rawColors
+              .split('+')
+              .map((c) => COLOR_LABELS[c.trim()] || c.trim())
+              .join(', ')
+        : COLOR_LABELS[rawColors.trim()] || rawColors.trim();
 
     // meetText 파싱
     let mapLat = latitude,
@@ -202,7 +203,21 @@ export default function PostDetail() {
             alert('게시글 삭제 중 오류가 발생했습니다.');
         }
     };
-
+    // ✅ 분양 상태 업데이트 함수 추가
+    const handleStatusChange = async (newStatus) => {
+        try {
+            const token = localStorage.getItem('accessToken');
+            await axios.patch(
+                `/api/adopt/${id}/status`,
+                { status: newStatus }, // { status: '분양완료' } 또는 '분양중'
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            setStatus(newStatus);
+        } catch (err) {
+            console.error('분양 상태 변경 실패', err);
+            alert('상태 변경에 실패했습니다.');
+        }
+    };
     return (
         <div className="pd-page">
             {/* 워터마크 */}
@@ -323,9 +338,8 @@ export default function PostDetail() {
                                         key={s}
                                         className="pd-status-item"
                                         onClick={() => {
-                                            setStatus(s);
+                                            handleStatusChange(s);
                                             setStatusOpen(false);
-                                            // TODO: 필요하면 서버에 상태 변경 요청 추가
                                         }}
                                     >
                                         {s}
@@ -388,7 +402,6 @@ export default function PostDetail() {
                         </button>
                     )
                 )}
-
             </div>
         </div>
     );

@@ -374,3 +374,11 @@ footer {
     min-width: 48px;
     text-align: center;
 }
+
+/* 분양완료인 경우 테두리를 진하게 */
+.post-card--completed2 {
+    border: 1px solid #ddd; /* ← 추가 */
+
+    border-color: red;
+    /* 원하시면 box-shadow 같은 효과도 추가 가능 */
+}
