@@ -183,6 +183,7 @@ export default function WitnessPostDetail() {
             })
             .catch((err) => console.error('추천 게시글 조회 실패:', err));
     }, [id]);
+    //닉네임임
     useEffect(() => {
         axios
             .get(`/api/posts/witness/${id}`)
@@ -274,28 +275,25 @@ export default function WitnessPostDetail() {
                         <div className="witness-nickname-section">
                             <span className="witness-nickname">{nickname}</span>
                         </div>
-                        <button className="witness-more-btn" onClick={() => setIsDropdownOpen((prev) => !prev)}>
-                            &#8942;
-                        </button>
-                        {isDropdownOpen && (
-                            <div className="witness-dropdown">
-                                <div className="witness-dropdown-item" onClick={() => alert('게시글 수정')}>
-                                    게시글 수정
+                        <div className="witness-witness-div">
+                            <button className="witness-more-btn" onClick={() => setIsDropdownOpen((prev) => !prev)}>
+                                &#8942;
+                            </button>
+                            {isDropdownOpen && (
+                                <div className="witness-dropdown">
+                                    <div className="witness-dropdown-item" onClick={() => alert('게시글 수정')}>
+                                        게시글 수정
+                                    </div>
+                                    <div className="witness-dropdown-item" onClick={() => alert('게시글 삭제')}>
+                                        게시글 삭제
+                                    </div>
                                 </div>
-                                <div className="witness-dropdown-item" onClick={() => alert('게시글 삭제')}>
-                                    게시글 삭제
-                                </div>
-                            </div>
-                        )}
+                            )}
+                            <div className="witness-time-ago">{calculateTimeAgo(post.createdAt)}</div>
+                        </div>
                     </div>
 
-                    <div className="witness-bottom-row">
-                        <div className="witness-dog-info">
-                            <span className="witness-dog-name">{post.petName}</span>
-                            <span className="witness-breed">{post.petBreed}</span>
-                        </div>
-                        <div className="witness-time-ago">{calculateTimeAgo(post.createdAt)}</div>
-                    </div>
+                    <div className="witness-bottom-row"></div>
                 </div>
 
                 <div className="witness-image-slider" onScroll={handleScroll}>

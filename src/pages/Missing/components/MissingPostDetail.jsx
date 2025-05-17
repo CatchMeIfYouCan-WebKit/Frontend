@@ -26,6 +26,7 @@ export default function MissingPostDetail() {
     const [replyInput, setReplyInput] = useState('');
     const [commentList, setCommentList] = useState([]);
     const [recommendations, setRecommendations] = useState([]);
+    const [nickname, setNickname] = useState('');
 
     const post2 = { images: [testdog, testdog, testdog] };
 
@@ -176,7 +177,27 @@ export default function MissingPostDetail() {
             .then((res) => setRecommendations(res.data))
             .catch((err) => console.error('추천 게시글 조회 실패:', err));
     }, [id]);
+    //닉네임임
+    useEffect(() => {
+        axios
+            .get(`/api/posts/missing/${id}`)
+            .then((response) => {
+                setPost(response.data);
 
+                // 닉네임 요청도 여기서 함께 처리
+                return axios.post('/api/member/info', {
+                    id: response.data.userId.toString(),
+                });
+            })
+            .then((res) => {
+                console.log('✅ 닉네임 응답:', res.data);
+                setNickname(res.data.nickname || '알 수 없음');
+            })
+            .catch((err) => {
+                console.error('게시글 or 닉네임 조회 실패:', err);
+                setNickname('알 수 없음');
+            });
+    }, [id]);
     // 지도 로드
     useEffect(() => {
         if (!post || !post.missingLocation) return;
@@ -215,6 +236,16 @@ export default function MissingPostDetail() {
             document.head.removeChild(script);
         };
     }, [post]);
+    useEffect(() => {
+        axios
+            .get(`/api/posts/missing/${id}`)
+            .then((response) => {
+                console.log('📌 포스트:', response.data); // 추가
+                setPost(response.data);
+            })
+            .catch((err) => console.error(err));
+    }, [id]);
+    //게시글 조회회
 
     if (!post) return <div>Loading...</div>;
     // ======================================================================================== useEffect
@@ -228,11 +259,11 @@ export default function MissingPostDetail() {
 
     return (
         <>
-            <div className="sf-header">
-                <div className="back-button2" onClick={goBack}>
+            <div className="missing-header">
+                <div className="missing-back-button" onClick={goBack}>
                     <IoIosArrowBack size={32} />
                 </div>
-                <div className="filtering-title">실종게시글</div>
+                <div className="missing-filtering-title1">실종게시글</div>
             </div>
 
             <div className={`missing-detail-container ${fadeOut ? 'missing-fade-out' : ''}`}>
@@ -241,7 +272,7 @@ export default function MissingPostDetail() {
                     <div className="missing-top-row">
                         <img src={user} alt="프로필" className="missing-profile-circle" />
                         <div className="missing-nickname-section">
-                            <span className="missing-nickname">{post.userNickname}</span>
+                            <span className="missing-nickname">{nickname}</span>
                         </div>
                         <button className="missing-more-btn" onClick={() => setIsDropdownOpen((prev) => !prev)}>
                             &#8942;
@@ -260,8 +291,8 @@ export default function MissingPostDetail() {
 
                     <div className="missing-bottom-row">
                         <div className="missing-dog-info">
-                            <span className="missing-dog-name">{post.dogName}</span>
-                            <span className="missing-breed">{post.breed}</span>
+                            <span className="missing-dog-name">{post.petName}</span>
+                            <span className="missing-breed">{post.petBreed}</span>
                         </div>
                         <div className="missing-time-ago">{calculateTimeAgo(post.createdAt)}</div>
                     </div>

@@ -11,27 +11,28 @@
 .missing-detail-container.missing-fade-out {
     opacity: 0;
 }
-.sf-header {
+.missing-header {
     display: flex;
     align-items: center;
     padding-top: 7px;
     padding-bottom: 7px;
     min-width: 360px;
     height: 67px;
-    margin-bottom: -16px;
+    margin-bottom: 0px;
+    margin-top: 6px;
 }
 
-.back-button2 {
+.missing-back-button {
     border: none;
     font-size: 24px;
     padding: 0;
     margin-bottom: 5px;
     margin-right: 0px;
-    margin-left: -48px;
+    margin-left: -54px;
     cursor: pointer;
 }
 
-.filtering-title {
+.missing-filtering-title1 {
     font-size: 22px;
     font-style: normal;
     font-weight: 700;
@@ -166,8 +167,8 @@
     background-color: rgba(217, 217, 217, 0.7);
     color: #111111;
     padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 16px;
+    border-radius: 6px;
+    font-size: 20px;
     letter-spacing: -0.45px;
     font-weight: bold;
 }
@@ -221,15 +222,15 @@
 /* ============================= */
 .missing-comment-section {
     margin-top: 48px;
+    margin-bottom: 90px;
 }
 
 .missing-comment-count {
     font-size: 22px;
-
     font-weight: bold;
     margin-bottom: 24px;
     text-align: left;
-    margin-left: 15px;
+    margin-left: 16px;
 }
 
 /* 원댓글 */
@@ -240,18 +241,16 @@
 }
 
 /* 대댓글 */
-.missing-comment .reply-comment {
+.missing-comment.reply-comment {
     position: relative;
     background-color: #f0eeee !important;
     border-radius: 6px !important;
-    padding: 10px;
-    /* margin: 0px 30px 16px 60px !important; */
+    padding: 12px;
+    margin: 0px 16px 16px 60px !important;
     border-bottom: 1px solid #f0eeee;
     margin-bottom: 8px !important;
-    /* margin-left: 32px !important; */
     padding-left: 0px !important;
     padding-top: 16px !important;
-    padding-right: px !important;
 }
 
 .reply-comment::before {
@@ -296,7 +295,7 @@
     color: #111111;
     letter-spacing: -0.5px;
     margin-left: 4px;
-    font-size: 18px;
+    font-size: 20px;
 }
 
 .missing-comment-text {
@@ -305,9 +304,9 @@
     color: #111111;
     text-align: left;
     line-height: 1.4;
-    margin-top: 16px;
+    margin-top: 20px;
     font-weight: normal;
-    letter-spacing: -0.5px;
+    letter-spacing: -0.55px;
 
     /* 💡 아래 3줄을 추가하세요 */
     word-break: break-word; /* 단어가 길어지면 줄바꿈 */
@@ -466,8 +465,8 @@
 }
 
 .missing-thumbnail-card img {
-    width: 75px;
-    height: 90px;
+    width: 90px;
+    height: 15px;
     object-fit: cover;
     border-radius: 4px;
     flex-shrink: 0;
@@ -475,6 +474,7 @@
 }
 .missing-thumbnail-text {
     font-weight: normal;
+    text-align: left;
 }
 
 .missing-thumbnail-text .when {
