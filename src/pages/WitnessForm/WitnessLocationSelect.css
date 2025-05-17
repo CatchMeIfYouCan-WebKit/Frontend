@@ -19,6 +19,7 @@
   .ls-back {
     margin-right: 8px;
     cursor: pointer;
+    margin-bottom: 15px;
   }
   
   .ls-search-input {
@@ -26,6 +27,7 @@
     padding: 8px 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    margin-bottom: 15px;
   }
   
   .ls-my-location-btn {
@@ -33,6 +35,7 @@
     cursor: pointer;
     color: #000000;
     right: 10px;
+    top: 90px;
   }
   
   /* 자동완성 리스트 */
