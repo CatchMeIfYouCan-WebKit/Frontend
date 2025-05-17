@@ -326,8 +326,6 @@ export default function ShelterFilter() {
                 <div className="filtering-title">필터링</div>
             </div>
 
-            <hr />
-
             {/* 1. 보호소 */}
             {/* 여기에 보호소 백엔드 이름 전부다 받아와서 자동완성 기능추가  */}
             <div className="sf-section">

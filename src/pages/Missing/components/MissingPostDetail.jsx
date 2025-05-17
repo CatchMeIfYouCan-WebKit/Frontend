@@ -9,6 +9,7 @@ import calender from '../../../assets/uit_calender.svg';
 import location from '../../../assets/location.svg';
 import send from '../../../assets/send.svg';
 import user from '../../../assets/users.svg';
+import message from '../../../assets/message.svg';
 import axios from 'axios';
 
 export default function MissingPostDetail() {
@@ -208,56 +209,67 @@ export default function MissingPostDetail() {
 
     if (!post) return <div>Loading...</div>;
     // ======================================================================================== useEffect
+    function isWithinOneDay(dateString) {
+        const createdAt = new Date(dateString);
+        const now = new Date();
+        const diffInMs = now - createdAt;
+        const diffInHours = diffInMs / (1000 * 60 * 60); // ms → hours
+        return diffInHours < 24;
+    }
+
     return (
         <>
-            <header className="missing-header">
-                <button className="missing-back-button" onClick={goBack}>
-                    <IoIosArrowBack />
-                </button>
-                <h1>실종게시글</h1>
-            </header>
+            <div className="sf-header">
+                <div className="back-button2" onClick={goBack}>
+                    <IoIosArrowBack size={32} />
+                </div>
+                <div className="filtering-title">실종게시글</div>
+            </div>
 
             <div className={`missing-detail-container ${fadeOut ? 'missing-fade-out' : ''}`}>
+                {/* 유저 정보 */}
                 <div className="missing-user-info">
-                    <div className="missing-left-part">
+                    <div className="missing-top-row">
                         <img src={user} alt="프로필" className="missing-profile-circle" />
-                    </div>
-                    <div className="missing-right-part">
-                        <div className="missing-nickname-row">
+                        <div className="missing-nickname-section">
                             <span className="missing-nickname">{post.userNickname}</span>
-                            <button className="missing-more-btn" onClick={() => setIsDropdownOpen((prev) => !prev)}>
-                                &#8942;
-                            </button>
-                            {isDropdownOpen && (
-                                <div className="missing-dropdown">
-                                    <div className="missing-dropdown-item" onClick={() => alert('게시글 수정')}>
-                                        게시글 수정
-                                    </div>
-                                    <div className="missing-dropdown-item" onClick={() => alert('게시글 삭제')}>
-                                        게시글 삭제
-                                    </div>
+                        </div>
+                        <button className="missing-more-btn" onClick={() => setIsDropdownOpen((prev) => !prev)}>
+                            &#8942;
+                        </button>
+                        {isDropdownOpen && (
+                            <div className="missing-dropdown">
+                                <div className="missing-dropdown-item" onClick={() => alert('게시글 수정')}>
+                                    게시글 수정
                                 </div>
-                            )}
-                        </div>
-                        <div className="missing-dog-row">
-                            <div className="missing-dog-info">
-                                <span className="missing-dog-name">{post.dogName}</span>
-                                <span className="missing-breed">{post.breed}</span>
+                                <div className="missing-dropdown-item" onClick={() => alert('게시글 삭제')}>
+                                    게시글 삭제
+                                </div>
                             </div>
-                            <div className="missing-time-ago">{calculateTimeAgo(post.createdAt)}</div>
+                        )}
+                    </div>
+
+                    <div className="missing-bottom-row">
+                        <div className="missing-dog-info">
+                            <span className="missing-dog-name">{post.dogName}</span>
+                            <span className="missing-breed">{post.breed}</span>
                         </div>
+                        <div className="missing-time-ago">{calculateTimeAgo(post.createdAt)}</div>
                     </div>
                 </div>
 
+                {/* 이미지 슬라이더 */}
                 <div className="missing-image-slider" onScroll={handleScroll}>
                     <div className="missing-slide">
-                        <img src={getImageUrl(post.photoUrl)} alt={'강아지'} />
+                        <img src={getImageUrl(post.photoUrl)} alt="강아지" />
+                        <div className="missing-image-counter">1 / 1</div>
                     </div>
                 </div>
 
+                {/* 실종 상세 정보 */}
                 <div className="missing-detail-info">
                     <div className="missing-date-row">
-                        <img src={calender} alt="calender" className="missing-calender-image" />{' '}
+                        <img src={calender} alt="calender" className="missing-calender-image" />
                         {new Date(post.missingDatetime).toLocaleString('ko-KR', {
                             year: 'numeric',
                             month: 'long',
@@ -277,92 +289,125 @@ export default function MissingPostDetail() {
                     <p className="missing-description">{post.detailDescription}</p>
                 </div>
 
-                {/* ✅ 지도 */}
+                {/* 지도 섹션 */}
                 <div className="missing-map-section">
                     <div ref={mapRef} className="missing-map-image" />
                 </div>
-                <p className="witness-similar-info-text">실종된 아이와 닮은 목격정보에요!</p>
 
-                {/* ✅ 썸네일 슬라이더 댓글 위로 이동 */}
+                {/* 닮은 목격 정보 */}
+                <p className="witness-similar-info-text1">실종된 아이와 닮은 목격정보에요!</p>
+
                 <div className="missing-thumbnail-slider">
                     {post2.images.map((img, idx) => (
                         <div className="missing-thumbnail-card" key={idx}>
                             <img src={img} alt={`썸네일${idx}`} />
                             <div className="missing-thumbnail-text">
-                                <div>목격 - 2025년 4월 30일</div>
-                                <div>품종</div>
-                                <div>털색</div>
+                                <div className="when">목격 - 2025년 4월 30일</div>
+                                <div className="where">품종</div>
+                                <div className="how">털색</div>
                             </div>
                         </div>
                     ))}
                 </div>
 
-                {/* ✅ 댓글 섹션 */}
+                {/* 댓글 섹션 */}
                 <div className="missing-comment-section">
                     <div className="missing-comment-count">댓글 {commentList.length}개</div>
                     {commentList
                         .filter((comment) => !comment.parentCommentId)
-                        .map((parent, idx) => (
-                            <React.Fragment key={idx}>
-                                {/* 부모 댓글 */}
-                                <div
-                                    className={`missing-comment ${replyTargetId === parent.id ? 'reply-input' : ''}`}
-                                    onClick={() => handleReplyClick(parent.id)}
-                                >
-                                    <img src={user} alt="작성자" className="missing-comment-profile-circle" />
-                                    <div className="missing-comment-content">
-                                        <div className="missing-comment-meta">
-                                            <span className="missing-comment-author">
-                                                {parent.nickname}
-                                                {parent.userId === post.userId && (
-                                                    <span className="missing-comment-author-writer"> (글쓴이)</span>
-                                                )}
-                                            </span>
-                                            <span className="missing-comment-date">{formatDate(parent.createdAt)}</span>
+                        .map((parent) => (
+                            <React.Fragment key={parent.id}>
+                                <div className="missing-comment-block">
+                                    <div
+                                        className={`missing-comment ${
+                                            replyTargetId === parent.id ? 'reply-input' : ''
+                                        }`}
+                                    >
+                                        <img src={user} alt="작성자" className="missing-comment-profile-circle" />
+                                        <div className="missing-comment-content">
+                                            <div
+                                                className="missing-comment-meta"
+                                                style={{
+                                                    width: '100%',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'space-between',
+                                                }}
+                                            >
+                                                <span className="missing-comment-author">
+                                                    {parent.nickname}
+                                                    {parent.userId === post.userId && (
+                                                        <span className="missing-comment-author-writer"> (글쓴이)</span>
+                                                    )}
+                                                </span>
+                                                <img
+                                                    src={message}
+                                                    alt="답글 작성"
+                                                    onClick={() => {
+                                                        if (window.confirm('대댓글을 작성하시겠습니까?')) {
+                                                            handleReplyClick(parent.id);
+                                                        }
+                                                    }}
+                                                    style={{
+                                                        width: '20px',
+                                                        height: '20px',
+                                                        cursor: 'pointer',
+                                                        marginRight: '16px',
+                                                    }}
+                                                />
+                                            </div>
+
+                                            <div className="missing-comment-text">{parent.content}</div>
                                             <span className="missing-comment-date">
-                                                ({calculateTimeAgo(parent.createdAt)})
+                                                {isWithinOneDay(parent.createdAt)
+                                                    ? calculateTimeAgo(parent.createdAt)
+                                                    : formatDate(parent.createdAt)}
                                             </span>
                                         </div>
-                                        <div className="missing-comment-text">{parent.content}</div>
                                     </div>
-                                </div>
 
-                                {/* 대댓글 */}
-                                {commentList
-                                    .filter((comment) => comment.parentCommentId === parent.id)
-                                    .map((child, cIdx) => (
-                                        <div key={`child-${cIdx}`} className="missing-comment reply-comment">
-                                            <img src={user} alt="작성자" className="missing-comment-profile-circle" />
-                                            <div className="missing-comment-content">
-                                                <div className="missing-comment-meta">
-                                                    <span className="missing-comment-author">
-                                                        {child.nickname}
-                                                        {child.userId === post.userId && (
-                                                            <span className="missing-comment-author-writer">
-                                                                {' '}
-                                                                (글쓴이)
-                                                            </span>
-                                                        )}
-                                                    </span>
+                                    {/* 대댓글 */}
+
+                                    {commentList
+                                        .filter((comment) => comment.parentCommentId === parent.id)
+                                        .map((child) => (
+                                            <div key={child.id} className="missing-comment reply-comment">
+                                                <img
+                                                    src={user}
+                                                    alt="작성자"
+                                                    className="missing-comment-profile-circle"
+                                                />
+                                                <div className="missing-comment-content">
+                                                    <div className="missing-comment-meta">
+                                                        <span className="missing-comment-author">
+                                                            {child.nickname}
+                                                            {child.userId === post.userId && (
+                                                                <span className="missing-comment-author-writer">
+                                                                    {' '}
+                                                                    (글쓴이)
+                                                                </span>
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                    <div className="missing-comment-text">{child.content}</div>
                                                     <span className="missing-comment-date">
-                                                        {formatDate(child.createdAt)}
-                                                    </span>
-                                                    <span className="missing-comment-date">
-                                                        ({calculateTimeAgo(child.createdAt)})
+                                                        {isWithinOneDay(child.createdAt)
+                                                            ? calculateTimeAgo(child.createdAt)
+                                                            : formatDate(child.createdAt)}
                                                     </span>
                                                 </div>
-                                                <div className="missing-comment-text">{child.content}</div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
+                                </div>
                             </React.Fragment>
                         ))}
                 </div>
 
+                {/* 댓글 입력창 */}
                 <div className="missing-comment-input-box">
                     <input
                         type="text"
-                        placeholder={replyTargetId ? '답글을 입력하세요' : '댓글을 작성해주세요'}
+                        placeholder={replyTargetId ? '대댓글을 입력하세요' : '댓글을 입력해주세요'}
                         className="missing-comment-input"
                         value={replyTargetId ? replyInput : commentInput}
                         onChange={(e) =>
