@@ -260,10 +260,16 @@ export default function MissingPostDetail() {
 
                 {/* 이미지 슬라이더 */}
                 <div className="missing-image-slider" onScroll={handleScroll}>
-                    <div className="missing-slide">
-                        <img src={getImageUrl(post.photoUrl)} alt="강아지" />
-                        <div className="missing-image-counter">1 / 1</div>
-                    </div>
+                    {post.photoUrl?.split(',').map((img, idx) => (
+                        <div className="missing-slide" key={idx}>
+                            <img src={getImageUrl(img)} alt={`목격사진${idx}`} />
+                            {idx === currentImageIndex && (
+                                <div className="missing-image-counter">
+                                    {currentImageIndex + 1}/{post.photoUrl.split(',').length}
+                                </div>
+                            )}
+                        </div>
+                    ))}
                 </div>
 
                 {/* 실종 상세 정보 */}

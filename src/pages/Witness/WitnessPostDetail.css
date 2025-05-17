@@ -3,7 +3,6 @@
 .witness-detail-container {
     width: 100%;
     max-width: 540px;
-    margin: 0 auto;
     padding: 0 0 40px;
     background-color: #fff;
     font-family: 'Arial', sans-serif;
@@ -14,106 +13,121 @@
     opacity: 0;
 }
 
-.witness-header {
-    width: 100%;
+.sf-header {
     display: flex;
     align-items: center;
-    justify-content: start;
-    border-bottom: 1px solid #ddd;
-    padding: 12px 16px;
-    box-sizing: border-box;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    min-width: 360px;
+    height: 67px;
+    margin-bottom: 0px;
+    margin-top: 4px;
 }
 
-.witness-header h1 {
-    font-weight: 700;
-    text-align: center;
-    margin: 0 auto;
-    flex: 1;
-    font-size: 20px;
-}
-
-.witness-back-button {
-    background: none;
+.back-button2 {
     border: none;
-    font-size: 36px;
+    font-size: 24px;
+    padding: 0;
+    margin-bottom: 5px;
+    margin-right: 0px;
+    margin-left: -54px;
     cursor: pointer;
-    margin-left: -15px;
 }
 
+.filtering-title {
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px;
+    letter-spacing: -0.5px;
+    margin-left: 5px;
+}
+/* ======================== */
 .witness-user-info {
+    width: 100%;
+    padding: 16px 16px;
     display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 12px 16px;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: -16px;
 }
 
-.witness-left-part {
-    flex-shrink: 0;
+/* 상단: 이미지 + 닉네임 + 더보기 버튼 */
+.witness-top-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
 }
 
 .witness-profile-circle {
-    width: 54px;
-    height: 54px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    background-color: #ccc;
     object-fit: cover;
-    display: block;
+    background-color: #8c8c8c;
+    flex-shrink: 0;
 }
 
-.witness-right-part {
+.witness-nickname-section {
     flex: 1;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.witness-nickname-row {
-    display: flex;
-    justify-content: space-between;
     align-items: center;
+    margin-bottom: 2px;
 }
 
 .witness-nickname {
-    font-weight: 600;
-    font-size: 18px;
+    font-weight: normal;
+    font-size: 20px;
 }
 
 .witness-more-btn {
     background: none;
     border: none;
-    font-size: 20px;
+    font-size: 27px;
     cursor: pointer;
+    padding: 4px;
+    margin-left: auto;
+    color: #8c8c8c;
 }
 
-.witness-dog-row {
+/* 하단: 강아지 정보 + 작성일 */
+.witness-bottom-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 4px;
 }
 
 .witness-dog-info {
     display: flex;
     gap: 6px;
-    font-size: 16px;
+    align-items: center;
 }
 
 .witness-dog-name {
+    margin-bottom: 6px;
     font-weight: bold;
-    color: #000;
+    font-size: 32px;
+    color: #111;
+    letter-spacing: -0.8px;
 }
 
 .witness-breed {
-    color: #666;
+    margin-bottom: 3px;
+    font-size: 20px;
+    color: #8c8c8c;
+    font-weight: normal;
+    letter-spacing: -0.5px;
 }
 
 .witness-time-ago {
-    font-size: 13px;
-    color: #888;
+    margin-bottom: 3px;
+    font-size: 20px;
+    color: #8c8c8c;
     white-space: nowrap;
+    letter-spacing: -0.5px;
 }
-
+/* ========================= */
 .witness-image-slider {
     display: flex;
     overflow-x: auto;
@@ -122,6 +136,7 @@
     width: 100vw;
     max-width: 100vw;
     margin-left: calc(-50vw + 50%);
+    margin-bottom: 16px;
 }
 
 .witness-image-slider::-webkit-scrollbar {
@@ -132,7 +147,7 @@
     flex: none;
     scroll-snap-align: center;
     width: 100%;
-    aspect-ratio: 1/1;
+    aspect-ratio: 1/0.75;
     overflow: hidden;
     background-color: #fff;
     position: relative;
@@ -147,16 +162,17 @@
 
 .witness-image-counter {
     position: absolute;
-    bottom: 8px;
+    bottom: 16px;
     right: 14px;
     background-color: rgba(217, 217, 217, 0.7);
-    color: #000;
-    padding: 4px 10px;
-    border-radius: 6px;
+    color: #111111;
+    padding: 4px 8px;
+    border-radius: 4px;
     font-size: 16px;
+    letter-spacing: -0.45px;
     font-weight: bold;
 }
-
+/* ===================== */
 .witness-thumbnail-slider {
     margin-left: 8px;
     display: flex;
@@ -174,17 +190,19 @@
 .witness-thumbnail-card {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     flex: 0 0 auto;
     min-width: 240px;
     max-width: 300px;
-    border-radius: 12px;
+    border-radius: 8px;
     background-color: #fff;
     padding: 8px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); */
     cursor: pointer;
     scroll-snap-align: center;
     transition: transform 0.2s;
+    margin-left: 8px;
+    margin-right: -16px;
 }
 
 .witness-thumbnail-card:hover {
@@ -192,71 +210,98 @@
 }
 
 .witness-thumbnail-card img {
-    width: 80px;
+    width: 75px;
     height: 90px;
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 4px;
     flex-shrink: 0;
+    margin-top: -2px;
+}
+.witness-thumbnail-text {
+    font-weight: normal;
+    text-align: left;
 }
 
-.witness-thumbnail-text {
+.witness-thumbnail-text .when {
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 2px;
-    font-size: 13px;
-    color: #333;
+    font-size: 18px;
+    color: #111111;
+    letter-spacing: -0.45px;
 }
-
-.witness-detail-info {
-    margin-top: 10px;
-    font-size: 16px;
-    color: #333;
+.witness-thumbnail-text .where {
+    font-weight: lighter;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    font-size: 18px;
+    color: #111111;
+    letter-spacing: -0.45px;
+}
+.witness-thumbnail-text .how {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    font-size: 18px;
+    color: #111111;
+    letter-spacing: -0.45px;
 }
 
 .witness-date-row,
 .witness-location-row {
     display: flex;
     align-items: center;
-    margin: 10px 0;
-    margin-left: 15px;
-    font-weight: 600;
-    font-size: 24px;
+
+    margin-bottom: 8px;
+    margin-left: 16px;
+    font-weight: normal;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+    color: #111111;
 }
 
 .witness-calender-image,
 .witness-location-image {
-    width: 30px;
-    height: 30px;
-    margin-right: 15px;
+    width: 36px;
+    height: 36px;
+    margin-right: 8px;
 }
 
 .witness-description {
-    margin: 20px 15px 0;
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-top: 24px;
     line-height: 1.5;
-    font-size: 24px;
-    font-weight: 600;
+    font-size: 22px;
+    font-weight: normal;
     text-align: left;
+    letter-spacing: -0.5px;
+    word-break: break-word;
 }
 
 .witness-map-section {
-    margin: 20px 0;
+    margin: 48px 4px;
 }
 
 .witness-map-image {
-    width: 95%;
+    width: 88%;
     border-radius: 12px;
     display: block;
     margin: 0 auto;
 }
-
 .witness-comment-section {
-    margin-top: 20px;
+    margin-top: 48px;
 }
 
 .witness-comment-count {
+    font-size: 22px;
+
     font-weight: bold;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     text-align: left;
     margin-left: 15px;
 }
@@ -264,17 +309,23 @@
 /* 원댓글 */
 .witness-comment {
     display: flex;
-    align-items: flex-start;
-    margin-bottom: 16px;
+    align-items: flex-start; /* 수정: 위쪽 정렬로 텍스트 정렬 개선 */
+    margin-bottom: 8px;
 }
 
 /* 대댓글 */
 .reply-comment {
     position: relative;
-    background-color: #eee;
-    border-radius: 15px;
+    background-color: #f0eeee !important;
+    border-radius: 6px !important;
     padding: 10px;
-    margin: 0 30px 16px 60px; /* 위 오른 아래 왼 */
+    /* margin: 0px 30px 16px 60px !important; */
+    border-bottom: 1px solid #f0eeee;
+    margin-bottom: 8px !important;
+    /* margin-left: 32px !important; */
+    padding-left: 0px !important;
+    padding-top: 16px !important;
+    padding-right: px !important;
 }
 
 .reply-comment::before {
@@ -282,77 +333,106 @@
     position: absolute;
     left: -30px;
     top: 12px; /* 원하는 위치로 조정 */
-    color: #000;
+    color: #111111;
     font-size: 16px;
 }
 
 /* 대댓글 등록 시 */
 .reply-input {
-    background-color: #b66;
+    background-color: transparent !important;
     padding: 5px;
+}
+.witness-comment-block {
+    border-bottom: 1px solid #f0eeee;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
 }
 
 .witness-comment-profile-circle {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    margin-left: 15px;
+    margin-left: 16px;
 }
-
 .witness-comment-content {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-}
-
-.witness-comment-meta {
-    font-size: 16px;
-    color: #888;
-    margin-bottom: 4px;
+    margin-left: 8px; /* 프로필 이미지 오른쪽 여백 */
+    margin-top: 4px;
 }
 
 /* 댓글 작성자 */
-.witness-comment-author {
-    font-weight: bold;
-    color: #333;
-    margin-right: 6px;
-    text-align: left;
-    margin-top: 10px;
-    margin-left: 15px;
-}
 
-/* 글 작성자(글쓴이) */
-.witness-comment-author-writer {
-    color: #33d;
+.witness-comment-author {
+    font-weight: normal;
+    color: #111111;
+    letter-spacing: -0.5px;
+    margin-left: 4px;
+    font-size: 18px;
 }
 
 .witness-comment-text {
-    font-size: 15px;
-    color: #444;
+    margin-left: -50px;
+    font-size: 22px;
+    color: #111111;
     text-align: left;
-    line-height: 1.5;
-    margin-top: 15px;
-    margin-left: 15px;
-    font-weight: 600;
+    line-height: 1.4;
+    margin-top: 16px;
+    font-weight: normal;
+    letter-spacing: -0.5px;
+
+    /* 💡 아래 3줄을 추가하세요 */
+    word-break: break-word; /* 단어가 길어지면 줄바꿈 */
+    overflow-wrap: break-word; /* 단어 단위로 끊기 */
+    white-space: pre-wrap; /* 줄바꿈 + 공백 유지 */
+    margin-right: 16px;
 }
 
+.witness-comment-date {
+    margin-left: -50px;
+    font-size: 16px;
+    color: #8c8c8c;
+    letter-spacing: -0.5px;
+    margin-top: 8px;
+}
 .witness-comment-input-box {
+    height: 8%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 480px;
+
+    background-color: #fff;
+    border-top: 1px solid #f0eeee;
+    padding: 8px;
     display: flex;
     align-items: center;
-    padding: 12px 16px;
     gap: 8px;
-    margin-top: 16px;
+    z-index: 100;
 }
 
 .witness-comment-input {
     flex: 1;
-    padding: 10px 16px;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    background-color: rgba(219, 219, 219, 0.5);
+    padding: 16px 16px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+
+    background-color: rgba(229, 228, 232, 0.3);
     outline: none;
-    font-size: 14px;
+    font-size: 16px;
+    letter-spacing: -0.4px;
+    color: #8c8a8c;
+    font-weight: normal;
+}
+.witness-comment-input::placeholder {
+    padding-top: 10px; /* 위 공간 확보 */
+    letter-spacing: -0.5px;
+    font-size: 20px; /* 원하는 크기로 조절 */
+    color: #8c8c8c; /* 필요하면 색상도 조정 */
+    font-weight: normal;
 }
 
 .witness-submit-btn {
@@ -398,18 +478,25 @@
     margin: 0 auto;
     border-radius: 12px;
 }
-.witness-similar-info-text {
-    font-size: 18px;
-    font-weight: 600;
-    color: #444;
-    margin: 24px 16px 8px;
+.witness-similar-info-text1 {
+    font-size: 22px;
+    font-weight: bold;
+    color: #111111;
     text-align: left;
+    margin-left: 16px;
+    margin-bottom: 6px;
 }
+.witness-similar {
+    background-color: #ffffff;
+    /* border-bottom: 1px solid #111; */
+    letter-spacing: -0.4px;
+}
+
 .witness-post-type {
     display: inline-block;
     padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 13px;
+    border-radius: 4px;
+    font-size: 16px;
     font-weight: bold;
     margin-left: 8px;
     line-height: 1;

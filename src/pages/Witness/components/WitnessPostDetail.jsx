@@ -8,6 +8,7 @@ import location from '../../../assets/location.svg';
 import send from '../../../assets/send.svg';
 import user from '../../../assets/users.svg';
 import axios from 'axios';
+import message from '../../../assets/message.svg';
 
 export default function WitnessPostDetail() {
     const navigate = useNavigate();
@@ -203,59 +204,49 @@ export default function WitnessPostDetail() {
     }, [post]);
 
     if (!post) return <div>Loading...</div>;
-
+    function isWithinOneDay(dateString) {
+        const createdAt = new Date(dateString);
+        const now = new Date();
+        const diffInMs = now - createdAt;
+        const diffInHours = diffInMs / (1000 * 60 * 60); // ms → hours
+        return diffInHours < 24;
+    }
     return (
         <>
-            <header className="witness-header">
-                <button className="witness-back-button" onClick={goBack}>
-                    <IoIosArrowBack />
-                </button>
-                <h1>목격게시글</h1>
-            </header>
-
+            <div className="sf-header">
+                <div className="back-button2" onClick={goBack}>
+                    <IoIosArrowBack size={32} />
+                </div>
+                <div className="filtering-title">목격게시글</div>
+            </div>
             <div className={`witness-detail-container ${fadeOut ? 'witness-fade-out' : ''}`}>
                 <div className="witness-user-info">
-                    <div className="witness-left-part">
-                        <img src={user} alt="프로필 이미지" className="witness-profile-circle" />
+                    <div className="witness-top-row">
+                        <img src={user} alt="프로필" className="witness-profile-circle" />
+                        <div className="witness-nickname-section">
+                            <span className="witness-nickname">{post.userNickname}</span>
+                        </div>
+                        <button className="witness-more-btn" onClick={() => setIsDropdownOpen((prev) => !prev)}>
+                            &#8942;
+                        </button>
+                        {isDropdownOpen && (
+                            <div className="witness-dropdown">
+                                <div className="witness-dropdown-item" onClick={() => alert('게시글 수정')}>
+                                    게시글 수정
+                                </div>
+                                <div className="witness-dropdown-item" onClick={() => alert('게시글 삭제')}>
+                                    게시글 삭제
+                                </div>
+                            </div>
+                        )}
                     </div>
 
-                    <div className="witness-right-part">
-                        <div className="witness-nickname-row" style={{ position: 'relative' }}>
-                            <span className="witness-nickname">{post.userNickname}</span>
-                            <button className="witness-more-btn" onClick={() => setIsDropdownOpen((prev) => !prev)}>
-                                &#8942;
-                            </button>
-                            {isDropdownOpen && (
-                                <div className="witness-dropdown">
-                                    <div
-                                        className="witness-dropdown-item"
-                                        onClick={() => {
-                                            alert('게시글 수정');
-                                            setIsDropdownOpen(false);
-                                        }}
-                                    >
-                                        게시글 수정
-                                    </div>
-                                    <div
-                                        className="witness-dropdown-item"
-                                        onClick={() => {
-                                            alert('게시글 삭제');
-                                            setIsDropdownOpen(false);
-                                        }}
-                                    >
-                                        게시글 삭제
-                                    </div>
-                                </div>
-                            )}
+                    <div className="witness-bottom-row">
+                        <div className="witness-dog-info">
+                            <span className="witness-dog-name">{post.dogName}</span>
+                            <span className="witness-breed">{post.breed}</span>
                         </div>
-
-                        <div className="witness-dog-row">
-                            <div className="witness-dog-info">
-                                <span className="witness-dog-name">{post.dogName}</span>
-                                <span className="witness-breed">{post.breed}</span>
-                            </div>
-                            <div className="witness-time-ago">{calculateTimeAgo(post.createdAt)}</div>
-                        </div>
+                        <div className="witness-time-ago">{calculateTimeAgo(post.createdAt)}</div>
                     </div>
                 </div>
 
@@ -283,7 +274,7 @@ export default function WitnessPostDetail() {
                             minute: 'numeric',
                             hour12: true,
                         })}
-                        <span className={`witness-post-type ${post.postType === 'missing' ? 'missing' : 'witness'}`}>
+                        <span className={`witness-post-type ${post.postType === 'witness' ? 'missing' : 'witness'}`}>
                             {post.postType === 'missing' ? '실종' : '목격'}
                         </span>
                     </div>
@@ -298,7 +289,7 @@ export default function WitnessPostDetail() {
                 <div className="witness-map-section">
                     <div ref={mapRef} className="witness-map-image" />
                 </div>
-                <p className="witness-similar-info-text">목격된 아이와 닮은 실종정보에요!</p>
+                <p className="witness-similar-info-text1">목격된 반려견과 유사한 실종정보에요!</p>
 
                 {/* ✅ 슬라이더를 댓글 바로 위로 이동 */}
                 <div className="witness-thumbnail-slider">
@@ -306,9 +297,9 @@ export default function WitnessPostDetail() {
                         <div className="witness-thumbnail-card" key={idx}>
                             <img src={img} alt={`썸네일${idx}`} />
                             <div className="witness-thumbnail-text">
-                                <div>목격 - 2025년 4월 30일</div>
-                                <div>품종</div>
-                                <div>털색</div>
+                                <div className="when">목격 - 2025년 4월 30일</div>
+                                <div className="where">품종</div>
+                                <div className="how">털색</div>
                             </div>
                         </div>
                     ))}
@@ -319,67 +310,99 @@ export default function WitnessPostDetail() {
                     <div className="witness-comment-count">댓글 {commentList.length}개</div>
                     {commentList
                         .filter((comment) => !comment.parentCommentId)
-                        .map((parent, idx) => (
-                            <React.Fragment key={idx}>
-                                {/* 부모 댓글 */}
-                                <div
-                                    className={`witness-comment ${replyTargetId === parent.id ? 'reply-input' : ''}`}
-                                    onClick={() => handleReplyClick(parent.id)}
-                                >
-                                    <img src={user} alt="작성자" className="witness-comment-profile-circle" />
-                                    <div className="witness-comment-content">
-                                        <div className="witness-comment-meta">
-                                            <span className="witness-comment-author">
-                                                {parent.nickname}
-                                                {parent.userId === post.userId && (
-                                                    <span className="witness-comment-author-writer"> (글쓴이)</span>
-                                                )}
-                                            </span>
-                                            <span className="witness-comment-date">{formatDate(parent.createdAt)}</span>
+                        .map((parent) => (
+                            <React.Fragment key={parent.id}>
+                                <div className="witness-comment-block">
+                                    <div
+                                        className={`witness-comment ${
+                                            replyTargetId === parent.id ? 'reply-input' : ''
+                                        }`}
+                                    >
+                                        <img src={user} alt="작성자" className="witness-comment-profile-circle" />
+                                        <div className="witness-comment-content">
+                                            <div
+                                                className="witness-comment-meta"
+                                                style={{
+                                                    width: '100%',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'space-between',
+                                                }}
+                                            >
+                                                <span className="witness-comment-author">
+                                                    {parent.nickname}
+                                                    {parent.userId === post.userId && (
+                                                        <span className="witness-comment-author-writer"> (글쓴이)</span>
+                                                    )}
+                                                </span>
+                                                <img
+                                                    src={message}
+                                                    alt="답글 작성"
+                                                    onClick={() => {
+                                                        if (window.confirm('대댓글을 작성하시겠습니까?')) {
+                                                            handleReplyClick(parent.id);
+                                                        }
+                                                    }}
+                                                    style={{
+                                                        width: '20px',
+                                                        height: '20px',
+                                                        cursor: 'pointer',
+                                                        marginRight: '16px',
+                                                    }}
+                                                />
+                                            </div>
+
+                                            <div className="witness-comment-text">{parent.content}</div>
                                             <span className="witness-comment-date">
-                                                ({calculateTimeAgo(parent.createdAt)})
+                                                {isWithinOneDay(parent.createdAt)
+                                                    ? calculateTimeAgo(parent.createdAt)
+                                                    : formatDate(parent.createdAt)}
                                             </span>
                                         </div>
-                                        <div className="witness-comment-text">{parent.content}</div>
                                     </div>
-                                </div>
 
-                                {/* 대댓글 */}
-                                {commentList
-                                    .filter((comment) => comment.parentCommentId === parent.id)
-                                    .map((child, cIdx) => (
-                                        <div key={`child-${cIdx}`} className="witness-comment reply-comment">
-                                            <img src={user} alt="작성자" className="witness-comment-profile-circle" />
-                                            <div className="witness-comment-content">
-                                                <div className="witness-comment-meta">
-                                                    <span className="witness-comment-author">
-                                                        {child.nickname}
-                                                        {child.userId === post.userId && (
-                                                            <span className="witness-comment-author-writer">
-                                                                {' '}
-                                                                (글쓴이)
-                                                            </span>
-                                                        )}
-                                                    </span>
+                                    {/* 대댓글 */}
+
+                                    {commentList
+                                        .filter((comment) => comment.parentCommentId === parent.id)
+                                        .map((child) => (
+                                            <div key={child.id} className="witness-comment reply-comment">
+                                                <img
+                                                    src={user}
+                                                    alt="작성자"
+                                                    className="witness-comment-profile-circle"
+                                                />
+                                                <div className="witness-comment-content">
+                                                    <div className="witness-comment-meta">
+                                                        <span className="witness-comment-author">
+                                                            {child.nickname}
+                                                            {child.userId === post.userId && (
+                                                                <span className="witness-comment-author-writer">
+                                                                    {' '}
+                                                                    (글쓴이)
+                                                                </span>
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                    <div className="witness-comment-text">{child.content}</div>
                                                     <span className="witness-comment-date">
-                                                        {formatDate(child.createdAt)}
-                                                    </span>
-                                                    <span className="witness-comment-date">
-                                                        ({calculateTimeAgo(child.createdAt)})
+                                                        {isWithinOneDay(child.createdAt)
+                                                            ? calculateTimeAgo(child.createdAt)
+                                                            : formatDate(child.createdAt)}
                                                     </span>
                                                 </div>
-                                                <div className="witness-comment-text">{child.content}</div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
+                                </div>
                             </React.Fragment>
                         ))}
                 </div>
 
+                {/* 댓글 입력창 */}
                 <div className="witness-comment-input-box">
                     <input
                         type="text"
-                        placeholder={replyTargetId ? '답글을 입력하세요' : '댓글을 작성해주세요'}
+                        placeholder={replyTargetId ? '대댓글을 입력하세요' : '댓글을 입력해주세요'}
                         className="witness-comment-input"
                         value={replyTargetId ? replyInput : commentInput}
                         onChange={(e) =>

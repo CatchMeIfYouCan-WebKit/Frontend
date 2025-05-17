@@ -126,7 +126,7 @@
     white-space: nowrap;
     letter-spacing: -0.5px;
 }
-
+/* ========================= */
 .missing-image-slider {
     display: flex;
     overflow-x: auto;
@@ -171,7 +171,7 @@
     letter-spacing: -0.45px;
     font-weight: bold;
 }
-
+/* ===================== */
 .missing-detail-info {
     color: #111111;
 }
@@ -204,7 +204,7 @@
     font-size: 22px;
     font-weight: normal;
     text-align: left;
-    letter-spacing: -0.5%;
+    letter-spacing: -0.5px;
     word-break: break-word;
 }
 
@@ -218,7 +218,7 @@
     display: block;
     margin: 0 auto;
 }
-
+/* ============================= */
 .missing-comment-section {
     margin-top: 48px;
 }
@@ -401,6 +401,7 @@
     margin: 0 auto;
     border-radius: 12px;
 }
+/* ============================ */
 .witness-similar-info-text1 {
     font-size: 22px;
     font-weight: bold;
@@ -424,6 +425,7 @@
     margin-left: 8px;
     line-height: 1;
 }
+/* =================== */
 .missing-thumbnail-slider {
     background-color: #ffffff;
     text-align: left;
@@ -474,6 +476,7 @@
 .missing-thumbnail-text {
     font-weight: normal;
 }
+
 .missing-thumbnail-text .when {
     display: flex;
     flex-direction: column;
