@@ -25,6 +25,8 @@ export default function MissingPostDetail() {
     const [replyTargetId, setReplyTargetId] = useState(null);
     const [replyInput, setReplyInput] = useState('');
     const [commentList, setCommentList] = useState([]);
+    const [recommendations, setRecommendations] = useState([]);
+
 
     const post2 = { images: [testdog, testdog, testdog] };
 
@@ -168,6 +170,15 @@ export default function MissingPostDetail() {
         fetchComments();
     }, [id]);
 
+    //목격 추천 api 
+    useEffect(() => {
+        axios
+            .get(`/api/posts/missing/${id}/recommendations`)
+            .then((res) => setRecommendations(res.data))
+            .catch((err) => console.error('추천 게시글 조회 실패:', err));
+    }, [id]);
+
+
     // 지도 로드
     useEffect(() => {
         if (!post || !post.missingLocation) return;
@@ -304,19 +315,28 @@ export default function MissingPostDetail() {
                 <p className="witness-similar-info-text1">실종된 아이와 닮은 목격정보에요!</p>
 
                 <div className="missing-thumbnail-slider">
-                    {post2.images.map((img, idx) => (
-                        <div className="missing-thumbnail-card" key={idx}>
-                            <img src={img} alt={`썸네일${idx}`} />
+                    {recommendations.map((item, idx) => (
+                        <div
+                            className="missing-thumbnail-card"
+                            key={idx}
+                            onClick={() => navigate(`/witnesspostDetail/${item.id}`)} // ✅ 목격 상세 페이지 이동
+                            style={{ cursor: 'pointer' }} // UX 개선
+                        >
+                            <img src={getImageUrl(item.photoUrl)} alt={`썸네일${idx}`} />
                             <div className="missing-thumbnail-text">
-                                <div className="when">목격 - 2025년 4월 30일</div>
-                                <div className="where">품종</div>
-                                <div className="how">털색</div>
+
+                                <div>목격 - {formatDate(item.witnessDatetime || item.missingDatetime)}</div>
+                                <div>{item.predictedBreed || '품종 정보 없음'}</div>
+                                <div>{item.predictedColor || '털색 정보 없음'}</div>
+                                {item.distance && <div>{item.distance.toFixed(1)}km 근처</div>}
                             </div>
                         </div>
                     ))}
                 </div>
 
-                {/* 댓글 섹션 */}
+
+                {/* ✅ 댓글 섹션 */}
+
                 <div className="missing-comment-section">
                     <div className="missing-comment-count">댓글 {commentList.length}개</div>
                     {commentList

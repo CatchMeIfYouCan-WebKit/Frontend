@@ -84,6 +84,8 @@ export default function MissingPostForm() {
                 missingDatetime: formattedDate,
                 missingLocation: locationString,
                 detailDescription: desc,
+                latitude,      // 추가
+                longitude,     // 추가
             };
 
             if (!file && pet?.photoPath) {

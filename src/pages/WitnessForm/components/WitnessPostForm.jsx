@@ -13,7 +13,7 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 export default function WitnessPostForm() {
     const navigate = useNavigate();
     const locationState = useLocation();
-    const pet = locationState.state?.pet;
+    // const pet = locationState.state?.pet;
 
     const [date, setDate] = useState(locationState.state?.date);
     const [location, setLocation] = useState(null);
@@ -110,10 +110,13 @@ export default function WitnessPostForm() {
                 witnessDatetime: formattedDate,
                 witnessLocation: location,
                 detailDescription: desc,
+                latitude,
+                longitude
             };
 
             formData.append('post', JSON.stringify(witnessData));
-            files.forEach((file) => formData.append('files', file));
+            formData.append('photoUrls', JSON.stringify(files));
+
 
             // 1. 목격 게시글 등록 요청
             const res = await axios.post('/api/posts/witness', formData, {
@@ -230,22 +233,9 @@ export default function WitnessPostForm() {
                     const uploadedPath = result.photoPath;
                     const previewUrl = getImageUrl(uploadedPath);
 
-                    const fileExt = localPath.split('.').pop().toLowerCase();
-                    const mimeTypeMap = {
-                        jpg: 'image/jpeg',
-                        jpeg: 'image/jpeg',
-                        png: 'image/png',
-                        gif: 'image/gif',
-                    };
-                    const mimeType = mimeTypeMap[fileExt] || 'image/jpeg';
-
-                    fetch(localPath)
-                        .then((res) => res.blob())
-                        .then((blob) => {
-                            const file = new File([blob], `photo.${fileExt}`, { type: mimeType });
-                            setFiles((prev) => [...prev, file]);
-                            setPreviewUrls((prev) => [...prev, previewUrl]);
-                        });
+                    // ✅ 더 이상 File 객체 만들지 않고, 경로만 저장
+                    setPreviewUrls((prev) => [...prev, previewUrl]);
+                    setFiles((prev) => [...prev, uploadedPath]); // 이제는 '파일'이 아니라 '경로'
 
                     console.log('🔥 업로드 완료:', uploadedPath);
                 } catch (e) {
@@ -255,6 +245,7 @@ export default function WitnessPostForm() {
             },
         });
     };
+
 
     // 사진 삭제
     const handleRemovePhoto = (index) => {

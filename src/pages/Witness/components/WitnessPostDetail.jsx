@@ -23,6 +23,7 @@ export default function WitnessPostDetail() {
     const [replyTargetId, setReplyTargetId] = useState(null);
     const [replyInput, setReplyInput] = useState('');
     const [commentList, setCommentList] = useState([]);
+    const [recommendations, setRecommendations] = useState([]);
 
     const post2 = { images: [testdog, testdog, testdog] };
 
@@ -165,6 +166,13 @@ export default function WitnessPostDetail() {
 
         fetchComments();
     }, [id]);
+    //실종 추천 api
+    useEffect(() => {
+        axios
+            .get(`/api/posts/witness/${id}/recommendations`)
+            .then((res) => setRecommendations(res.data))
+            .catch((err) => console.error('추천 게시글 조회 실패:', err));
+    }, [id]);
 
     // 지도 로드
     useEffect(() => {
@@ -293,17 +301,27 @@ export default function WitnessPostDetail() {
 
                 {/* ✅ 슬라이더를 댓글 바로 위로 이동 */}
                 <div className="witness-thumbnail-slider">
-                    {post2.images.map((img, idx) => (
-                        <div className="witness-thumbnail-card" key={idx}>
-                            <img src={img} alt={`썸네일${idx}`} />
+                    {recommendations.map((item, idx) => (
+                        <div
+                            className="witness-thumbnail-card"
+                            key={idx}
+                            onClick={() => navigate(`/missingpostDetail/${item.id}`)} // ✅ 클릭 시 이동
+                            style={{ cursor: 'pointer' }} // 마우스 커서 변경 (선택)
+                        >
+                            <img src={getImageUrl(item.photoUrl)} alt={`썸네일${idx}`} />
                             <div className="witness-thumbnail-text">
-                                <div className="when">목격 - 2025년 4월 30일</div>
-                                <div className="where">품종</div>
-                                <div className="how">털색</div>
+
+                                <div>실종 - {formatDate(item.missingDatetime || item.witnessDatetime)}</div>
+                                <div>{item.petBreed || '품종 정보 없음'}</div>
+                                <div>{item.petCoatColor || '털색 정보 없음'}</div>
+                                <div>{item.distance?.toFixed(1)}km 거리</div>
+
                             </div>
                         </div>
                     ))}
                 </div>
+
+
 
                 {/* ✅ 댓글 섹션 */}
                 <div className="witness-comment-section">
