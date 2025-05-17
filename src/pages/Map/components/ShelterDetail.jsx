@@ -31,7 +31,7 @@ export default function ShelterDetail() {
     const [isLatest, setIsLatest] = useState(true);
 
     // 필터 라벨
-    const shelterLabel = selectedShelterName.length ? selectedShelterName.join(', ') : '보호소이름';
+    const shelterLabel = selectedShelterName.length ? selectedShelterName.join(', ') : '보호소';
     const breedLabel = selectedBreed.length ? selectedBreed.join(', ') : '품종';
     const colorLabel = selectedColor.length ? selectedColor.join(', ') : '털색';
     const genderLabel = selectedGender.length ? selectedGender.join(', ') : '성별';
@@ -126,7 +126,7 @@ export default function ShelterDetail() {
 
             {/* 필터 요약 */}
             <div className="filters">
-                <div className={`filter ${shelterLabel !== '보호소이름' ? 'applied' : ''}`}>
+                <div className={`filter ${shelterLabel !== '보호소' ? 'applied' : ''}`}>
                     {truncateLabel(shelterLabel)}
                 </div>
                 <div className={`filter ${colorLabel !== '털색' ? 'applied' : ''}`}>{truncateLabel(colorLabel)}</div>
