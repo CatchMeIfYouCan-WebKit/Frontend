@@ -1,5 +1,5 @@
 .landing-container {
-    background-color: #000000;
+    background-color: #010101;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -13,7 +13,7 @@
 }
 
 .logo-wrapper {
-    margin-top: 190px; 
+    margin-top: 190px;
     text-align: center;
 }
 
@@ -32,8 +32,8 @@
 
 .title-wrapper {
     display: flex;
-    align-items: center; 
-    justify-content: center; 
+    align-items: center;
+    justify-content: center;
     text-align: center;
     margin-top: 74px;
 }

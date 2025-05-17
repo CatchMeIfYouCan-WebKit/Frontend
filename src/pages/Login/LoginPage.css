@@ -10,7 +10,7 @@
 /* 2. 최상위 컨테이너 */
 .login-container {
     min-height: 90vh;
-    background-color: #fafafa;
+    background-color: white;
     display: flex;
     flex-direction: column;
     justify-content: center;
