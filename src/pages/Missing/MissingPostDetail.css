@@ -198,9 +198,9 @@
 }
 
 .missing-description {
-    margin-left: 16px;
+    margin-left: 20px;
     margin-right: 16px;
-    margin-top: 24px;
+    margin-top: 12px;
     line-height: 1.5;
     font-size: 22px;
     font-weight: normal;
@@ -210,7 +210,8 @@
 }
 
 .missing-map-section {
-    margin: 48px 4px;
+    margin: 36px 4px;
+    border-radius: 2px;
 }
 
 .missing-map-image {
