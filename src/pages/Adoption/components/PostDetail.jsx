@@ -99,11 +99,11 @@ export default function PostDetail() {
     const displayColors = Array.isArray(rawColors)
         ? rawColors.map((c) => COLOR_LABELS[c] || c).join(', ')
         : rawColors.includes('+') // 다중 색상 처리
-        ? rawColors
-              .split('+')
-              .map((c) => COLOR_LABELS[c.trim()] || c.trim())
-              .join(', ')
-        : COLOR_LABELS[rawColors.trim()] || rawColors.trim();
+            ? rawColors
+                .split('+')
+                .map((c) => COLOR_LABELS[c.trim()] || c.trim())
+                .join(', ')
+            : COLOR_LABELS[rawColors.trim()] || rawColors.trim();
 
     // meetText 파싱
     let mapLat = latitude,
@@ -370,7 +370,7 @@ export default function PostDetail() {
                     </li>
                 </ul>
                 {/* 채팅 버튼 */}+{' '}
-                {status === '분양중' ? (
+                {!isOwner && status === '분양중' ? (
                     <div
                         className="pd-chat-button"
                         onClick={() =>
@@ -382,10 +382,13 @@ export default function PostDetail() {
                         <Chat />
                     </div>
                 ) : (
-                    <button className="pd-chat-disabled" disabled>
-                        채팅 불가
-                    </button>
+                    !isOwner && (
+                        <button className="pd-chat-disabled" disabled>
+                            채팅 불가
+                        </button>
+                    )
                 )}
+
             </div>
         </div>
     );

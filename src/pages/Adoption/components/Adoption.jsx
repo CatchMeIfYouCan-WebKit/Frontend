@@ -61,14 +61,32 @@ export default function Adoption() {
         // ✅ 선언 빠졌던 부분 복구
         const query = new URLSearchParams();
 
-        if (filter.region) query.append('region', filter.region);
-        if (filter.age) query.append('age', filter.age);
-        if (filter.breed) query.append('breed', filter.breed);
-        if (filter.color) query.append('color', filter.color);
+        // 각 필터 값에 대해 trim() 후 유효성 체크
+        if (filter.region && filter.region.trim()) {
+            query.append('region', filter.region.trim());
+        }
+
+        if (filter.age && filter.age.toString().trim()) {
+            query.append('age', filter.age.toString().trim());
+        }
+
+        if (filter.breed && filter.breed.trim()) {
+            query.append('breed', filter.breed.trim());
+        }
+
+        if (filter.color && Array.isArray(filter.color) && filter.color.length > 0) {
+            // 예: ["검은색", "하얀색"] => "검은색,하얀색"
+            const trimmedColors = filter.color.map((c) => c.trim()).filter(Boolean);
+            if (trimmedColors.length > 0) {
+                query.append('color', trimmedColors.join(','));
+            }
+        }
+
 
         axios
             .get(`/api/adopt/filter?${query.toString()}`)
             .then((res) => {
+                console.log('✅ 서버 응답 데이터:', res.data);
                 const sortedData = res.data.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
                 const adoptPosts = sortedData.map((post) => {
