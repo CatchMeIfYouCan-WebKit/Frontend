@@ -195,7 +195,7 @@ export default function Filtering() {
     };
 
     // 동물 품종
-    const [breedFilter, setBreedFilter] = useState(init.breedFiltering ?? '강아지 품종을 선택해주세요.');
+     const [breedFilter, setBreedFilter] = useState(init.breedFiltering ?? '');
 
     // 바텀 시트 상태
     const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -345,7 +345,7 @@ export default function Filtering() {
                     <input
                         type="text"
                         className="bread-input"
-                        placeholder="강아지 품종을 선택해주세요"
+                        placeholder={breedFilter || search || '강아지 품종을 선택해주세요'}
                         value={search}
                         onChange={(e) => {
                             const value = e.target.value; // 추가
@@ -388,7 +388,7 @@ export default function Filtering() {
                                     const newSel = selectedPopularBreed === b ? '' : b;
                                     setSelectedPopularBreed(newSel);
                                     setSearch(newSel);
-                                    setBreadFilter(newSel);
+                                    setBreedFilter(newSel);
                                     setIsSuggestOpen(false);
                                 }}
                             />

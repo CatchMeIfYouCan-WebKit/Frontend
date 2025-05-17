@@ -330,75 +330,74 @@ export default function MapMain() {
                     calculator: [10, 20, 30], // 원하는 구간(1-10, 11-20, 21-30, 31-)
                     styles: [
                         {
-                          width:            '40px',
-                          height:           '40px',
-                          borderRadius:     '50%',
-                          background:       'rgba(76,175,80,0.5)',
-                          border:           '3px solid #4CAF50',
-                          textColor:        '#4CAF50',
-                          textSize:         '16px',
-                          textWeight:       'bold',
-                          textOutlineColor: 'transparent',
-                          // ↓ 추가된 부분
-                          display:          'flex',
-                          justifyContent:   'center',
-                          alignItems:       'center',
-                          textAlign:        'center',
-                          textLineHeight:   '40px',   // 클러스터 숫자를 세로 중앙에
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '50%',
+                            background: 'rgba(76,175,80,0.5)',
+                            border: '3px solid #4CAF50',
+                            textColor: '#4CAF50',
+                            textSize: '16px',
+                            textWeight: 'bold',
+                            textOutlineColor: 'transparent',
+                            // ↓ 추가된 부분
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            textAlign: 'center',
+                            textLineHeight: '40px', // 클러스터 숫자를 세로 중앙에
                         },
                         {
-                          width:            '50px',
-                          height:           '50px',
-                          borderRadius:     '50%',
-                          background:       'rgba(33,150,243,0.5)',
-                          border:           '3px solid #2196F3',
-                          textColor:        '#2196F3',
-                          textSize:         '20px',
-                          textWeight:       'bold',
-                          textOutlineColor: 'transparent',
-                          // ↓ 추가
-                          display:          'flex',
-                          justifyContent:   'center',
-                          alignItems:       'center',
-                          textAlign:        'center',
-                          textLineHeight:   '50px',
+                            width: '50px',
+                            height: '50px',
+                            borderRadius: '50%',
+                            background: 'rgba(33,150,243,0.5)',
+                            border: '3px solid #2196F3',
+                            textColor: '#2196F3',
+                            textSize: '20px',
+                            textWeight: 'bold',
+                            textOutlineColor: 'transparent',
+                            // ↓ 추가
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            textAlign: 'center',
+                            textLineHeight: '50px',
                         },
                         {
-                          width:            '60px',
-                          height:           '60px',
-                          borderRadius:     '50%',
-                          background:       'rgba(255,193,7,0.5)',
-                          border:           '3px solid #FFC107',
-                          textColor:        '#FFC107',
-                          textSize:         '24px',
-                          textWeight:       'bold',
-                          textOutlineColor: 'transparent',
-                          // ↓ 추가
-                          display:          'flex',
-                          justifyContent:   'center',
-                          alignItems:       'center',
-                          textAlign:        'center',
-                          textLineHeight:   '60px',
+                            width: '60px',
+                            height: '60px',
+                            borderRadius: '50%',
+                            background: 'rgba(255,193,7,0.5)',
+                            border: '3px solid #FFC107',
+                            textColor: '#FFC107',
+                            textSize: '24px',
+                            textWeight: 'bold',
+                            textOutlineColor: 'transparent',
+                            // ↓ 추가
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            textAlign: 'center',
+                            textLineHeight: '60px',
                         },
                         {
-                          width:            '70px',
-                          height:           '70px',
-                          borderRadius:     '50%',
-                          background:       'rgba(244,67,54,0.5)',
-                          border:           '3px solid #F44336',
-                          textColor:        '#F44336',
-                          textSize:         '28px',
-                          textWeight:       'bold',
-                          textOutlineColor: 'transparent',
-                          // ↓ 추가
-                          display:          'flex',
-                          justifyContent:   'center',
-                          alignItems:       'center',
-                          textAlign:        'center',
-                          textLineHeight:   '70px',
+                            width: '70px',
+                            height: '70px',
+                            borderRadius: '50%',
+                            background: 'rgba(244,67,54,0.5)',
+                            border: '3px solid #F44336',
+                            textColor: '#F44336',
+                            textSize: '28px',
+                            textWeight: 'bold',
+                            textOutlineColor: 'transparent',
+                            // ↓ 추가
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            textAlign: 'center',
+                            textLineHeight: '70px',
                         },
-                      ]
-                    
+                    ],
                 });
 
                 // 클러스터링 실행 (모든 마커를 클러스터러에 등록)
@@ -611,7 +610,7 @@ export default function MapMain() {
                         markersRef.current.push({
                             type: 'witness',
                             overlay,
-                            data: { breed: post.breed, color: post.color },
+                            data: { breed: post.predictedBreed, color: post.predictedColor },
                         });
                     } else {
                         console.warn(`[Marker] 목격 주소 변환 실패. ID: ${post.id}, 주소: ${post.witnessLocation}`);
@@ -1256,11 +1255,13 @@ export default function MapMain() {
                                                     <div>{`댓글 ${post.commentCount}개`}</div>
                                                 </div>
                                                 <div className="list-img">
-                                                    <img
-                                                        src={getImageUrl(post.photoUrl.split(',')[0])} // 첫 번째 경로만 사용
-                                                        alt="dog"
-                                                        className="sheet-nailimg"
-                                                    />
+                                                    {post.photoUrl && (
+                                                        <img
+                                                            src={getImageUrl(post.photoUrl.split(',')[0])} // 첫 번째 경로만 사용
+                                                            alt="dog"
+                                                            className="sheet-nailimg"
+                                                        />
+                                                    )}
                                                 </div>
                                                 <hr />
                                             </div>
