@@ -610,7 +610,7 @@ export default function MapMain() {
                         markersRef.current.push({
                             type: 'witness',
                             overlay,
-                            data: { breed: post.breed, color: post.color },
+                            data: { breed: post.predictedBreed, color: post.predictedColor },
                         });
                     } else {
                         console.warn(`[Marker] 목격 주소 변환 실패. ID: ${post.id}, 주소: ${post.witnessLocation}`);
@@ -1255,11 +1255,13 @@ export default function MapMain() {
                                                     <div>{`댓글 ${post.commentCount}개`}</div>
                                                 </div>
                                                 <div className="list-img">
-                                                    <img
-                                                        src={getImageUrl(post.photoUrl.split(',')[0])} // 첫 번째 경로만 사용
-                                                        alt="dog"
-                                                        className="sheet-nailimg"
-                                                    />
+                                                    {post.photoUrl && (
+                                                        <img
+                                                            src={getImageUrl(post.photoUrl.split(',')[0])} // 첫 번째 경로만 사용
+                                                            alt="dog"
+                                                            className="sheet-nailimg"
+                                                        />
+                                                    )}
                                                 </div>
                                                 <hr />
                                             </div>
