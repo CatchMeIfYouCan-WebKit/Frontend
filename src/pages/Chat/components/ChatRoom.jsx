@@ -1,7 +1,10 @@
 // src/pages/Chat/components/ChatRoom.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { IoIosArrowBack } from 'react-icons/io';
 import client from './socket';
+import otherImg from '../../../assets/other.svg';
+import send from '../../../assets/send.svg';
 import '../ChatRoomStyled.css';
 
 export default function ChatRoom() {
@@ -9,27 +12,24 @@ export default function ChatRoom() {
     const { state } = useLocation();
     const navigate = useNavigate();
     const receiverId = state?.receiverId;
+    const receiverNickname = state?.receiverNickname || '상대방';
 
-    // JWT 디코딩해서 내 아이디 구하기
     const token = localStorage.getItem('accessToken');
     const payload = token ? JSON.parse(atob(token.split('.')[1])) : {};
-    // payload.userId 우선, 없으면 payload.id, 없으면 payload.sub
     const myId = Number(payload.userId ?? payload.id ?? payload.sub);
 
-    // 로컬 상태
     const [roomId, setRoomId] = useState(null);
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState('');
     const [connected, setConnected] = useState(false);
+    const [fadeOut, setFadeOut] = useState(false);
 
-    // STOMP 클라이언트 레퍼런스
     const clientRef = useRef(client);
 
     useEffect(() => {
         if (!myId || !receiverId) return;
 
         async function initChat() {
-            // 1) 채팅방 조회 또는 생성
             const roomRes = await fetch('/api/chat/room', {
                 method: 'POST',
                 headers: {
@@ -46,7 +46,6 @@ export default function ChatRoom() {
             const room = await roomRes.json();
             setRoomId(room.id);
 
-            // 2) 이전 메시지 불러오기
             const msgRes = await fetch(`/api/chat/rooms/${room.id}/messages`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -55,7 +54,6 @@ export default function ChatRoom() {
                 setMessages(Array.isArray(history) ? history : []);
             }
 
-            // 3) STOMP 연결 & 구독
             clientRef.current.onConnect = () => {
                 setConnected(true);
                 clientRef.current.subscribe(`/topic/chat/${room.id}`, (frame) => {
@@ -73,7 +71,6 @@ export default function ChatRoom() {
         };
     }, [myId, receiverId, type, relatedId, token]);
 
-    // 메시지 전송
     const sendMessage = () => {
         if (!connected || !message.trim() || roomId == null) return;
         clientRef.current.publish({
@@ -83,14 +80,19 @@ export default function ChatRoom() {
         setMessage('');
     };
 
+    const goBack = () => {
+        setFadeOut(true);
+        setTimeout(() => navigate('/chatlist'), 400);
+    };
+
     return (
-        <div className="chat-room-container">
+        <div className={`chat-room-container ${fadeOut ? 'missing-fade-out' : ''}`}>
             {/* 헤더 */}
-            <div className="chat-header">
-                <button className="back-button" onClick={() => navigate(-1)}>
-                    &lt;
-                </button>
-                <span className="header-title">실시간 채팅</span>
+            <div className="sf-header">
+                <div className="back-button2" onClick={goBack}>
+                    <IoIosArrowBack size={32} />
+                </div>
+                <div className="filtering-title">{receiverNickname}</div>
             </div>
 
             {/* 메시지 박스 */}
@@ -99,18 +101,16 @@ export default function ChatRoom() {
                     const isMine = Number(msg.senderId) === myId;
                     return (
                         <div key={idx} className={`chat-bubble-wrapper ${isMine ? 'mine' : 'other'}`}>
-                            {/* 상대 메시지일 때만 프로필/닉네임 */}
                             {!isMine && (
                                 <div className="profile-area">
-                                    <img src="/assets/userPicture.png" alt="상대방" className="profile-image" />
-                                    <span className="chat-nickname">{msg.senderNickname || '상대'}</span>
+                                    <img
+                                        src={otherImg}
+                                        alt="상대방"
+                                        style={{ width: '40px', height: '40px', borderRadius: '50%' }}
+                                    />
                                 </div>
                             )}
-
-                            {/* 말풍선 */}
                             <div className={`chat-bubble ${isMine ? 'mine' : 'other'}`}>{msg.message}</div>
-
-                            {/* 내 메시지는 오른쪽으로 밀기 */}
                             {isMine && <div className="spacer" />}
                         </div>
                     );
@@ -118,18 +118,18 @@ export default function ChatRoom() {
             </div>
 
             {/* 입력 영역 */}
-            <div className="chat-input-wrapper">
+            <div className="missing-comment-input-box">
                 <input
                     type="text"
                     className="chat-input"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    disabled={!connected}
                     placeholder={connected ? '메시지 입력' : '연결 중…'}
                     onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+                    disabled={!connected}
                 />
-                <button className="send-button" onClick={sendMessage} disabled={!connected || !message.trim()}>
-                    전송
+                <button className="missing-submit-btn" onClick={sendMessage} disabled={!connected || !message.trim()}>
+                    <img src={send} alt="send" className="missing-send-image" />
                 </button>
             </div>
         </div>
