@@ -8,6 +8,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import verifion from '../../../assets/verifion.svg';
 import rightside from '../../../assets/rightside.svg'; // 오른쪽 아이콘
 import '../MissingPostForm.css';
+import AiLandingPage from '../../Landing/components/AiLandingPage';
 
 export default function MissingPostForm() {
     const navigate = useNavigate();
@@ -20,6 +21,8 @@ export default function MissingPostForm() {
     const [longitude, setLongitude] = useState(null);
     const [desc, setDesc] = useState(locationState.state?.desc);
     const [file, setFile] = useState(null);
+
+    const [isLoading, setIsLoading] = useState(false);
 
     // 선택된 위치 좌표 수신
     useEffect(() => {
@@ -71,6 +74,7 @@ export default function MissingPostForm() {
             alert('날짜와 상세설명은 필수입니다.');
             return;
         }
+        setIsLoading(true);
 
         const locationString = location || '지도가 구현되면 다시 설정할거에요';
         const formattedDate = format(date, "yyyy-MM-dd'T'HH:mm");
@@ -84,8 +88,8 @@ export default function MissingPostForm() {
                 missingDatetime: formattedDate,
                 missingLocation: locationString,
                 detailDescription: desc,
-                latitude,      // 추가
-                longitude,     // 추가
+                latitude, // 추가
+                longitude, // 추가
             };
 
             if (!file && pet?.photoPath) {
@@ -105,26 +109,33 @@ export default function MissingPostForm() {
             // 2. 응답에서 postId 확인
             const { postId, photoUrl } = response.data; // 백엔드가 postId를 응답해야 함
 
-            // 3. FastAPI로 예측 요청
-            const fastApiRes = await axios.post('http://10.0.2.2:8081/ai/predict-from-path', {
+            const wait2s = new Promise((res) => setTimeout(res, 2000));
+            const aiPredict = axios.post('http://10.0.2.2:8081/ai/predict-from-path', {
                 photo_url: photoUrl || pet.photoPath,
                 pet_id: pet.id,
                 post_type: 'missing',
                 post_id: postId,
             });
-
+            const [, fastApiRes] = await Promise.all([wait2s, aiPredict]);
             console.log('✅ 예측 결과:', fastApiRes.data);
 
-            alert('실종 신고 및 AI 예측 완료');
+            // 로딩 종료
+            setIsLoading(false);
+
+            // 메인으로 이동 후 알림
             navigate('/main');
+            alert('실종 신고 및 AI 예측 완료');
         } catch (err) {
             console.error(err);
             alert('등록에 실패했습니다.');
+            setIsLoading(false);
         }
     };
 
     return (
-        <>
+        <>  
+            {isLoading && <AiLandingPage />}
+
             <div className="missingpost-header">
                 <div className="Hback-button" onClick={() => navigate('/main')}>
                     <IoIosArrowBack size={36} />

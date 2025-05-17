@@ -357,28 +357,6 @@ export default function Filtering() {
                     />
                     <div className="breed-search">검색</div>
                 </div>
-
-                {/* 추천품종 */}
-                <div className="popular-breeds">
-                    {popularBreeds.map((b) => (
-                        <label key={b} className="popular-breed-btn">
-                            <input
-                                type="checkbox"
-                                checked={selectedPopularBreed === b}
-                                onChange={() => {
-                                    const newSel = selectedPopularBreed === b ? '' : b;
-                                    setSelectedPopularBreed(newSel);
-                                    setSearch(newSel);
-                                    setBreedFilter(newSel);
-                                    setIsSuggestOpen(false);
-                                }}
-                            />
-                            <span>{b}</span>
-                        </label>
-                    ))}
-                </div>
-
-                {/* 자동완성 */}
                 {isSuggestOpen && filteredBreeds.length > 0 && (
                     <div className="sug-wrap">
                         <ul className="bread-suggestions">
@@ -400,6 +378,24 @@ export default function Filtering() {
                         </ul>
                     </div>
                 )}
+                <div className="popular-breeds">
+                    {popularBreeds.map((b) => (
+                        <label key={b} className="popular-breed-btn">
+                            <input
+                                type="checkbox"
+                                checked={selectedPopularBreed === b}
+                                onChange={() => {
+                                    const newSel = selectedPopularBreed === b ? '' : b;
+                                    setSelectedPopularBreed(newSel);
+                                    setSearch(newSel);
+                                    setBreadFilter(newSel);
+                                    setIsSuggestOpen(false);
+                                }}
+                            />
+                            <span>{b}</span>
+                        </label>
+                    ))}
+                </div>
             </div>
 
             {/* 4. 털색 필터링 */}
