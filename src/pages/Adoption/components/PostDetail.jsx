@@ -11,6 +11,7 @@ import '../PostDetail.css';
 import { FiMoreVertical, FiChevronDown } from 'react-icons/fi';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
+import userIcon from '../../../assets/user.svg';
 
 export default function PostDetail() {
     const navigate = useNavigate();
@@ -169,7 +170,6 @@ export default function PostDetail() {
     // 포스트 데이터 디스트럭쳐링
     const {
         id,
-        petName,
         isVerified,
         breed,
         colors,
@@ -178,7 +178,6 @@ export default function PostDetail() {
         neutered,
         registrationNo,
         timeAgo,
-        description,
         location: meetText,
         latitude,
         longitude,
@@ -302,7 +301,13 @@ export default function PostDetail() {
             alert('게시글 삭제 중 오류가 발생했습니다.');
         }
     };
+    const description = post?.comments;
+    const title = post?.title;
 
+    //이름 가져오기
+    const petName = post?.name || post?.pet?.name || '이름없음';
+    //작성자 이름 가져오기
+    const writerName = post?.member?.nickname || post?.member?.name || '작성자';
     return (
         <div className="pd-page">
             {/* 워터마크 */}
@@ -372,8 +377,10 @@ export default function PostDetail() {
                 {/* 제목 & 검증배지 */}
                 <div className="pd-title-section">
                     <div className="pd-petname">
-                        {petName}
+                        {petName || '이름없음'}
                         {isVerified && <img src={markIcon} alt="인증" className="pd-verified" />}
+
+                        {/* 아래쪽에 작성자 정보 */}
                     </div>
                 </div>
                 {/* 상단 태그 */}
@@ -414,7 +421,7 @@ export default function PostDetail() {
                                 opacity: isOwner ? 1 : 0.5,
                             }}
                         >
-                            {status} <FiChevronDown size={16} style={{ marginLeft: 4 }} />
+                            {status} <FiChevronDown size={24} style={{ marginLeft: 4, marginBottom: 2 }} />
                         </div>
                         {statusOpen && isOwner && (
                             <div className="pd-status-dropdown">
@@ -435,15 +442,17 @@ export default function PostDetail() {
                         )}
                     </div>
 
-                    <div className="pd-description-title">{breed} 분양합니다.</div>
+                    <div className="pd-description-title">{title}</div>
                     <div className="pd-timeago">{timeAgo}</div>
                     <p className="pd-description-text">{description}</p>
                 </div>
                 {/* 만날 곳 */}
                 <div className="pd-meet-section">
-                    <div className="pd-meet-label">아이와 만날곳</div>
+                    <div className="pd-meet-header">
+                        <div className="pd-meet-label">아이와 만날곳</div>
+                        {address && <div className="pd-meet-address">{address}</div>}
+                    </div>
                     <div ref={mapRef} className="pd-map" />
-                    {address && <div className="pd-meet-address">{address}</div>}
                 </div>
                 <div className="null-space" />
                 {/* 상세 정보 */}

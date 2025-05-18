@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import BottomSheet from '../../Map/components/BottomSheet';
-import '../animalProfile.css';
+import '../AnimalProfile.css';
 import downbtn from '../../../assets/downbtn.svg';
 import checkOn from '../../../assets/checkOn.svg';
 import checkOff from '../../../assets/checkOff.svg';

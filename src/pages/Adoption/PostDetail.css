@@ -1,9 +1,9 @@
 .pd-page {
     display: flex;
     flex-direction: column;
-    background: #fff;
-    color: #333;
-    font-family: sans-serif;
+    background: rgba(240, 250, 255, 0.2);
+
+    /* color: #333; */
     width: 100%;
     max-height: 500px;
 }
@@ -34,19 +34,22 @@
 
 /* Carousel */
 .pd-carousel {
+    width: 100%;
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 .pd-image {
-    width: 70%;
+    object-fit: cover;
+    width: 400px;
+    height: 420px;
     display: block;
     margin: auto;
-    margin-top: 20px;
-    border-top: 1px solid #000000;
-    border-bottom: 1px solid #000000;
+    margin-top: 44px;
+    /* border-top: 1px solid #000000; */
+    /* border-bottom: 1px solid #000000; */
     background: url(<path-to-image>) lightgray 50% / cover no-repeat;
-    box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 6px 6px 6px 0px rgba(0, 0, 0, 0.25);
 }
 
 .pd-arrow {
@@ -67,13 +70,14 @@
 
 .pd-pagination {
     position: absolute;
-    bottom: 8px;
-    right: 8px;
-    background: rgba(0, 0, 0, 0.6);
-    color: #fff;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 12px;
+    bottom: 16px;
+    right: 54px;
+    border-radius: 6px;
+    background: rgba(217, 217, 217, 0.5);
+    color: #111;
+    padding: 3px 12px;
+    font-size: 18px;
+    font-weight: 500;
 }
 
 /* Title & Owner */
@@ -107,29 +111,61 @@
 /* Tags */
 .pd-tags {
     display: flex;
-    justify-content: space-around;
-    padding: 12px 0;
+    justify-content: space-around; /* 또는 space-between / center */
+    align-items: center;
+    gap: 16px; /* 선택 사항: 항목 간 여백 조절 */
+    margin-top: 16px;
 }
 
 .pd-tag {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
+    flex: 1; /* 너비 균등 분배 */
+    min-width: 100px; /* 모바일 대응 시 최소 너비 */
+}
+
+.pd-tag-icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 4px;
 }
 
 .pd-tag-label {
     display: block;
-    font-size: 12px;
-    color: #999;
+    font-size: 16px;
+    color: #8c8c8c;
+    /* margin-bottom: 4px; */
+    font-weight: lighter;
+    letter-spacing: -0.4px;
 }
+
 .pd-petname {
-    color: #000;
+    color: #111;
     text-align: center;
     font-family: Pretendard;
-    font-size: 24px;
+    font-size: 32px;
     font-style: normal;
     font-weight: 700;
     line-height: 24px; /* 100% */
+    letter-spacing: -0.9px;
+    margin-top: 12px;
+}
+.pd-writer {
+    font-size: 20px;
+    font-weight: normal;
+    color: #8c8c8c;
+    margin-top: 12px;
     letter-spacing: -0.6px;
 }
+
+.pd-writer-icon {
+    width: 28px;
+    height: 28px;
+    margin-right: 8px;
+}
+
 .pd-tag-value {
     margin-top: 4px;
     font-size: 14px;
@@ -137,26 +173,38 @@
 }
 
 /* Description */
-.pd-description {
-    padding: 16px;
-    line-height: 1.5;
-    font-size: 14px;
+/* 기존 유지 */
+.pd-meet-section {
+    margin: 0px 16px;
 }
 
-.pd-timeago {
-    margin-top: 2px;
-    font-size: 16px;
-    color: #afadad;
-}
-
-/* Meet Location */
-.pd-meet-location {
-    margin: 16px;
-}
-
-.pd-meet-title {
-    font-size: 16px;
+/* 새로 추가 */
+.pd-meet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 8px;
+}
+
+.pd-meet-label {
+    font-size: 20px;
+    font-weight: bold;
+    color: #111;
+    line-height: 24px;
+    letter-spacing: -0.5px;
+    text-align: left;
+}
+
+.pd-meet-address {
+    letter-spacing: -0.5px;
+    font-size: 20px;
+    color: #111;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60%; /* 길면 줄임 */
+    font-weight: bold;
 }
 
 .pd-map {
@@ -164,75 +212,110 @@
     margin: auto;
     height: 160px;
     margin-bottom: 10px;
-    margin-top: 10px;
-    border-radius: 8px;
+    border-radius: 6px;
     overflow: hidden;
 }
 .pd-description-section {
     text-align: left;
+    margin-bottom: 16px;
+    /* padding-bottom: -20px; */
+}
+/* 2) 상태 드롭다운 */
+.pd-status-section {
+    position: relative;
+    display: inline-block;
+    margin: 16px;
+}
+.pd-status-btn {
+    /* min-width: 110px; */
+    padding: 8px 8px;
+    border: 1px solid #8c8c8c;
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+    color: #8c8c8c;
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 8px;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap; /* 줄바꿈 방지 */
+}
+.pd-status-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 4px;
+}
+.pd-status-item {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+.pd-status-item:hover {
+    background: #d9d9d9;
 }
 .pd-description-title {
     color: #111;
-    font-size: 22px;
-    font-style: normal;
+    font-size: 24px;
     font-weight: 700;
-    line-height: 24px; /* 120% */
-    letter-spacing: 0.5px;
+    letter-spacing: -0.5px;
+    margin-left: 16px;
+    margin-top: 4px;
 }
+.pd-description-text {
+    margin-top: 12px;
+    margin-left: 16px;
+    font-weight: bold;
+    font-size: 20px;
+    word-break: break-word; /* 단어 기준 줄바꿈 */
+    white-space: normal; /* 자동 줄바꿈 허용 */
+}
+.pd-timeago {
+    margin-top: 0px;
+    font-size: 16px;
+    color: #8c8c8c;
+    margin-left: 16px;
+}
+
 /* Info List */
 .pd-info-list {
     list-style: none;
-    margin: 16px;
     padding: 0;
+    margin: 16px 16px;
 }
 
 .pd-info-item {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 8px 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 .pd-info-label {
-    text-align: left;
-    width: 50%;
-    font-size: 14px;
+    font-size: 16px;
     color: #666;
+    flex: 1;
+    text-align: left;
 }
 
 .pd-info-value {
-    color: rgba(17, 17, 17, 0.8);
-    text-align: center;
-    font-family: Pretendard;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 24px; /* 150% */
-    letter-spacing: 0.4px;
-}
-
-.map {
-    width: 90%;
-    height: 300px;
-    margin: auto;
+    font-size: 18px;
+    font-weight: bold;
+    color: #111;
+    flex: 1;
+    text-align: right;
 }
 
 .null-space {
     height: 16px;
-    background: #faf6f6;
-    margin-top: 20px;
-    margin-bottom: 5px;
+    background: #f1f2f5;
+    margin-top: 24px;
 }
 
-.pd-meet-label {
-    color: #000;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 24px; /* 150% */
-    letter-spacing: 0.4px;
-    text-align: left;
-    margin-top: 10px;
-}
 .pd-actions {
     position: relative;
     display: inline-block;
@@ -290,36 +373,6 @@
     color: rgba(0, 0, 0, 0.05);
     white-space: nowrap; /* 단어가 줄 바꿈되지 않도록 */
     margin: 0; /* 불필요한 마진 제거 */
-}
-
-/* 2) 상태 드롭다운 */
-.pd-status-section {
-    position: relative;
-    display: inline-block;
-    margin: 16px 0;
-}
-.pd-status-btn {
-    padding: 6px 10px;
-    margin-left: 10px;
-    border: 1px solid #ccc;
-    background: #fff;
-    cursor: pointer;
-}
-.pd-status-dropdown {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background: #ffffff;
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    margin-top: 4px;
-}
-.pd-status-item {
-    padding: 8px 12px;
-    cursor: pointer;
-}
-.pd-status-item:hover {
-    background: #f5f5f5;
 }
 
 /* 3) 비활성 채팅 버튼 */
