@@ -432,10 +432,10 @@
 }
 
 /* 인증하기 버튼 */
-.reg-submit {
+.reg-submit2 {
     width: 94%;
     height: 60px;
-    background-color: #111;
+    background-color: #111 !important;
     color: white;
     margin-top: 5% !important;
     font-weight: bold;

@@ -757,7 +757,7 @@ export default function AnimalProfile() {
                         />
                         {ownerError && <p className="error-message">{ownerError}</p>}
                     </div>
-                    <button className="reg-submit" onClick={handleRegSubmit}>
+                    <button className="reg-submit2" onClick={handleRegSubmit}>
                         인증하기
                     </button>
                 </BottomSheet>
