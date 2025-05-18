@@ -125,6 +125,10 @@ export default function WitnessPostForm() {
             formData.append('post', JSON.stringify(witnessData));
             formData.append('photoUrls', JSON.stringify(files));
 
+            for (let pair of formData.entries()) {
+                console.log(`FormData Key: ${pair[0]}, Value:`, pair[1]);
+            }
+
             // 1. 목격 게시글 등록 요청
             const res = await axios.post('/api/posts/witness', formData, {
                 headers: {

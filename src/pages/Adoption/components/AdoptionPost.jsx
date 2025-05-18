@@ -254,84 +254,116 @@ export default function AdoptionPost() {
         return path.startsWith('http') ? path : `${base}${path}`;
     };
 
+    let isImageUploadPopupOpen = false;
+
+    // Morpheus 사진 업로드 함수
     const handleMorpheusImageUpload = () => {
-        const userChoice = confirm('사진을 촬영하시겠습니까?');
+        if (isImageUploadPopupOpen) {
+            console.log('[이미지 업로드] 팝업이 이미 열려있습니다.');
+            return;
+        }
+        isImageUploadPopupOpen = true;
 
-        const uploadImage = async (localPath) => {
-            const fileExt = localPath.split('.').pop().toLowerCase();
-            const mimeTypeMap = {
-                jpg: 'image/jpeg',
-                jpeg: 'image/jpeg',
-                png: 'image/png',
-                gif: 'image/gif',
-            };
-            const mimeType = mimeTypeMap[fileExt] || 'image/jpeg';
+        M.pop.alert({
+            title: '사진 업로드',
+            message: '원하는 방법을 선택하세요.',
+            buttons: ['촬영하기', '취소', '앨범에서 선택'],
+            callback: function (index) {
+                isImageUploadPopupOpen = false;
 
-            // ✅ Morpheus 방식 직접 업로드
-            M.net.http.upload({
-                url: `http://${window.location.hostname}:8080/api/adopt/image-upload`,
-                method: 'POST',
-                header: {
-                    Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
-                },
-                body: [
-                    {
-                        name: 'file',
-                        content: localPath,
-                        type: 'FILE',
-                    },
-                ],
-                finish: (status, header, body) => {
-                    try {
-                        const result = JSON.parse(body);
-                        const uploadedPath = result.photoPath;
+                switch (parseInt(index, 10)) {
+                    case 0:
+                        openCamera();
+                        break;
+                    case 1:
+                        console.log('[이미지 업로드] 취소');
+                        break;
+                    case 2:
+                        openGallery();
+                        break;
+                    default:
+                        console.log('[이미지 업로드] 알 수 없는 선택지');
+                }
+            },
+        });
+    };
 
-                        const fileObj = {
-                            file: null,
-                            url: getImageUrl(uploadedPath),
-                        };
-                        setUploadedFiles((prev) => [...prev, fileObj]);
-
-                        console.log('🔥 업로드 성공:', result);
-                    } catch (e) {
-                        console.error('🔥 응답 파싱 실패:', body);
-                        alert('이미지 업로드 실패');
-                    }
-                },
-            });
-        };
-
-        const handleResult = (status, result) => {
-            if (status !== 'SUCCESS' || !result.path) {
-                alert('사진 선택 실패');
-                return;
-            }
-
-            const path = result.fullpath || result.path;
-            if (!/\.(jpg|jpeg|png|gif)$/i.test(path)) {
-                alert('이미지 파일만 선택해주세요.');
-                return;
-            }
-
-            uploadImage(path);
-        };
-
-        const mediaConfig = {
+    const openCamera = () => {
+        M.media.camera({
             path: '/media',
-            mediaType: 'ALL', // ✅ 이미지 외에도 파일 선택 가능하게 설정
+            mediaType: 'PHOTO',
             saveAlbum: true,
             callback: handleResult,
-        };
+        });
+    };
 
-        if (userChoice) {
-            M.media.camera(mediaConfig);
-        } else {
-            M.media.picker({
-                ...mediaConfig,
-                mode: 'SINGLE',
-                column: 3,
-            });
+    const openGallery = () => {
+        M.media.picker({
+            mode: 'SINGLE',
+            mediaType: 'ALL',
+            path: '/media',
+            column: 3,
+            callback: handleResult,
+        });
+    };
+
+    const handleResult = (status, result) => {
+        if (status !== 'SUCCESS' || !result.path) {
+            alert('사진 선택 실패');
+            return;
         }
+
+        const path = result.fullpath || result.path;
+        if (!/\.(jpg|jpeg|png|gif)$/i.test(path)) {
+            alert('이미지 파일만 선택해주세요.');
+            return;
+        }
+
+        uploadImage(path);
+    };
+
+    const uploadImage = (localPath) => {
+        const fileExt = localPath.split('.').pop().toLowerCase();
+        const mimeTypeMap = {
+            jpg: 'image/jpeg',
+            jpeg: 'image/jpeg',
+            png: 'image/png',
+            gif: 'image/gif',
+        };
+        const mimeType = mimeTypeMap[fileExt] || 'image/jpeg';
+
+        M.net.http.upload({
+            url: `http://${window.location.hostname}:8080/api/adopt/image-upload`,
+            method: 'POST',
+            header: {
+                Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+            },
+            body: [
+                {
+                    name: 'file',
+                    content: localPath,
+                    type: 'FILE',
+                },
+            ],
+            indicator: false,
+            finish: (status, header, body) => {
+                try {
+                    const result = JSON.parse(body);
+                    const uploadedPath = result.photoPath;
+
+                    const fileObj = {
+                        file: null,
+                        url: getImageUrl(uploadedPath),
+                    };
+                    setUploadedFiles((prev) => [...prev, fileObj]);
+
+                    console.log('🔥 업로드 성공:', result);
+                } catch (e) {
+                    console.error('🔥 응답 파싱 실패:', body);
+                    alert('이미지 업로드 실패');
+                }
+            },
+        });
     };
 
     // ✅ 컴포넌트 마운트 시 서버 이미지 있을 경우 미리보기 세팅
