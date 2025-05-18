@@ -248,7 +248,7 @@
     transition: border-color 0.3s ease;
 }
 .gender-button.selected {
-    border-color: #f5a623;
+    border-color: #111 !important;
     background-color: #fff;
     color: #111;
 }
@@ -268,7 +268,7 @@
 
 /* 생일 date picker 버튼 스타일링 */
 .react-datepicker__header {
-    background-color: #f5a623 !important;
+    background-color: #111 !important;
     color: white;
 }
 .react-datepicker__current-month,
@@ -435,7 +435,7 @@
 .reg-submit {
     width: 94%;
     height: 60px;
-    background-color: #f5a623;
+    background-color: #111;
     color: white;
     margin-top: 5% !important;
     font-weight: bold;
@@ -446,13 +446,13 @@
     cursor: pointer;
 }
 .reg-submit:hover {
-    background-color: #e89e19;
+    background-color: #111;
 }
 /* 완료 상태 */
 .reg-button.completed {
-    background-color: #f5a623;
+    background-color: #111;
     color: #fff;
-    border: 2px solid #f5a623;
+    border: 2px solid #111;
 }
 /* 유효성 검사 에러 메시지 */
 .error-message {
