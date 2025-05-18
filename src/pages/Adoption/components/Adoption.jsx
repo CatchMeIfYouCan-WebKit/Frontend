@@ -204,7 +204,6 @@ export default function Adoption() {
                 {posts.map((p) => (
                     <div
                         key={p.id}
-                        // status 가 "분양완료" 이면 completed 클래스를 추가
                         className={`post-card ${p.status === '분양완료' ? 'post-card--completed2' : ''}`}
                         onClick={() =>
                             navigate(`/adoptionpost/${p.id}`, {
@@ -212,6 +211,9 @@ export default function Adoption() {
                             })
                         }
                     >
+                        {/* ✅ 상태 뱃지 추가 */}
+                        {p.status === '분양완료' && <div className="post-status-badge">분양완료</div>}
+
                         <img src={p.image || ''} alt={p.title} className="post-img" />
                         <div className="post-info">
                             <div className="post-title">
@@ -219,12 +221,10 @@ export default function Adoption() {
                                 <span className="verified"></span>
                             </div>
                             <div className="post-meta">
-                                {p.breed}
-                                <br />
-                                {p.birth} · {p.gender}
+                                {p.breed} · {p.birth} · {p.gender}
                             </div>
                             <div className="post-footer">
-                                <span className="post-location">{p.location || '위치 정보 없음'}</span>{' '}
+                                <span className="post-location">{p.location || '위치 정보 없음'}</span>
                                 <span className="post-time">{p.timeAgo}</span>
                             </div>
                         </div>

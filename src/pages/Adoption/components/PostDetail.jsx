@@ -12,6 +12,7 @@ import { FiMoreVertical, FiChevronDown } from 'react-icons/fi';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import userIcon from '../../../assets/user.svg';
+import axios from 'axios';
 
 export default function PostDetail() {
     const navigate = useNavigate();
@@ -65,6 +66,28 @@ export default function PostDetail() {
             };
         }
     }, []);
+    const updateStatus = async (newStatus) => {
+        try {
+            const token = localStorage.getItem('accessToken');
+            await axios.patch(
+                `http://10.0.2.2:8080/api/adopt/${id}/status`,
+                {
+                    status: newStatus,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            setStatus(newStatus);
+            setStatusOpen(false);
+            alert('분양 상태가 변경되었습니다.');
+        } catch (err) {
+            console.error('❌ 상태 변경 실패:', err);
+            alert('상태 변경 중 오류 발생');
+        }
+    };
 
     // 채팅하기 버튼 클릭 시 알림 전송
     const handleChatClick = () => {
@@ -112,7 +135,11 @@ export default function PostDetail() {
             client.activate();
         }
 
-        navigate(`/chat/ADOPTION/${id}`, { state: { receiverId: post.member.id } });
+        if (!post || !post.member || !id) return;
+
+        navigate(`/chat/ADOPTION/${id}`, {
+            state: { receiverId: post.member.id },
+        });
     };
 
     // =================================================== 알림
@@ -412,35 +439,22 @@ export default function PostDetail() {
                 <div className="pd-description-section">
                     {/* 분양 상태 선택 */}
                     {/* 내 게시글에서만 */}
-                    <div className="pd-status-section" ref={statusRef}>
-                        <div
-                            className="pd-status-btn"
-                            onClick={() => isOwner && setStatusOpen((o) => !o)}
-                            style={{
-                                cursor: isOwner ? 'pointer' : 'not-allowed',
-                                opacity: isOwner ? 1 : 0.5,
-                            }}
-                        >
-                            {status} <FiChevronDown size={24} style={{ marginLeft: 4, marginBottom: 2 }} />
-                        </div>
-                        {statusOpen && isOwner && (
-                            <div className="pd-status-dropdown">
-                                {['분양중', '분양완료'].map((s) => (
-                                    <div
-                                        key={s}
-                                        className="pd-status-item"
-                                        onClick={() => {
-                                            setStatus(s);
-                                            setStatusOpen(false);
-                                            // TODO: 필요하면 서버에 상태 변경 요청 추가
-                                        }}
-                                    >
-                                        {s}
-                                    </div>
-                                ))}
+                    {isOwner && (
+                        <div className="pd-status-section" ref={statusRef}>
+                            <div className="pd-status-btn" onClick={() => setStatusOpen((o) => !o)}>
+                                {status} <FiChevronDown size={24} />
                             </div>
-                        )}
-                    </div>
+                            {statusOpen && (
+                                <div className="pd-status-dropdown">
+                                    {['분양중', '분양완료'].map((s) => (
+                                        <div key={s} className="pd-status-item" onClick={() => updateStatus(s)}>
+                                            {s}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
 
                     <div className="pd-description-title">{title}</div>
                     <div className="pd-timeago">{timeAgo}</div>

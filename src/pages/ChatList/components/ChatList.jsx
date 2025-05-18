@@ -5,7 +5,7 @@ import Header from '../../../shared/Header/components/Header';
 import Footer from '../../../shared/Footer/Footer';
 import dogAvatar from '../../../assets/testdog.png';
 import '../ChatList.css';
-
+import userIcon from '../../../assets/user.svg';
 function getMyId() {
     const token = localStorage.getItem('accessToken');
     if (!token) return null;
@@ -131,7 +131,7 @@ export default function ChatList() {
                             onTouchStart={() => handlePressStart(room)}
                             onTouchEnd={handlePressEnd}
                         >
-                            <img src={dogAvatar} alt="avatar" className="chat-avatar" />
+                            <img src={userIcon} alt="avatar" className="chat-avatar" />
 
                             <div className="chat-content" onClick={() => openChat(room)}>
                                 <div className="chat-info">
@@ -147,17 +147,6 @@ export default function ChatList() {
                             </div>
 
                             {/* 삭제 버튼 */}
-                            <button
-                                className="chat-delete-button"
-                                onClick={async (e) => {
-                                    e.stopPropagation();
-                                    if (window.confirm('정말 이 채팅방을 삭제하시겠습니까?')) {
-                                        await deleteRoom(room.id);
-                                    }
-                                }}
-                            >
-                                ✕
-                            </button>
                         </div>
                     );
                 })}

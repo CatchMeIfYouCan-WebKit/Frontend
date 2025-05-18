@@ -4,13 +4,11 @@
 .adoption-page {
     position: relative;
     padding-bottom: 60px; /* Footer 높이 만큼 */
-    background: #fff;
+    background: rgba(240, 250, 255, 0.2);
 
     height: 100%;
     width: 100%;
-    margin: 0;
     box-sizing: border-box;
-    font-family: sans-serif;
 }
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -49,6 +47,7 @@
     margin-top: 0;
     height: 60px;
     margin-top: 10px;
+    margin-bottom: -40px;
 }
 
 .adoption-header .filters {
@@ -83,72 +82,93 @@
 /* 게시글 리스트                                                           */
 /* ────────────────────────────────────────────────────────────────────────── */
 .post-list {
-    padding: 0 5px 100px;
-    margin-top: 0;
+    /* margin-top: -8px; */
+
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    min-height: 544px;
+    /* gap 제거 */
+    gap: 0;
 }
 
 .post-card {
     display: flex;
     background: #fff;
-    border-radius: 8px;
     overflow: hidden;
-    height: 130px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    height: 156px; /* 기존 130px → 110px로 축소 */
+    border-bottom: 1px solid #eee;
     cursor: pointer;
-    margin-left: 8px;
-    margin-right: 8px;
-    background-color: #ffffff;
+    margin: 24px; /* 좌우 8px, 하단 8px만 적용 */
+    padding-left: 16px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    position: relative;
+    margin-bottom: -24px;
+    margin-left: 0px;
+    align-items: center;
+}
+.post-card:hover {
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
 }
 
 .post-img {
-    margin: 10px;
-    width: 115px;
-    height: 115px;
+    width: 120px;
+    height: 120px;
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 4px;
+    margin-right: 12px;
 }
 
 .post-info {
     flex: 1;
-    padding: 12px 16px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .post-title {
-    margin: 0;
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: -0.4px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 4px;
     display: flex;
     align-items: center;
+    letter-spacing: -0.5px;
+}
+
+.post-meta {
+    margin: 4px 0;
+    font-size: 18px;
+    font-weight: normal;
+    text-align: left;
+    letter-spacing: -0.45px;
+}
+
+.post-footer {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #8c8c8c;
+    letter-spacing: -0.4px;
+    font-weight: normal;
+}
+
+.post-status-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: #8c8c8c;
+    color: white;
+    z-index: 2;
+    letter-spacing: -0.3px;
 }
 
 .verified img {
     width: 16px;
     height: 16px;
     margin-left: 4px;
-}
-
-.post-meta {
-    margin: 4px 0;
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 1.5;
-    text-align: left;
-}
-
-.post-footer {
-    display: flex;
-    align-items: center;
-    font-size: 12px;
-    color: #999;
-    gap: 8px;
 }
 
 .post-location::after {
@@ -180,6 +200,8 @@
     align-items: flex-end;
     gap: 8px;
     z-index: 30;
+    margin-bottom: 4px;
+    margin-right: 4px;
 }
 .write-btn {
     width: 100px;
@@ -190,7 +212,7 @@
     font-size: 16px;
     line-height: 1;
     border: none;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(1, 1, 1, 0.3);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -377,8 +399,8 @@ footer {
 
 /* 분양완료인 경우 테두리를 진하게 */
 .post-card--completed2 {
-    border: 1px solid #ddd; /* ← 추가 */
+    /* border: 1px solid #ddd; ← 추가 */
 
-    border-color: red;
+    /* border-color: red; */
     /* 원하시면 box-shadow 같은 효과도 추가 가능 */
 }

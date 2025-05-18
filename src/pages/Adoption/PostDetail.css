@@ -224,7 +224,8 @@
 .pd-status-section {
     position: relative;
     display: inline-block;
-    margin: 16px;
+    margin-top: 16px;
+    margin-left: 16px;
 }
 .pd-status-btn {
     /* min-width: 110px; */
@@ -263,7 +264,7 @@
     font-weight: 700;
     letter-spacing: -0.5px;
     margin-left: 16px;
-    margin-top: 4px;
+    margin-top: 16px;
 }
 .pd-description-text {
     margin-top: 12px;
